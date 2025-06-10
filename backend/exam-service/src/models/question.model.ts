@@ -1,0 +1,17 @@
+import { Schema, model, Document } from "mongoose";
+import { IQuestion } from "../types/question.types";
+
+interface IQuestionDoc extends IQuestion, Document {}
+
+const questionSchema = new Schema<IQuestionDoc>(
+  {
+    examId: { type: Schema.Types.ObjectId, ref: "Exam", required: true },
+    text: { type: String, required: true },
+    type: { type: String, enum: ["mcq", "truefalse"], required: true },
+    options: { type: [String], required: true },
+    correctAnswer: { type: Number, required: true },
+  },
+  { timestamps: true }
+);
+
+export const Question = model<IQuestionDoc>("Question", questionSchema);
