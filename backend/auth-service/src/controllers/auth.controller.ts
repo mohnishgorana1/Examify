@@ -103,3 +103,158 @@ export const register = async (req: any, res: any) => {
       .json({ success: false, message: "Internal Server Error", error: error });
   }
 };
+
+export const login = async (req: any, res: any) => {
+  const { email, password } = req.body;
+
+  if (!loginSchema.safeParse(req.body).success) {
+    console.log("error in login schema validation");
+
+    return res.status(500).json({
+      success: false,
+      message: "Validation Fails",
+      error: registerSchema.safeParse(req.body).error,
+    });
+  }
+
+  try {
+    // Check if user exists
+    const user = await AuthUser.findOne({ email });
+    if (!user) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid credentials" });
+    }
+
+    // Compare passwords
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid credentials" });
+    }
+
+    // Generate JWT tokens
+    const accessToken = generateAccessToken(String(user._id));
+    const refreshToken = generateRefreshToken(String(user._id));
+
+    // TODO: Stroring Refresh Token in REDIS
+
+    // Set refresh token as an HTTP-only cookie
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+    });
+
+    // Update refreshtoken in db
+
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    console.log("Login Succcess");
+
+    return res.status(200).json({
+      success: true,
+      message: "Login successful",
+      user: {
+        id: user._id,
+        email: user.email,
+      },
+      accessToken,
+    });
+  } catch (error) {
+    console.error("Login Error:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error", error });
+  }
+};
+
+export const logout = async (req: any, res: any) => {
+  try {
+    const userId = await req.user?.id; // Extract user ID from `req.user` (middleware should add this)
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    // TODO: If using REDIS then remove Refres Token from redis also
+
+    // Clear refresh token cookie from client
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+    });
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Logout successful" });
+  } catch (error) {
+    console.error("Logout Error:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error", error });
+  }
+};
+
+export const refreshAccessToken = async (req: any, res: any) => {
+  const refreshToken = req.cookies?.refreshToken;
+  console.log("refreshToken", refreshToken);
+
+  if (!refreshToken) {
+    return res
+      .status(401)
+      .json({ success: false, message: "Refresh token missing" });
+  }
+
+  jwt.verify(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET as string,
+    async (err: any, decoded: any) => {
+      if (err) {
+        console.log("err verify", err);
+
+        return res.status(403).json({
+          success: false,
+          message: "Invalid or expired refresh token",
+        });
+      }
+
+      const userId = decoded.userId;
+      console.log("userID", decoded.userId);
+
+      const user = await AuthUser.findById(userId);
+      const storedRefreshTokenInDB = user?.refreshToken;
+      console.log("storedRefreshTokenInDB", storedRefreshTokenInDB);
+
+      if (!storedRefreshTokenInDB) {
+        return res.status(403).json({
+          success: false,
+          message: "Error validating refresh token",
+        });
+      }
+      if (storedRefreshTokenInDB !== refreshToken) {
+        console.log("stored token is not matches with refreshtoken");
+        return res.status(403).json({
+          success: false,
+          message: "Invalid session, please log in again",
+        });
+      }
+
+      // Generate new access token
+
+      const newAccessToken = generateAccessToken(String(userId));
+      console.log("new accessToken", newAccessToken);
+
+      return res.status(200).json({
+        success: true,
+        accessToken: newAccessToken,
+      });
+    }
+  );
+};
+
