@@ -5,7 +5,7 @@ import morgan from "morgan";
 // import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-// import userRoutes from "./routes/user.routes";
+import userRoutes from "./routes/user.routes";
 import connectDB from "./config/db";
 
 
@@ -29,6 +29,6 @@ app.use(cookieParser());
 
 
 // Routes
-// app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/user", userRoutes);
 
 export default app;
