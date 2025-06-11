@@ -8,4 +8,5 @@ export interface IQuestion{
     type: QuestionType;
     options: string[];
     correctAnswer: number; // index of correct option
+    explanation?: string;
 }

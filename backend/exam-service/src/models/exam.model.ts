@@ -16,6 +16,8 @@ const examSchema = new Schema<IExamDoc>(
         ref: "Question",
       },
     ], // referencing
+    totalMarks: { type: Number },
+    passingMarks: { type: Number },
   },
   { timestamps: true }
 );

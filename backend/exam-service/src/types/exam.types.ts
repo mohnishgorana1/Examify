@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { IQuestion } from "./question.types";
 
 export interface IExam{
     createdBy: mongoose.Types.ObjectId,
@@ -6,5 +7,7 @@ export interface IExam{
     description: string;
     duration: number; // in minutes
     scheduledAt: Date;
-    questions: mongoose.Types.ObjectId[],
+    questions: mongoose.Types.ObjectId[];
+    totalMarks?: number;
+    passingMarks?:number;
 }

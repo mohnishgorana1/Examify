@@ -10,6 +10,7 @@ const questionSchema = new Schema<IQuestionDoc>(
     type: { type: String, enum: ["mcq", "truefalse"], required: true },
     options: { type: [String], required: true },
     correctAnswer: { type: Number, required: true },
+    explanation: { type: String },
   },
   { timestamps: true }
 );

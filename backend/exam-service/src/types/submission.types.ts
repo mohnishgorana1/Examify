@@ -13,4 +13,5 @@ export interface ISubmission {
   score: number;
   isAutoSubmitted: boolean;
   attemptNumber: number;
+  timeTaken: number;
 }
