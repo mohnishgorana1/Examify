@@ -258,3 +258,35 @@ export const refreshAccessToken = async (req: any, res: any) => {
   );
 };
 
+export const verifyToken = async (req: any, res: any) => {
+  const { token } = req.body;
+  if (!token) {
+    return res
+      .status(500)
+      .json({ success: false, message: "No Token Provided in Verify Token" });
+  }
+
+  try {
+    // verify token
+    const decoded: any = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!);
+
+    // attach user to request
+    const user = await AuthUser.findById(decoded.userId).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "Authenticated User not found" });
+    }
+    console.log("Token Verified at Auth for gateway", user);
+
+    return res.status(201).json({
+      success: true,
+      message: "Token Verified",
+      user,
+    });
+  } catch (error) {
+    console.log("Error verify token", error);
+
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error", error });
+  }
+};
