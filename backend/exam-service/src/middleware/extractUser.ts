@@ -3,6 +3,7 @@ export const extractUser = (req: any, res: any, next: any) => {
   if (!userHeader) {
     return res.status(401).json({ message: "User info missing" });
   }
+
   try {
     req.user = JSON.parse(userHeader);
     next();

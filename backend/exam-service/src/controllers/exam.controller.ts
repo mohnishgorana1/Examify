@@ -1,15 +1,233 @@
+import axios from "axios";
+import { Exam } from "../models/exam.model";
+import { Question } from "../models/question.model";
+import mongoose from "mongoose";
+
 export const createExam = async (req: any, res: any) => {
   console.log("Inside create exam");
+  const token = req.headers.authorization?.split(" ")[1];
+  console.log("TOKEN IN CONTORLLER ", token);
+
+  if (!req.user) {
+    console.error("Can't get req.user:");
+    return res
+      .status(500)
+      .json({ success: false, message: "Can't get req.user" });
+  }
+  if (!token) {
+    console.error("Can't get Token");
+    return res
+      .status(500)
+      .json({ success: false, message: "Can't get Authorization Token" });
+  }
+  // console.log("GOT IT HURRAY req.user", req.user);
   try {
-    if (!req.user) {
-      console.error("Can't get req.user:");
+    const { data } = await axios.get(
+      `${process.env.USER_SERVICE_URL}/api/v1/user/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (data?.user?.role !== "instructor") {
       return res
-        .status(500)
-        .json({ success: false, message: "Can't get req.user" });
+        .status(403)
+        .json({ success: false, message: "Only instructors can create exams" });
     }
-    console.log("GOT IT HURRAY req.user", req.user);
+
+    console.log("DATA from user service response", data);
+
+    const {
+      title,
+      description,
+      duration,
+      scheduledAt,
+      questions = [],
+      totalMarks,
+      passingMarks,
+    } = req.body;
+
+    if (!title || !description || !duration || !scheduledAt) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Missing required fields" });
+    }
+    const newExam = new Exam({
+      createdBy: data?.user?._id,
+      title,
+      description,
+      duration,
+      scheduledAt,
+      questions,
+      totalMarks,
+      passingMarks,
+    });
+
+    await newExam.save();
+    console.log("Exam created success", newExam);
+    return res.status(201).json({
+      success: true,
+      message: "Exam created successfully",
+      exam: newExam,
+    });
   } catch (error) {
     console.error("Error in creating exam:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error", error });
+  }
+};
+
+export const createQuestion = async (req: any, res: any) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!req.user) {
+    console.error("Can't get req.user:");
+    return res
+      .status(500)
+      .json({ success: false, message: "Can't get req.user" });
+  }
+  if (!token) {
+    console.error("Can't get Token");
+    return res
+      .status(500)
+      .json({ success: false, message: "Can't get Authorization Token" });
+  }
+
+  try {
+    const { data } = await axios.get(
+      `${process.env.USER_SERVICE_URL}/api/v1/user/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (data?.user?.role !== "instructor") {
+      return res.status(403).json({
+        success: false,
+        message: "Only instructors can create questions",
+      });
+    }
+
+    // ✅ Create the question
+    const { text, type, options, correctAnswer, explanation } = req.body;
+
+    if (!text || !type || !options || correctAnswer == null) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields",
+      });
+    }
+
+    const question = await Question.create({
+      createdBy: data.user._id,
+      text,
+      type,
+      options,
+      correctAnswer,
+      explanation,
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Question created successfully",
+      question: question,
+    });
+  } catch (error) {
+    console.error("Error in creating question:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error", error });
+  }
+};
+
+export const addQuestionsToExam = async (req: any, res: any) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!req.user) {
+    console.error("Unable to extract user from request. Auth failed?");
+    return res.status(500).json({
+      success: false,
+      message: "Unable to extract user from request. Auth failed?",
+    });
+  }
+  if (!token) {
+    console.error("Can't get Token");
+    return res
+      .status(500)
+      .json({ success: false, message: "Can't get Authorization Token" });
+  }
+
+  const { examId } = req.params;
+  const { questionIds } = req.body;
+
+  if (!examId) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid examId",
+    });
+  }
+
+  if (!Array.isArray(questionIds) || questionIds.length === 0) {
+    return res
+      .status(400)
+      .json({ message: "questionIds must be a non-empty array" });
+  }
+
+  try {
+    const { data } = await axios.get(
+      `${process.env.USER_SERVICE_URL}/api/v1/user/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (data?.user?.role !== "instructor") {
+      return res.status(403).json({
+        success: false,
+        message: "Only instructors can add questions to exam",
+      });
+    }
+
+    // 1. ✅ Check if exam exists and belongs to this instructor
+    const exam = await Exam.findOne({ _id: examId, createdBy: data.user._id });
+    if (!exam) {
+      return res
+        .status(403)
+        .json({ message: "You don't have permission to modify this exam" });
+    }
+
+    // 2. ✅ Check if all questions exist and belong to this instructor
+    const validQuestions = await Question.find({
+      _id: {
+        $in: questionIds.map((id: string) => new mongoose.Types.ObjectId(id)),
+      },
+      createdBy: data.user._id,
+    });
+
+    if (validQuestions.length !== questionIds.length) {
+      return res.status(400).json({
+        message: "Some questionIds are invalid or not created by you",
+      });
+    }
+
+    // 3. ✅ Add questionIds (avoid duplicates)
+    const updatedQuestions = Array.from(
+      new Set([...exam.questions.map((id) => id.toString()), ...questionIds])
+    );
+
+    exam.questions = updatedQuestions;
+    await exam.save();
+
+    return res.status(201).json({
+      success: true,
+      message: "Question added to exam successfully",
+      exam,
+    });
+  } catch (error) {
+    console.error("Error in adding question to exam: ", error);
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error", error });
