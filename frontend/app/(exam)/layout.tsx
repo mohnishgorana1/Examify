@@ -1,0 +1,1 @@
+// no header full screen mode
