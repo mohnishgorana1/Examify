@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import rateLimit from "express-rate-limit";
 import proxyRoutes from "./routes/proxy.routes";
-
+import cors from "cors";
 dotenv.config();
 const app = express();
 
@@ -14,12 +14,12 @@ const limiter = rateLimit({
   max: 100,
 });
 app.use(limiter);
-
+app.use(cors());
 // Gateway test route
 // app.get("/", (req: any, res: any) => res.send("API Gateway is running"));
 
 // Mount proxy routes
-app.use("/",proxyRoutes);
+app.use("/", proxyRoutes);
 
 const PORT = process.env.PORT || 8000;
 

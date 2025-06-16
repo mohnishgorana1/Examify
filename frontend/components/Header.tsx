@@ -68,7 +68,7 @@ function Header() {
         <Menubar className="hover:shadow-gray-500 hover:shadow-sm duration-300">
           <MenubarMenu>
             <MenubarTrigger >
-              <MdMenu size={24}/>
+              <MdMenu className="text-xl font-bold bg-transparent"/>
             </MenubarTrigger>
             <MenubarContent>
               <MenubarItem>Account Status</MenubarItem>

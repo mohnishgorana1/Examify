@@ -19,7 +19,6 @@ router.use(
 // 🔵 USER SERVICE
 router.use(
   "/api/v1/user",
-  authenticateUser,
   expressProxy(process.env.USER_SERVICE_URL!, {
     proxyReqPathResolver: (req) => `/api/v1/user${req.url}`,
   })
