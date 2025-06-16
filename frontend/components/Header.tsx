@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React from "react";
 import { Button } from "./ui/button";
 import {
@@ -13,9 +13,18 @@ import { MdMenu } from "react-icons/md";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { authLinks, navLinks } from "@/constants/navlinks";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { logout } from "@/redux/store/userSlice";
 
 function Header() {
+  const user = useSelector((state: RootState) => state.user.user);
+  const dispatch = useDispatch();
   const pathname = usePathname();
+
+  const getDashboardLink = () => {
+    return user?.role ? `/${user.role}` : "/student";
+  };
   return (
     <header className="h-16 bg-white shadow flex items-center justify-between px-4">
       <h1 className="text-2xl font-extrabold tracking-wide font-sans">
@@ -28,15 +37,27 @@ function Header() {
           <Link
             key={link.href}
             href={link.href}
-            className={`text-gray-700 hover:text-black transition-all border-b-2 ${
+            className={` hover:text-black transition-all border-b-2 ${
               pathname === link.href
-                ? "border-black font-semibold"
+                ? "border-emerald-700 text-emerald-700 font-semibold"
                 : "border-transparent"
             }`}
           >
             {link.name}
           </Link>
         ))}
+        {user && (
+          <Link
+            href={getDashboardLink()}
+            className={`hover:text-black transition-all border-b-2 ${
+              pathname === getDashboardLink()
+                ? "border-emerald-700 text-emerald-700 font-semibold"
+                : "border-transparent"
+            }`}
+          >
+            Dashboard
+          </Link>
+        )}
       </nav>
 
       {/* menu bar for small screen*/}
@@ -52,12 +73,25 @@ function Header() {
                   <Link href={link.href}>{link.name}</Link>
                 </MenubarItem>
               ))}
-              <MenubarSeparator />
-              {authLinks.map((link) => (
-                <MenubarItem key={link.href} asChild>
-                  <Link href={link.href}>{link.name}</Link>
+              {user && (
+                <MenubarItem asChild>
+                  <Link href={getDashboardLink()}>Dashboard</Link>
                 </MenubarItem>
-              ))}
+              )}
+              <MenubarSeparator />
+              {!user &&
+                authLinks.map((link) => (
+                  <MenubarItem key={link.href} asChild>
+                    <Link href={link.href}>{link.name}</Link>
+                  </MenubarItem>
+                ))}
+              <MenubarSeparator />
+              {user && (
+                <>
+                  <MenubarItem>Account</MenubarItem>
+                  <MenubarItem>Logout</MenubarItem>
+                </>
+              )}
             </MenubarContent>
           </MenubarMenu>
         </Menubar>
@@ -67,19 +101,30 @@ function Header() {
       <span className="hidden md:flex ">
         <Menubar className="hover:shadow-gray-500 hover:shadow-sm duration-300">
           <MenubarMenu>
-            <MenubarTrigger >
-              <MdMenu className="text-xl font-bold bg-transparent"/>
+            <MenubarTrigger>
+              <MdMenu className="text-xl font-bold bg-transparent" />
             </MenubarTrigger>
             <MenubarContent>
-              <MenubarItem>Account Status</MenubarItem>
-              <MenubarSeparator />
-              {authLinks.map((link) => (
-                <MenubarItem key={link.href} asChild>
-                  <Link href={link.href}>{link.name}</Link>
-                </MenubarItem>
-              ))}
-              <MenubarSeparator />
-              <MenubarItem>Logout</MenubarItem>
+              {user ? (
+                <>
+                  <MenubarItem asChild>
+                    <Link href={getDashboardLink()}>Dashboard</Link>
+                  </MenubarItem>
+                  <MenubarItem onClick={() => {}}>View Profile</MenubarItem>
+                  <MenubarSeparator />
+                  <MenubarItem onClick={() => dispatch(logout())}>
+                    Logout
+                  </MenubarItem>
+                </>
+              ) : (
+                <>
+                  {authLinks.map((link) => (
+                    <MenubarItem key={link.href} asChild>
+                      <Link href={link.href}>{link.name}</Link>
+                    </MenubarItem>
+                  ))}
+                </>
+              )}
             </MenubarContent>
           </MenubarMenu>
         </Menubar>

@@ -1,18 +1,21 @@
-"use client";
-import { setUserFromStorage } from "@/redux/store/userSlice";
+import CTASection from "@/components/HomePage/CTASection";
+import FeaturesSection from "@/components/HomePage/FeaturesSection";
+import HomeClient from "@/components/HomePage/HomeClient";
+import HeroSection from "@/components/HomePage/HeroSection";
+import UserRolesSection from "@/components/HomePage/UserRolesSection";
 import React from "react";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 function HomePage() {
-  const dispatch = useDispatch();
-
-  const user = useSelector((state: any) => state.user.user);
-
-  useEffect(() => {
-    dispatch(setUserFromStorage());
-  }, []);
-
-  return <div>HomePage {user?._id}</div>;
+  return (
+    <main>
+      <HeroSection />
+      <section className="py-10 px-4 md:px-12 bg-gray-50">
+        <HomeClient />
+      </section>
+      <FeaturesSection />
+      <UserRolesSection />
+      <CTASection />
+    </main>
+  );
 }
 
 export default HomePage;

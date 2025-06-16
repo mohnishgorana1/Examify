@@ -9,3 +9,4 @@ export const authLinks = [
   { name: "Login", href: "/login" },
   { name: "Register", href: "/register" },
 ];
+

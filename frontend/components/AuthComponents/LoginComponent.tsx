@@ -39,6 +39,7 @@ function LoginComponent() {
         console.log("now fetch dispact");
         
         await dispatch(fetchUserProfile());
+        router.push("/")
       } else {
         console.error("Login failed:", resultAction.payload);
       }
