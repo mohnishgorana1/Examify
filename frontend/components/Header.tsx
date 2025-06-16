@@ -27,9 +27,9 @@ function Header() {
   };
   return (
     <header className="h-16 bg-white shadow flex items-center justify-between px-4">
-      <h1 className="text-2xl font-extrabold tracking-wide font-sans">
+      <Link href={"/"} className="text-2xl font-extrabold tracking-wide font-sans">
         <span className="">Examify</span>
-      </h1>
+      </Link>
 
       {/* large screen navlinks */}
       <nav className="md:flex gap-4 hidden">
