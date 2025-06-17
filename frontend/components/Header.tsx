@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { GraduationCap } from "lucide-react"; // or any icon library
 import { Button } from "./ui/button";
 import {
   Menubar,
@@ -23,12 +24,23 @@ function Header() {
   const pathname = usePathname();
 
   const getDashboardLink = () => {
-    return user?.role ? `/${user.role}` : "/student";
+    return user?.role ? `/dashboard/${user.role}` : "/dashboard/student";
   };
   return (
     <header className="h-16 bg-white shadow flex items-center justify-between px-4">
-      <Link href={"/"} className="text-2xl font-extrabold tracking-wide font-sans">
+      {/* <Link
+        href={"/"}
+        className="text-2xl font-extrabold tracking-wide font-sans"
+      >
         <span className="">Examify</span>
+      </Link> */}
+
+      <Link
+        href="/"
+        className="flex items-center gap-1 text-2xl font-bold tracking-tight text-emerald-700 hover:text-emerald-900 transition"
+      >
+        <GraduationCap size={24} className="mt-1"/>
+        <span className="font-[Playfair_Display]">Examify</span>
       </Link>
 
       {/* large screen navlinks */}

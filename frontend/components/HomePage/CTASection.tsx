@@ -7,7 +7,7 @@ export default function CTASection() {
   const user = useSelector((state: any) => state.user.user);
 
   return (
-    <section className="py-16 px-6 md:px-20 bg-emerald-600 text-white text-center rounded-t-3xl">
+    <section className="py-16 px-6 md:px-20 bg-emerald-600 text-white text-center rounded-b-4xl">
       {user ? (
         <>
           <h2 className="text-3xl font-bold mb-4">Need Help Navigating?</h2>
