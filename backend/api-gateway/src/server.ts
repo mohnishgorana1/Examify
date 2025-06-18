@@ -14,7 +14,13 @@ const limiter = rateLimit({
   max: 100,
 });
 app.use(limiter);
-app.use(cors());
+// middleware
+app.use(
+  cors({
+    origin: "http://localhost:3000", // ya jo bhi frontend origin ho
+    credentials: true, // ✅ This is most important
+  })
+);
 // Gateway test route
 // app.get("/", (req: any, res: any) => res.send("API Gateway is running"));
 

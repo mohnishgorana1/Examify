@@ -12,7 +12,7 @@ const REFRESH_TOKEN_SECRET =
 
   // Generate Access Token (Short-lived, e.g., 15 min)
 export const generateAccessToken = (userId: string): string => {
-  return jwt.sign({ userId }, ACCESS_TOKEN_SECRET, { expiresIn: "30m" });
+  return jwt.sign({ userId }, ACCESS_TOKEN_SECRET, { expiresIn: "1m" });
 };
 
 // Generate Refresh Token (Longer-lived, e.g., 7 days)

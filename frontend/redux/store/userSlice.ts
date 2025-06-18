@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import customAxios from "@/lib/axios";
 import axios from "axios";
 import { URLs } from "@/constants/urls";
+import { ensureAccessToken } from "@/utils/ensureAccessToken";
 
 interface UserState {
   user: any;
@@ -25,7 +27,13 @@ export const loginUser = createAsyncThunk<
   try {
     console.log("login form data", formData);
 
-    const res = await axios.post(`${URLs.backend}/api/v1/auth/login`, formData);
+    const res = await axios.post(
+      `${URLs.backend}/api/v1/auth/login`,
+      formData,
+      {
+        withCredentials: true, // ✅ this is required for cookies
+      }
+    );
     console.log("loginUser res", res);
 
     return { accessToken: res.data.accessToken };
@@ -43,11 +51,11 @@ export const fetchUserProfile = createAsyncThunk<
     rejectValue: string;
   }
 >("user/fetchUserProfile", async (_, { getState, rejectWithValue }) => {
-  const token = getState().user.accessToken;
+  let token = getState().user.accessToken;
   console.log("token for fetching", token);
 
   try {
-    const res = await axios.get(`${URLs.backend}/api/v1/user/me`, {
+    const res = await customAxios.get(`${URLs.backend}/api/v1/user/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

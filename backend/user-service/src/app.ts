@@ -17,7 +17,13 @@ const app = express();
 
 
 // middleware
-app.use(cors());
+// middleware
+app.use(
+  cors({
+    origin: "http://localhost:3000", // ya jo bhi frontend origin ho
+    credentials: true, // ✅ This is most important
+  })
+);
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.json());

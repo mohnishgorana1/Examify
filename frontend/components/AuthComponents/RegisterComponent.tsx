@@ -15,9 +15,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { URLs } from "@/constants/urls";
-
+import axios from 'axios'
 import { useRouter } from "next/navigation";
-import axios from "axios";
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 

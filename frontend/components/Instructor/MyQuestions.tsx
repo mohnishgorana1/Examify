@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { URLs } from "@/constants/urls";
 
-import axios from "axios";
+import axios from "@/lib/axios";
 import { formatDateToLongString } from "@/utils";
 
 function MyQuestions() {

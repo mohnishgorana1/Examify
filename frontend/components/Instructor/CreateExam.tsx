@@ -14,7 +14,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ChevronDownIcon } from "lucide-react";
-import axios from "axios";
+import axios from "@/lib/axios";
 type CreateExamFormData = z.infer<typeof createExamSchema>;
 
 function CreateExam() {

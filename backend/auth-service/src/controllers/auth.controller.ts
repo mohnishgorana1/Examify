@@ -1,6 +1,6 @@
 import { AuthUser } from "../models/AuthUser.model";
 import dotenv from "dotenv";
-import jwt from "jsonwebtoken";
+import jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
 import { loginSchema, registerSchema } from "../validators/auth.validator";
 import { kafkaProducer } from "../kafka/kafkaClient";
@@ -103,6 +103,34 @@ export const register = async (req: any, res: any) => {
       .json({ success: false, message: "Internal Server Error", error: error });
   }
 };
+export const logout = async (req: any, res: any) => {
+  try {
+    const userId = await req.user?.id; // Extract user ID from `req.user` (middleware should add this)
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    // TODO: If using REDIS then remove Refres Token from redis also
+
+    // Clear refresh token cookie from client
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+    });
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Logout successful" });
+  } catch (error) {
+    console.error("Logout Error:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error", error });
+  }
+};
 
 export const login = async (req: any, res: any) => {
   const { email, password } = req.body;
@@ -140,11 +168,19 @@ export const login = async (req: any, res: any) => {
 
     // TODO: Stroring Refresh Token in REDIS
 
-    // Set refresh token as an HTTP-only cookie
+    // TODO: JAB PRODUCTIOn ME JAE TAB BELOW PART UNCOMMENT KR DENA " Set refresh token as an HTTP-only cookie
+    // res.cookie("refreshToken", refreshToken, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   sameSite: "strict",
+    //   path: "/",
+    // });
+
+    // TODO: ONLY FOR LOCALHOST: production me jane ke liye niche wala part comment kr dena
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: false, // ✅ false for localhost
+      sameSite: "lax", // ✅ 'lax' is safer for dev
       path: "/",
     });
 
@@ -166,35 +202,6 @@ export const login = async (req: any, res: any) => {
     });
   } catch (error) {
     console.error("Login Error:", error);
-    return res
-      .status(500)
-      .json({ success: false, message: "Internal Server Error", error });
-  }
-};
-
-export const logout = async (req: any, res: any) => {
-  try {
-    const userId = await req.user?.id; // Extract user ID from `req.user` (middleware should add this)
-
-    if (!userId) {
-      return res.status(401).json({ success: false, message: "Unauthorized" });
-    }
-
-    // TODO: If using REDIS then remove Refres Token from redis also
-
-    // Clear refresh token cookie from client
-    res.clearCookie("refreshToken", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      path: "/",
-    });
-
-    return res
-      .status(200)
-      .json({ success: true, message: "Logout successful" });
-  } catch (error) {
-    console.error("Logout Error:", error);
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error", error });
@@ -262,7 +269,7 @@ export const verifyToken = async (req: any, res: any) => {
   const { token } = req.body;
   if (!token) {
     return res
-      .status(500)
+      .status(401)
       .json({ success: false, message: "No Token Provided in Verify Token" });
   }
 
@@ -277,7 +284,7 @@ export const verifyToken = async (req: any, res: any) => {
     }
     console.log("Token Verified at Auth for gateway", user);
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       message: "Token Verified",
       user,
@@ -285,8 +292,22 @@ export const verifyToken = async (req: any, res: any) => {
   } catch (error) {
     console.log("Error verify token", error);
 
-    return res
-      .status(500)
-      .json({ success: false, message: "Internal Server Error", error });
+    // Check for token expiration or invalid token
+    if (error instanceof TokenExpiredError) {
+      return res.status(401).json({
+        success: false,
+        message: "Token expired",
+      });
+    } else if (error instanceof JsonWebTokenError) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token",
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 };

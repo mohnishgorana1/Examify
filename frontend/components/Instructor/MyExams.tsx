@@ -1,27 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { URLs } from "@/constants/urls";
-
-import axios from "axios";
+import customAxios from "@/lib/axios";
 import { formatDateToLongString } from "@/utils";
 
 function MyExams() {
-  const [token, setToken] = useState("");
   const [myCreatedExams, setMyCreatedExams] = useState<any>();
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-
-    if (!accessToken) {
-      console.log("No token ");
-      return;
-    }
-
-    console.log("Access token found:", accessToken);
-    setToken(accessToken);
-
+    const accessToken: any = localStorage.getItem("accessToken");
     const fetch = async () => {
       try {
-        const { data } = await axios.get(
+        const { data } = await customAxios.get(
           `${URLs.backend}/api/v1/exam/my-created-exams`,
           {
             headers: {
