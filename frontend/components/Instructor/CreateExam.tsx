@@ -214,7 +214,7 @@ function CreateExam() {
             type="submit"
             className="w-full bg-emerald-600 hover:bg-emerald-800 text-white"
           >
-            Register
+            Confirm
           </Button>
         </form>
       </section>

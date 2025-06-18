@@ -233,3 +233,90 @@ export const addQuestionsToExam = async (req: any, res: any) => {
       .json({ success: false, message: "Internal Server Error", error });
   }
 };
+
+export const myCreatedExams = async (req: any, res: any) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!req.user) {
+    console.error("Unable to extract user from request. Auth failed?");
+    return res.status(500).json({
+      success: false,
+      message: "Unable to extract user from request. Auth failed?",
+    });
+  }
+  if (!token) {
+    console.error("Can't get Token in myCreatedExams controller");
+    return res
+      .status(500)
+      .json({ success: false, message: "Can't get Authorization Token" });
+  }
+
+  try {
+    const exams = await Exam.find({ createdBy: req?.user?._id });
+    if (!exams) {
+      return res.status(403).json({ message: "No Exams Found" });
+    }
+    return res.status(201).json({
+      success: true,
+      message: "Creted Exams fetched successfully",
+      exams,
+    });
+  } catch (error) {
+    console.error("Error in fetching your created exams", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error", error });
+  }
+};
+export const myCreatedQuestions = async (req: any, res: any) => {
+  console.log("inside mycreated ques");
+  
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!req.user) {
+    console.error("Unable to extract user from request. Auth failed?");
+    return res.status(500).json({
+      success: false,
+      message: "Unable to extract user from request. Auth failed?",
+    });
+  }
+
+  if (!token) {
+    console.error("Can't get Token in myCreatedExams controller");
+    return res
+      .status(500)
+      .json({ success: false, message: "Can't get Authorization Token" });
+  }
+
+  try {
+    const { data } = await axios.get(
+      `${process.env.USER_SERVICE_URL}/api/v1/user/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (data?.user?.role !== "instructor") {
+      return res.status(403).json({
+        success: false,
+        message: "Only instructors can have their cretaed questions",
+      });
+    }
+
+    const questions = await Question.find({ createdBy: req?.user?._id });
+    if (!questions) {
+      return res.status(403).json({ message: "No questions Found" });
+    }
+    console.log("QUESTIONS", questions);
+    
+    return res.status(201).json({
+      success: true,
+      message: "Created questions fetched successfully",
+      questions,
+    });
+  } catch (error) {
+    console.error("Error in fetching your created questions", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error", error });
+  }
+};

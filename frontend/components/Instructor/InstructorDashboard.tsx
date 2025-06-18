@@ -23,36 +23,36 @@ export default function InstructorDashboard() {
         >
           <TabsList
             className="
-                bg-white border rounded-lg shadow-lg p-2 
+                bg-white border rounded-lg shadow-lg shadow-gray-400 p-2 
                 grid grid-cols-2 md:grid-cols-5 gap-2
           "
           >
             <TabsTrigger
-              className="py-2 px-5 text-sm text-center rounded-md data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition"
+              className="py-1 px-2 text-sm text-center rounded-md data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition"
               value="create-exam"
             >
               📝Create Exam
             </TabsTrigger>
             <TabsTrigger
-              className="py-2 px-5 text-sm text-center rounded-md data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition"
+              className="py-1 px-2 text-sm text-center rounded-md data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition"
               value="my-exams"
             >
               📋My Exams
             </TabsTrigger>
             <TabsTrigger
-              className="py-2 px-5 text-sm text-center rounded-md data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition"
+              className="py-1 px-2 text-sm text-center rounded-md data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition"
               value="create-questions"
             >
               ➕Create Questions
             </TabsTrigger>
             <TabsTrigger
-              className="py-2 px-5 text-sm text-center rounded-md data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition"
+              className="py-1 px-2 text-sm text-center rounded-md data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition"
               value="my-questions"
             >
               📚My Questions
             </TabsTrigger>
             <TabsTrigger
-              className="py-2 px-5 text-sm text-center rounded-md data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition col-span-2 md:col-span-1"
+              className="py-1 px-2 text-sm text-center rounded-md data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition col-span-2 md:col-span-1"
               value="results"
             >
               📊Results

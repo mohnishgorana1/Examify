@@ -1,7 +1,9 @@
 import InstructorDashboard from '@/components/Instructor/InstructorDashboard'
+
 import React from 'react'
 
-function InstructorPage() {
+async function InstructorPage() {
+
 
   return (
     <main>
