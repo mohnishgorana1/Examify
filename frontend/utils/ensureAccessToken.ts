@@ -1,25 +1,41 @@
-// utils/ensureAccessToken.ts
 import { URLs } from "@/constants/urls";
-import axios from "@/lib/axios";
+import axios from "axios";
+import { cookies } from "next/headers";
 
-export const ensureAccessToken = async (): Promise<string | null> => {
-  const accessToken = localStorage.getItem("accessToken");
+export const ensureAccessToken = async () => {
+  const cookieStore = await cookies();
+  const refreshToken = cookieStore.get("refreshToken")?.value;
+  const accessToken = cookieStore.get("accessToken")?.value;
 
-  if (accessToken) return accessToken;
+  
+  if (!refreshToken) {
+    // login first
+  }
+  if (accessToken) {
+    console.log("AccessToken and refreshToken", accessToken, refreshToken);
+    return accessToken;
+  }
+  console.log("No AccessToken but refreshToken", accessToken, refreshToken);
 
-  try {
-    const res = await axios.get(`${URLs.backend}/api/v1/auth/refresh-access-token`, {
+  // else refresh access token
+  const cookieHeader = cookieStore
+    .getAll()
+    .map((c) => `${c.name}=${c.value}`)
+    .join("; ");
+
+  const res = await axios.get(
+    `${URLs.backend}/api/v1/auth/refresh-access-token`,
+    {
+      headers: {
+        Cookie: cookieHeader,
+      },
       withCredentials: true,
-    });
-
-    if (res.data?.success && res.data?.accessToken) {
-      localStorage.setItem("accessToken", res.data.accessToken);
-      return res.data.accessToken;
     }
-
-    return null;
-  } catch (err) {
-    console.error("Token refresh failed:", err);
-    return null;
+  );
+  if (res.data.success) {
+    //backend ne cookies me set kr diya h accessToken
+    return res.data.accessToken;
+  } else {
+    //login first
   }
 };

@@ -1,9 +1,22 @@
 "use client";
 
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+
 
 export default function FeaturesSection() {
-  const user = useSelector((state: any) => state.user.user);
+const [user, setUser] = useState<any>(null); 
+
+  useEffect(() => {
+    // This runs only on client
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error("Failed to parse user:", error);
+      }
+    }
+  }, []);
 
   const features = user
     ? [

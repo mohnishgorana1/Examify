@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { URLs } from "@/constants/urls";
-import customAxios from "@/lib/axios";
+import axios from "axios";
 import { formatDateToLongString } from "@/utils";
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 function MyExams() {
   const [myCreatedExams, setMyCreatedExams] = useState<any>();
@@ -10,7 +12,7 @@ function MyExams() {
     const accessToken: any = localStorage.getItem("accessToken");
     const fetch = async () => {
       try {
-        const { data } = await customAxios.get(
+        const { data } = await axios.get(
           `${URLs.backend}/api/v1/exam/my-created-exams`,
           {
             headers: {
@@ -61,31 +63,40 @@ function MyExams() {
             myCreatedExams.map((exam: any) => (
               <div
                 key={exam._id}
-                className="p-4 bg-white border rounded-lg shadow-sm hover:shadow-gray-500 hover:shadow-md transition"
+                className="w-full p-4 bg-white border rounded-lg shadow-sm hover:shadow-gray-500 hover:shadow-md transition"
               >
-                <h2 className="text-xl font-semibold text-emerald-700">
-                  {exam.title}
-                </h2>
-
-                {/* Description */}
-                {exam.description && (
-                  <p className="text-sm text-gray-700 mb-1">
-                    {exam.description}
-                  </p>
-                )}
-
-                <p className="text-sm text-gray-600">
-                  Duration: {exam.duration} mins
-                </p>
-                <p className="text-sm text-gray-600">
-                  Total Questions: {exam.questions?.length || 0}
-                </p>
-                <p className="text-xs text-gray-500">
-                  Created At:{" "}
-                  <span className="text-xs">
-                    {formatDateToLongString(exam.createdAt)}
-                  </span>
-                </p>
+                <div className="w-full space-y-3">
+                  <div className="space-y-2">
+                    <h2 className="text-xl font-semibold text-emerald-700">
+                      {exam.title}
+                    </h2>
+                    {/* Description */}
+                    {exam.description && (
+                      <p className=" text-sm text-gray-700 mb-1">
+                        {exam.description}
+                      </p>
+                    )}
+                  </div>
+                  <div className="w-full flex items-baseline justify-between">
+                    <div className="">
+                      <p className="text-sm text-gray-600">
+                        Duration: {exam.duration} mins
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Total Questions: {exam.questions?.length || 0}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Created At:{" "}
+                        <span className="text-xs">
+                          {formatDateToLongString(exam.createdAt)}
+                        </span>
+                      </p>
+                    </div>
+                    <Link href={`/dashboard/instructor/update-exam/${exam._id}`} className=" px-2 py-1 md:p-2 bg-transparent border rounded-xl text-emerald-700 border-emerald-800 hover:bg-emerald-800 hover:text-white cursor-pointer">
+                      Update Exam
+                    </Link>
+                  </div>
+                </div>
               </div>
             ))
           )}

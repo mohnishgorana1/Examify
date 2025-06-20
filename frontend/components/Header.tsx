@@ -1,7 +1,6 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { GraduationCap } from "lucide-react"; // or any icon library
-import { Button } from "./ui/button";
 import {
   Menubar,
   MenubarContent,
@@ -12,34 +11,65 @@ import {
 } from "@/components/ui/menubar";
 import { MdMenu } from "react-icons/md";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { authLinks, navLinks } from "@/constants/navlinks";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { logout } from "@/redux/store/userSlice";
+import axios from "axios";
+import { URLs } from "@/constants/urls";
+import { useAuth } from "@/context/AuthContext";
 
 function Header() {
-  const user = useSelector((state: RootState) => state.user.user);
-  const dispatch = useDispatch();
   const pathname = usePathname();
+  const router = useRouter();
+
+  // const [user, setUser] = useState<any>(null);
+  const { user, getValidAccessToken, logout } = useAuth();
+  
+
+  // useEffect(() => {
+  //   // This runs only on client
+  //   const storedUser = localStorage.getItem("user");
+  //   if (storedUser) {
+  //     try {
+  //       setUser(JSON.parse(storedUser));
+  //     } catch (error) {
+  //       console.error("Failed to parse user:", error);
+  //     }
+  //   }
+  // }, []);
+
+  useEffect(() => {
+    (async () => {
+      const token = await getValidAccessToken();
+      // console.log("Token in Header:", token);
+    })();
+  }, []);
+
+  const handleLogout = async () => {
+    const token = await getValidAccessToken();
+
+    const logoutResponse = await axios.get(
+      `${URLs.backend}/api/v1/auth/logout`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if(logoutResponse.data.success){
+      router.push("/")
+    }
+  };
 
   const getDashboardLink = () => {
-    return user?.role ? `/dashboard/${user.role}` : "/dashboard/student";
+    return user?.role ? `/dashboard/${user?.role}` : "/dashboard/student";
   };
   return (
     <header className="h-16 bg-white shadow flex items-center justify-between px-4">
-      {/* <Link
-        href={"/"}
-        className="text-2xl font-extrabold tracking-wide font-sans"
-      >
-        <span className="">Examify</span>
-      </Link> */}
-
       <Link
         href="/"
         className="flex items-center gap-1 text-2xl font-bold tracking-tight text-emerald-700 hover:text-emerald-900 transition"
       >
-        <GraduationCap size={24} className="mt-1"/>
+        <GraduationCap size={24} className="mt-1" />
         <span className="font-[Playfair_Display]">Examify</span>
       </Link>
 
@@ -101,7 +131,7 @@ function Header() {
               {user && (
                 <>
                   <MenubarItem>Account</MenubarItem>
-                  <MenubarItem>Logout</MenubarItem>
+                  <MenubarItem onClick={handleLogout}>Logout</MenubarItem>
                 </>
               )}
             </MenubarContent>
@@ -124,9 +154,7 @@ function Header() {
                   </MenubarItem>
                   <MenubarItem onClick={() => {}}>View Profile</MenubarItem>
                   <MenubarSeparator />
-                  <MenubarItem onClick={() => dispatch(logout())}>
-                    Logout
-                  </MenubarItem>
+                  <MenubarItem onClick={handleLogout}>Logout</MenubarItem>
                 </>
               ) : (
                 <>

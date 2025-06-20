@@ -1,10 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 
 export default function CTASection() {
-  const user = useSelector((state: any) => state.user.user);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    // This runs only on client
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error("Failed to parse user:", error);
+      }
+    }
+  }, []);
 
   return (
     <section className="py-16 px-6 md:px-20 bg-emerald-600 text-white text-center rounded-b-4xl">

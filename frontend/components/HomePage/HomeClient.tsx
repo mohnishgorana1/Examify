@@ -1,10 +1,22 @@
 "use client";
 
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+
 
 export default function HomeClient() {
-  const user = useSelector((state: any) => state.user.user);
-
+ const [user, setUser] = useState<any>(null); 
+ 
+   useEffect(() => {
+     // This runs only on client
+     const storedUser = localStorage.getItem("user");
+     if (storedUser) {
+       try {
+         setUser(JSON.parse(storedUser));
+       } catch (error) {
+         console.error("Failed to parse user:", error);
+       }
+     }
+   }, []);
   return (
     <div className="max-w-4xl md:max-w-5xl mx-auto text-center">
       {user ? (

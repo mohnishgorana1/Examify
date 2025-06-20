@@ -26,6 +26,8 @@ export const authMiddleware = async (req: any, res: any, next: any) => {
 
     next();
   } catch (error) {
-    return res.status(403).json({ message: "Invalid or expired token" });
+    console.log("403 Errror", error);
+    
+    return res.status(403).json({ message: "Invalid or expired token", error:error });
   }
 };

@@ -4,6 +4,7 @@ import jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
 import { loginSchema, registerSchema } from "../validators/auth.validator";
 import { kafkaProducer } from "../kafka/kafkaClient";
+import { getExpirySeconds, getMs } from "../utils/tokenUtils";
 dotenv.config();
 
 export const register = async (req: any, res: any) => {
@@ -42,13 +43,13 @@ export const register = async (req: any, res: any) => {
       password,
     });
 
-    // generate JWT TOKENS
-    console.log("generating tokens");
+    // // generate JWT TOKENS
+    // console.log("generating tokens");
 
-    const accessToken = generateAccessToken(String(newUser._id));
-    const refreshToken = generateRefreshToken(String(newUser._id));
+    // const accessToken = generateAccessToken(String(newUser._id));
+    // const refreshToken = generateRefreshToken(String(newUser._id));
 
-    newUser.refreshToken = refreshToken;
+    // newUser.refreshToken = refreshToken;
     await newUser.save();
 
     // TODO: REDIS : storing refreshtoken in redis later onwards!
@@ -75,12 +76,12 @@ export const register = async (req: any, res: any) => {
 
     console.log("📤 Event sent: user_registered");
 
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      path: "/",
-    });
+    // res.cookie("refreshToken", refreshToken, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   sameSite: "strict",
+    //   path: "/",
+    // });
 
     // console.log("registered success", newUser, accessToken, refreshToken);
     console.log("registered success");
@@ -92,7 +93,7 @@ export const register = async (req: any, res: any) => {
         id: newUser._id,
         email: newUser.email,
       },
-      accessToken,
+      // accessToken,
       // verificationToken, // This should be sent via email in a real application
     });
   } catch (error) {
@@ -108,16 +109,40 @@ export const logout = async (req: any, res: any) => {
     const userId = await req.user?.id; // Extract user ID from `req.user` (middleware should add this)
 
     if (!userId) {
+      console.log("userId", userId);
+
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }
 
     // TODO: If using REDIS then remove Refres Token from redis also
 
-    // Clear refresh token cookie from client
+    // TODO : Uncomment below part for production
+    // Clear refresh token and accessToken cookie from client
+    // res.clearCookie("refreshToken", {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   sameSite: "strict",
+    //   path: "/",
+    // });
+    //  res.clearCookie("accessToken", {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   sameSite: "strict",
+    //   path: "/",
+    // });
+
+    // TODO: COmment below part for production
+    // for localhost
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: false,
+      sameSite: "lax",
+      path: "/",
+    });
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
       path: "/",
     });
 
@@ -166,15 +191,30 @@ export const login = async (req: any, res: any) => {
     const accessToken = generateAccessToken(String(user._id));
     const refreshToken = generateRefreshToken(String(user._id));
 
+    // ✅ Set cookies using expiry from .env (convert to ms if needed)
+    const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY || "45m";
+    const REFRESH_TOKEN_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY || "7d";
+
     // TODO: Stroring Refresh Token in REDIS
 
-    // TODO: JAB PRODUCTIOn ME JAE TAB BELOW PART UNCOMMENT KR DENA " Set refresh token as an HTTP-only cookie
+    // TODO: JAB PRODUCTIOn ME JAE TAB BELOW PART UNCOMMENT KR DENA " Set refreshtoken and accessToken as an HTTP-only cookie
     // res.cookie("refreshToken", refreshToken, {
     //   httpOnly: true,
     //   secure: process.env.NODE_ENV === "production",
     //   sameSite: "strict",
     //   path: "/",
     // });
+    // res.cookie("accessToken", accessToken, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   sameSite: "strict",
+    //   path: "/",
+    // });
+    console.log(
+      "EXPIRATIONS",
+      getMs(ACCESS_TOKEN_EXPIRY),
+      getMs(REFRESH_TOKEN_EXPIRY)
+    );
 
     // TODO: ONLY FOR LOCALHOST: production me jane ke liye niche wala part comment kr dena
     res.cookie("refreshToken", refreshToken, {
@@ -182,6 +222,14 @@ export const login = async (req: any, res: any) => {
       secure: false, // ✅ false for localhost
       sameSite: "lax", // ✅ 'lax' is safer for dev
       path: "/",
+      maxAge: getMs(REFRESH_TOKEN_EXPIRY), // 7days (in ms)
+    });
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: false, // ✅ false for localhost
+      sameSite: "lax", // ✅ 'lax' is safer for dev
+      path: "/",
+      maxAge: getMs(ACCESS_TOKEN_EXPIRY), // minutes (in ms)
     });
 
     // Update refreshtoken in db
@@ -191,6 +239,11 @@ export const login = async (req: any, res: any) => {
 
     console.log("Login Succcess");
 
+    const currentTime = Math.floor(Date.now() / 1000); // in seconds
+
+    const accessTokenExpiryTime =
+      currentTime + getExpirySeconds(ACCESS_TOKEN_EXPIRY);
+
     return res.status(200).json({
       success: true,
       message: "Login successful",
@@ -199,6 +252,7 @@ export const login = async (req: any, res: any) => {
         email: user.email,
       },
       accessToken,
+      accessTokenExpiryTime,
     });
   } catch (error) {
     console.error("Login Error:", error);
@@ -255,11 +309,35 @@ export const refreshAccessToken = async (req: any, res: any) => {
       // Generate new access token
 
       const newAccessToken = generateAccessToken(String(userId));
+      const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY || "15m";
       console.log("new accessToken", newAccessToken);
+
+      // TODO: JAB PRODUCTIOn ME JAE TAB BELOW PART UNCOMMENT KR DENA " Set accessToken as an HTTP-only cookie
+      // res.cookie("accessToken", accessToken, {
+      //   httpOnly: true,
+      //   secure: process.env.NODE_ENV === "production",
+      //   sameSite: "strict",
+      //   path: "/",
+      // });
+
+      // TODO: ONLY FOR LOCALHOST: production me jane ke liye niche wala part comment kr dena
+      res.cookie("accessToken", newAccessToken, {
+        httpOnly: true,
+        secure: false, // ✅ false for localhost
+        sameSite: "lax", // ✅ 'lax' is safer for dev
+        path: "/",
+        maxAge: getMs(ACCESS_TOKEN_EXPIRY), // minutes (in ms)
+      });
+
+      const currentTime = Math.floor(Date.now() / 1000); // in seconds
+
+      const accessTokenExpiryTime =
+        currentTime + getExpirySeconds(ACCESS_TOKEN_EXPIRY);
 
       return res.status(200).json({
         success: true,
         accessToken: newAccessToken,
+        accessTokenExpiryTime
       });
     }
   );

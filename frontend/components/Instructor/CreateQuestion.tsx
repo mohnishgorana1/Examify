@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import axios from "@/lib/axios";
+import axios from "axios";
 import { URLs } from "@/constants/urls";
 import { TiInputChecked } from "react-icons/ti";
 import { Button } from "../ui/button";

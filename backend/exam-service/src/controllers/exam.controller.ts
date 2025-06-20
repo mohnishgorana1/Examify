@@ -78,6 +78,52 @@ export const createExam = async (req: any, res: any) => {
       .json({ success: false, message: "Internal Server Error", error });
   }
 };
+export const fetchExamDetails = async (req: any, res: any) => {
+  console.log("Inside fetch signle exam details");
+  const token = req.headers.authorization?.split(" ")[1];
+  console.log("TOKEN IN CONTORLLER ", token);
+
+  if (!req.user) {
+    console.error("Can't get req.user:");
+    return res
+      .status(500)
+      .json({ success: false, message: "Can't get req.user" });
+  }
+  if (!token) {
+    console.error("Can't get Token");
+    return res
+      .status(401)
+      .json({ success: false, message: "Can't get Authorization Token" });
+  }
+
+  const { examId } = req.params;
+  if (!examId) {
+    console.error("Can't get examID in params");
+    return res
+      .status(400)
+      .json({ success: false, message: "Can't get examID in params" });
+  }
+  try {
+    const exam = await Exam.findById(examId);
+    if (!exam) {
+      return res
+        .status(500)
+        .json({ success: false, message: "Can't get any exam" });
+    }
+
+    console.log("Exam fetched success", exam);
+    return res.status(201).json({
+      success: true,
+      message: "Exam fetched successfully",
+      exam: exam,
+    });
+  } catch (error) {
+    console.error("Error in fetching exam:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error", error });
+  }
+};
 
 export const createQuestion = async (req: any, res: any) => {
   const token = req.headers.authorization?.split(" ")[1];
@@ -269,7 +315,7 @@ export const myCreatedExams = async (req: any, res: any) => {
 };
 export const myCreatedQuestions = async (req: any, res: any) => {
   console.log("inside mycreated ques");
-  
+
   const token = req.headers.authorization?.split(" ")[1];
   if (!req.user) {
     console.error("Unable to extract user from request. Auth failed?");
@@ -307,7 +353,7 @@ export const myCreatedQuestions = async (req: any, res: any) => {
       return res.status(403).json({ message: "No questions Found" });
     }
     console.log("QUESTIONS", questions);
-    
+
     return res.status(201).json({
       success: true,
       message: "Created questions fetched successfully",

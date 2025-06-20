@@ -1,5 +1,6 @@
 import axios from "axios";
 import { URLs } from "@/constants/urls";
+import { cookies } from "next/headers";
 
 const customAxios = axios.create({
   withCredentials: true,
@@ -8,7 +9,6 @@ const customAxios = axios.create({
 customAxios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("accessToken");
- 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -31,11 +31,13 @@ customAxios.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const res = await axios.get(`${URLs.backend}/api/v1/auth/refresh-access-token`, {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          `${URLs.backend}/api/v1/auth/refresh-access-token`,
+          {
+            withCredentials: true,
+          }
+        );
 
-        
         if (res.data?.accessToken) {
           const newToken = res.data?.accessToken;
 

@@ -1,11 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { useSelector } from "react-redux";
 import { Button } from "../ui/button";
+import { useEffect, useState } from "react";
 
 export default function HeroSection() {
-  const user = useSelector((state: any) => state.user.user);
+  const [user, setUser] = useState<any>(null); 
+
+  useEffect(() => {
+    // This runs only on client
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error("Failed to parse user:", error);
+      }
+    }
+  }, []);
 
   return (
     <section className="relative overflow-hidden py-24 px-6 md:px-20 text-center bg-gradient-to-r from-emerald-50 to-white">
@@ -41,7 +53,7 @@ export default function HeroSection() {
             </Link>
           </div>
         ) : (
-          <Link href={`/${user.role || "student"}`}>
+          <Link href={`/dashboard/${user?.role || "/dashboard/student"}`}>
             <Button className="bg-emerald-600 text-white px-6 py-3 rounded-md text-lg font-semibold hover:bg-emerald-700 transition shadow-md">
               Go to Dashboard
             </Button>

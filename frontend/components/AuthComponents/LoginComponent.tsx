@@ -7,19 +7,14 @@ import { loginSchema } from "@/validations/authValidations";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useAppDispatch, useAppSelector } from "@/redux/store/hooks";
-import { fetchUserProfile, loginUser } from "@/redux/store/userSlice";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import axios from "axios";
+import { URLs } from "@/constants/urls";
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
 function LoginComponent() {
-  const dispatch = useAppDispatch();
   const router = useRouter();
-  const { accessToken, loading, error, user } = useAppSelector(
-    (state) => state.user
-  );
 
   const {
     register,
@@ -31,26 +26,50 @@ function LoginComponent() {
   });
 
   const onSubmit = async (formData: LoginFormData) => {
-    try {
-      const resultAction = await dispatch(loginUser(formData));
-      console.log("login result action", resultAction);
-      
-      if (loginUser.fulfilled.match(resultAction)) {
-        console.log("now fetch dispact");
-        
-        await dispatch(fetchUserProfile());
-        router.push("/")
-      } else {
-        console.error("Login failed:", resultAction.payload);
+    console.log("Login FormData", formData);
+
+    const { data } = await axios.post(
+      `${URLs.backend}/api/v1/auth/login`,
+      formData,
+      {
+        withCredentials: true, // ✅ this is required for cookies
       }
-    } catch (err) {
-      console.error("Login Error:", err);
+    );
+    console.log("login response", data);
+    if (data.success) {
+      const accessToken = data?.accessToken;
+      const accessTokenExpiryTime = data?.accessTokenExpiryTime;
+      console.log("accT", accessToken);
+
+      if (accessToken && accessTokenExpiryTime) {
+
+        // save token and it expiry
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("accessTokenExpiryTime", accessTokenExpiryTime);
+
+
+        // fetch user profile and save it to localStorage
+        const userResponse = await axios.get(`${URLs.backend}/api/v1/user/me`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        console.log("user response /me", data);
+        if (userResponse?.data?.success) {
+          localStorage.setItem("user", JSON.stringify(userResponse.data.user));
+          router.push("/");
+        }
+      }
     }
   };
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4"
+        method="POST"
+      >
         <div className="flex flex-col gap-4">
           <div className="w-full space-y-1 flex flex-col">
             <Label htmlFor="email" className="text-sm md:text-md">
@@ -86,9 +105,10 @@ function LoginComponent() {
         <Button
           type="submit"
           className="w-full bg-emerald-600 hover:bg-emerald-800 text-white"
-          disabled={loading}
+          // disabled={loading}
         >
-          {loading ? "Logging in..." : "Login"}
+          {/* {loading ? "Logging in..." : "Login"} */}
+          Login
         </Button>
       </form>
 
