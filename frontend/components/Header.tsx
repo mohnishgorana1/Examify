@@ -23,7 +23,6 @@ function Header() {
 
   // const [user, setUser] = useState<any>(null);
   const { user, getValidAccessToken, logout } = useAuth();
-  
 
   // useEffect(() => {
   //   // This runs only on client
@@ -53,10 +52,12 @@ function Header() {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        withCredentials: true,
       }
     );
-    if(logoutResponse.data.success){
-      router.push("/")
+    if (logoutResponse.data.success) {
+      logout();
+      router.push("/");
     }
   };
 

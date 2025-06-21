@@ -81,7 +81,6 @@ export const createExam = async (req: any, res: any) => {
 export const fetchExamDetails = async (req: any, res: any) => {
   console.log("Inside fetch signle exam details");
   const token = req.headers.authorization?.split(" ")[1];
-  console.log("TOKEN IN CONTORLLER ", token);
 
   if (!req.user) {
     console.error("Can't get req.user:");
@@ -189,7 +188,7 @@ export const createQuestion = async (req: any, res: any) => {
   }
 };
 
-export const addQuestionsToExam = async (req: any, res: any) => {
+export const updateExam = async (req: any, res: any) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!req.user) {
     console.error("Unable to extract user from request. Auth failed?");
@@ -206,7 +205,7 @@ export const addQuestionsToExam = async (req: any, res: any) => {
   }
 
   const { examId } = req.params;
-  const { questionIds } = req.body;
+  const { title, description, duration, questions } = req.body;
 
   if (!examId) {
     return res.status(400).json({
@@ -215,10 +214,11 @@ export const addQuestionsToExam = async (req: any, res: any) => {
     });
   }
 
-  if (!Array.isArray(questionIds) || questionIds.length === 0) {
-    return res
-      .status(400)
-      .json({ message: "questionIds must be a non-empty array" });
+  if (!title || !description || !duration || !Array.isArray(questions)) {
+    return res.status(400).json({
+      success: false,
+      message: "Missing or invalid fields",
+    });
   }
 
   try {
@@ -248,32 +248,32 @@ export const addQuestionsToExam = async (req: any, res: any) => {
     // 2. ✅ Check if all questions exist and belong to this instructor
     const validQuestions = await Question.find({
       _id: {
-        $in: questionIds.map((id: string) => new mongoose.Types.ObjectId(id)),
+        $in: questions.map((id: string) => new mongoose.Types.ObjectId(id)),
       },
       createdBy: data.user._id,
     });
 
-    if (validQuestions.length !== questionIds.length) {
+    if (validQuestions.length !== questions.length) {
       return res.status(400).json({
         message: "Some questionIds are invalid or not created by you",
       });
     }
 
-    // 3. ✅ Add questionIds (avoid duplicates)
-    const updatedQuestions = Array.from(
-      new Set([...exam.questions.map((id) => id.toString()), ...questionIds])
-    );
+    // ✅ Update exam fields
+    exam.title = title;
+    exam.description = description;
+    exam.duration = duration;
+    exam.questions = questions;
 
-    exam.questions = updatedQuestions;
     await exam.save();
 
     return res.status(201).json({
       success: true,
-      message: "Question added to exam successfully",
+      message: "Exam Updated successfully",
       exam,
     });
   } catch (error) {
-    console.error("Error in adding question to exam: ", error);
+    console.error("Error in updating exam: ", error);
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error", error });
