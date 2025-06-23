@@ -1,8 +1,11 @@
+import StudentDashboard from '@/components/Student/StudentDashboard'
 import React from 'react'
 
 function StudentPage() {
   return (
-    <div>StudentPage</div>
+    <main>
+      <StudentDashboard />
+    </main>
   )
 }
 

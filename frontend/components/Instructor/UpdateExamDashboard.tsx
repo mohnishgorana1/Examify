@@ -39,8 +39,11 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
     duration: 60,
     questions: [],
   });
+  const [marksPerQuestion, setMarksPerQuestion] = useState(1);
+  const [passingPercentage, setPassingPercentage] = useState(40);
 
   const [allQuestions, setAllQuestions] = useState<Question[]>([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -112,9 +115,12 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
       const token = await getValidAccessToken();
       const { title, description, duration, questions } = formData;
 
+      const totalMarks = formData.questions.length * marksPerQuestion;
+      const passingMarks = Math.ceil(totalMarks * (passingPercentage / 100));
+
       const res = await axios.put(
         `${URLs.backend}/api/v1/exam/${examId}`,
-        { title, description, duration, questions },
+        { title, description, duration, questions, totalMarks, passingMarks },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -133,8 +139,8 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
     } catch (err) {
       console.error(err);
       alert("Something went wrong.");
-    }finally{
-      setIsUpdating(false)
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -143,7 +149,7 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
 
   return (
     <section className="min-h-screen py-10 px-4">
-      <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg shadow-gray-400 p-6 space-y-4">
+      <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-xl shadow-gray-500 p-6 space-y-4">
         <h1 className="text-2xl font-bold text-emerald-700">Edit Exam</h1>
 
         <div className="space-y-2">
@@ -249,6 +255,36 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
           </Accordion>
         </div>
 
+        <label className="block font-medium">
+          Marks Per Question
+          <select
+            value={marksPerQuestion}
+            onChange={(e) => setMarksPerQuestion(Number(e.target.value))}
+            className="w-full border p-2 rounded mt-1"
+          >
+            {[1, 2, 4, 5, 10].map((mark) => (
+              <option key={mark} value={mark}>
+                {mark}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="block font-medium">
+          Passing Percentage
+          <select
+            value={passingPercentage}
+            onChange={(e) => setPassingPercentage(Number(e.target.value))}
+            className="w-full border p-2 rounded mt-1"
+          >
+            {[33, 40, 50, 60, 70, 80].map((percent) => (
+              <option key={percent} value={percent}>
+                {percent}%
+              </option>
+            ))}
+          </select>
+        </label>
+
         <button
           onClick={handleUpdateExam}
           className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-800"
@@ -258,7 +294,7 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
             <span className="flex items-center">
               <span>Updating.. </span>
               <span>
-                <Loader2 className="animate-spin text-xs"  size={20}/>
+                <Loader2 className="animate-spin text-xs" size={20} />
               </span>
             </span>
           ) : (

@@ -2,6 +2,8 @@ import axios from "axios";
 import { Exam } from "../models/exam.model";
 import { Question } from "../models/question.model";
 import mongoose from "mongoose";
+import { Submission } from "../models/submission.model";
+import { Enrollment } from "../models/enrollment";
 
 export const createExam = async (req: any, res: any) => {
   console.log("Inside create exam");
@@ -205,7 +207,8 @@ export const updateExam = async (req: any, res: any) => {
   }
 
   const { examId } = req.params;
-  const { title, description, duration, questions } = req.body;
+  const { title, description, duration, questions, totalMarks, passingMarks } =
+    req.body;
 
   if (!examId) {
     return res.status(400).json({
@@ -218,6 +221,19 @@ export const updateExam = async (req: any, res: any) => {
     return res.status(400).json({
       success: false,
       message: "Missing or invalid fields",
+    });
+  }
+
+  if (
+    typeof totalMarks !== "number" ||
+    typeof passingMarks !== "number" ||
+    totalMarks <= 0 ||
+    passingMarks < 0 ||
+    passingMarks > totalMarks
+  ) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid totalMarks or passingMarks",
     });
   }
 
@@ -264,6 +280,8 @@ export const updateExam = async (req: any, res: any) => {
     exam.description = description;
     exam.duration = duration;
     exam.questions = questions;
+    exam.totalMarks = totalMarks;
+    exam.passingMarks = passingMarks;
 
     await exam.save();
 
@@ -364,5 +382,208 @@ export const myCreatedQuestions = async (req: any, res: any) => {
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error", error });
+  }
+};
+
+// FOR STUDENTS
+export const upcomingExams = async (req: any, res: any) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized: user not found in request",
+    });
+  }
+
+  try {
+    // 🔐 Get user details
+    const { data } = await axios.get(
+      `${process.env.USER_SERVICE_URL}/api/v1/user/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (data?.user?.role !== "student") {
+      return res.status(403).json({
+        success: false,
+        message: "Only students can access upcoming exams",
+      });
+    }
+
+    const studentId = data.user._id;
+
+    // Exclude exams already attempted by the student
+    const attemptedSubmissions = await Submission.find({ studentId }).select(
+      "examId"
+    );
+    const attemptedExamIds = attemptedSubmissions.map((s) =>
+      s.examId.toString()
+    );
+
+    // 🔥 Fetch already enrolled exams
+    const enrolledExamDocs = await Enrollment.find({ studentId }).select(
+      "examId"
+    );
+    const enrolledExamIds = enrolledExamDocs.map((e) => e.examId.toString());
+
+    // 🕒 Fetch exams scheduled in the future
+    const now = new Date();
+
+    // fetch exams scheduled in future and not attempted
+    const upcomingExams = await Exam.find({
+      scheduledAt: { $gte: now },
+      _id: { $nin: [...attemptedExamIds, ...enrolledExamIds] },
+    }).sort({ scheduledAt: 1 });
+
+    return res.status(200).json({
+      success: true,
+      exams: upcomingExams,
+    });
+  } catch (error) {
+    console.error("Error fetching upcoming exams:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const enrollToExam = async (req: any, res: any) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized: user not found in request",
+    });
+  }
+
+  const { examId } = req.body;
+
+  if (!examId) {
+    return res.status(400).json({
+      success: false,
+      message: "examId is required",
+    });
+  }
+
+  try {
+    const { data } = await axios.get(
+      `${process.env.USER_SERVICE_URL}/api/v1/user/me`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    if (data?.user?.role !== "student") {
+      return res.status(403).json({
+        success: false,
+        message: "Only students can enroll in exams",
+      });
+    }
+
+    const studentId = data.user._id;
+
+    // ❌ Prevent duplicate enrollment
+    const alreadyEnrolled = await Enrollment.findOne({ studentId, examId });
+    if (alreadyEnrolled) {
+      return res.status(400).json({
+        success: false,
+        message: "You are already enrolled in this exam",
+      });
+    }
+
+    // ✅ Create enrollment
+    const enrollment = await Enrollment.create({ studentId, examId });
+    return res.status(201).json({
+      success: true,
+      message: "Successfully enrolled in the exam",
+      enrollment,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const myExams = async (req: any, res: any) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized: user not found in request",
+    });
+  }
+
+  try {
+    // 🔐 Get user details
+    const { data } = await axios.get(
+      `${process.env.USER_SERVICE_URL}/api/v1/user/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (data?.user?.role !== "student") {
+      return res.status(403).json({
+        success: false,
+        message: "Only students can access their exams",
+      });
+    }
+
+    const studentId = data.user._id;
+    const now = new Date();
+
+    // 🧾 Submissions (attempted)
+    const submissions = await Submission.find({ studentId }).select("examId");
+    const attemptedExamIds = submissions.map((s) => s.examId.toString());
+
+    // 📋 Enrollments
+    const enrollments = await Enrollment.find({ studentId }).select("examId");
+    const enrolledExamIds = enrollments.map((e) => e.examId.toString());
+
+    // 🟢 1. Attempted Exams
+    const attemptedExams = await Exam.find({
+      _id: { $in: attemptedExamIds },
+    }).sort({ scheduledAt: -1 });
+
+    // 🟡 2. Enrolled But Not Attempted
+    const enrolledNotAttemptedIds = enrolledExamIds.filter(
+      (id) => !attemptedExamIds.includes(id)
+    );
+
+    const enrolledExams = await Exam.find({
+      _id: { $in: enrolledNotAttemptedIds },
+    });
+
+    // Split enrolled exams into:
+    const enrolledOnlyExams = enrolledExams.filter(
+      (exam) => new Date(exam.scheduledAt) >= now
+    );
+    const expiredExams = enrolledExams.filter(
+      (exam) => new Date(exam.scheduledAt) < now
+    );
+    
+    return res.status(200).json({
+      success: true,
+      attemptedExams,
+      enrolledOnlyExams,
+      expiredExams,
+    });
+  } catch (error) {
+    console.error("Error fetching my exams:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 };
