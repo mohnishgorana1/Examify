@@ -7,11 +7,9 @@ import React from "react";
 import TestimonialSection from "@/components/HomePage/Testimonials";
 function HomePage() {
   return (
-    <main>
+    <main className="bg-neutral-900">
       <HeroSection />
-      <section className="py-10 px-4 md:px-12 bg-gray-50">
-        <HomeClient />
-      </section>
+      <HomeClient />
       <FeaturesSection />
       <UserRolesSection />
       <CTASection />

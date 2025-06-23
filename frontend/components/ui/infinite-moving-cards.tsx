@@ -89,11 +89,11 @@ export const InfiniteMovingCards = ({
         {items.map((item, idx) => (
           <li
             key={idx}
-            className="inline-block bg-white rounded-lg shadow p-4 max-w-[300px]"
+            className="inline-block bg-neutral-800 rounded-lg shadow p-4 max-w-[300px]"
           >
-            <div className="text-emerald-600 font-semibold">{item.name}</div>
-            <div className="text-gray-500 text-sm mb-2">{item.title}</div>
-            <p className="text-gray-700 text-sm mb-2 whitespace-normal break-words">"{item.quote}"</p>
+            <div className="text-orange-600 font-semibold">{item.name}</div>
+            <div className="text-white-500 text-sm mb-2">{item.title}</div>
+            <p className="text-white-700 text-sm mb-2 whitespace-normal break-words">"{item.quote}"</p>
             <div className="text-yellow-400 text-sm">
               {"★".repeat(Math.floor(item.rating)) +
                 (item.rating % 1 ? "½" : "")}

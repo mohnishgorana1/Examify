@@ -23,6 +23,22 @@ function Header() {
 
   // const [user, setUser] = useState<any>(null);
   const { user, getValidAccessToken, logout } = useAuth();
+  let currentPathname = "";
+  if (pathname.startsWith("/")) {
+    currentPathname = "/";
+  }
+  if (pathname.startsWith("/career")) {
+    currentPathname = "/career";
+  }
+  if (pathname.startsWith("/about")) {
+    currentPathname = "/about";
+  }
+  if (pathname.startsWith("/contact")) {
+    currentPathname = "/contact";
+  }
+  if (pathname.startsWith("/dashboard")) {
+    currentPathname = "/dashboard";
+  }
 
   // useEffect(() => {
   //   // This runs only on client
@@ -65,10 +81,10 @@ function Header() {
     return user?.role ? `/dashboard/${user?.role}` : "/dashboard/student";
   };
   return (
-    <header className="h-16 bg-white shadow flex items-center justify-between px-4">
+    <header className="h-16 bg-neutral-800 shadow flex items-center justify-between px-4">
       <Link
         href="/"
-        className="flex items-center gap-1 text-2xl font-bold tracking-tight text-emerald-700 hover:text-emerald-900 transition"
+        className="flex items-center gap-1 text-2xl font-bold tracking-tight text-orange-500/80 hover:text-orange-500 transition"
       >
         <GraduationCap size={24} className="mt-1" />
         <span className="font-[Playfair_Display]">Examify</span>
@@ -77,24 +93,24 @@ function Header() {
       {/* large screen navlinks */}
       <nav className="md:flex gap-4 hidden">
         {navLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className={` hover:text-black transition-all border-b-2 ${
-              pathname === link.href
-                ? "border-emerald-700 text-emerald-700 font-semibold"
-                : "border-transparent"
-            }`}
-          >
-            {link.name}
+          <Link key={link.href} href={link.href} className="">
+            <span
+              className={`pb-[1px] text-white hover:text-orange-500 transition-all border-b-2 ${
+                currentPathname === link.href
+                  ? "border-orange-500 text-orange-500 font-semibold"
+                  : "border-transparent"
+              }`}
+            >
+              {link.name}
+            </span>
           </Link>
         ))}
         {user && (
           <Link
             href={getDashboardLink()}
-            className={`hover:text-black transition-all border-b-2 ${
+            className={`text-white hover:text-orange-500 transition-all border-b-2 ${
               pathname === getDashboardLink()
-                ? "border-emerald-700 text-emerald-700 font-semibold"
+                ? "border-orange-500 text-orange-500 font-semibold"
                 : "border-transparent"
             }`}
           >
@@ -107,13 +123,15 @@ function Header() {
       <span className="md:hidden">
         <Menubar>
           <MenubarMenu>
-            <MenubarTrigger>
-              <MdMenu />
+            <MenubarTrigger className="p-1 border border-neutral-400 rounded-sm hover:text-neutral-200 duration-300  ">
+              <MdMenu className="text-neutral-400 hover:text-neutral-200 duration-300 text-xl" />
             </MenubarTrigger>
-            <MenubarContent>
+            <MenubarContent className="flex flex-col">
               {navLinks.map((link) => (
                 <MenubarItem key={link.href} asChild>
-                  <Link href={link.href}>{link.name}</Link>
+                  <Link href={link.href} className="">
+                    {link.name}
+                  </Link>
                 </MenubarItem>
               ))}
               {user && (
@@ -142,15 +160,15 @@ function Header() {
 
       {/* menubar for big screen that holds only account stuff*/}
       <span className="hidden md:flex ">
-        <Menubar className="hover:shadow-gray-500 hover:shadow-sm duration-300">
+        <Menubar className="">
           <MenubarMenu>
-            <MenubarTrigger>
-              <MdMenu className="text-xl font-bold bg-transparent" />
+            <MenubarTrigger className="p-1 border border-neutral-400 rounded-sm hover:text-neutral-200 duration-300  ">
+              <MdMenu className="text-neutral-400 hover:text-neutral-200 duration-300 text-xl" />
             </MenubarTrigger>
-            <MenubarContent>
+            <MenubarContent className="flex flex-col">
               {user ? (
                 <>
-                  <MenubarItem asChild>
+                  <MenubarItem>
                     <Link href={getDashboardLink()}>Dashboard</Link>
                   </MenubarItem>
                   <MenubarItem onClick={() => {}}>View Profile</MenubarItem>

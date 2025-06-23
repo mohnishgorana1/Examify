@@ -182,7 +182,7 @@ function RegisterComponent() {
         {/* Submit */}
         <Button
           type="submit"
-          className="w-full bg-emerald-600 hover:bg-emerald-800 text-white"
+          className="w-full bg-orange-600 hover:bg-orange-800 text-white"
         >
           Register
         </Button>
@@ -192,7 +192,7 @@ function RegisterComponent() {
         Already have an account?{" "}
         <Link
           href="/login"
-          className="font-medium hover:underline text-emerald-600"
+          className="font-medium hover:underline text-orange-600"
         >
           Login
         </Link>

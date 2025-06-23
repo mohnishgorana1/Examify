@@ -1,25 +1,14 @@
 "use client";
 
+import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function CTASection() {
-  const [user, setUser] = useState<any>(null);
-
-  useEffect(() => {
-    // This runs only on client
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error("Failed to parse user:", error);
-      }
-    }
-  }, []);
+  const { user } = useAuth();
 
   return (
-    <section className="py-16 px-6 md:px-20 bg-emerald-600 text-white text-center rounded-b-4xl">
+    <section className="py-16 px-6 md:px-20 bg-gradient-to-b from-orange-500 to-orange-700 text-white text-center rounded-b-4xl">
       {user ? (
         <>
           <h2 className="text-3xl font-bold mb-4">Need Help Navigating?</h2>
@@ -28,7 +17,7 @@ export default function CTASection() {
           </p>
           <Link
             href={`/${user.role}`}
-            className="bg-white text-emerald-600 px-6 py-3 font-semibold rounded-md hover:bg-gray-100"
+            className="px-6 py-3 font-semibold duration-300 bg-neutral-900 rounded-xl hover:bg-neutral-950 hover:text-orange-500"
           >
             Go to Dashboard
           </Link>
@@ -43,8 +32,8 @@ export default function CTASection() {
             Examify.
           </p>
           <Link
-            href="/register"
-            className="bg-white text-emerald-600 px-6 py-3 font-semibold rounded-md hover:bg-gray-100"
+            href={"/register"}
+            className="px-6 py-3 font-semibold duration-300 bg-neutral-900 rounded-xl hover:bg-neutral-950 hover:text-orange-500"
           >
             Get Started Now
           </Link>

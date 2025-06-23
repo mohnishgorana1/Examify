@@ -7,7 +7,7 @@ export default function AuthLayout({
 }>) {
   return (
     <main className="flex h-screen flex-col">
-      <header className="h-16 bg-white shadow flex items-center justify-between px-4 border-b">
+      <header className="h-16 bg-neutral-800 shadow flex items-center justify-between px-4 border-b">
         <Link
           href={"/"}
           className="text-2xl font-extrabold tracking-wide font-sans"
@@ -15,7 +15,7 @@ export default function AuthLayout({
           <span className="">Examify</span>
         </Link>
       </header>
-      <div className="flex-1 overflow-y-auto bg-gray-50">{children}</div>
+      <div className="flex-1 overflow-y-auto bg-neutral-50">{children}</div>
     </main>
   );
 }

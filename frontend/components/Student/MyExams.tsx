@@ -49,21 +49,27 @@ export default function MyExams() {
       <TabsList className="bg-transparent rounded-2xl p-1 gap-1 flex flex-wrap w-full">
         <TabsTrigger
           value="attempted"
-          className="text-sm px-4 py-2 rounded-xl border-emerald-600 data-[state=active]:bg-emerald-500 data-[state=active]:text-white w-full sm:w-auto"
+          className={
+            "text-sm px-4 py-2 rounded-xl border-neutral-600 bg-neutral-900 data-[state=active]:bg-white text-white data-[state=active]:text-neutral-900 w-full sm:w-auto"
+          }
         >
           ✅ Attempted
         </TabsTrigger>
 
         <TabsTrigger
           value="enrolled"
-          className="text-sm px-4 py-2 rounded-xl border-emerald-600 data-[state=active]:bg-emerald-500 data-[state=active]:text-white w-full sm:w-auto"
+          className={
+            "text-sm px-4 py-2 rounded-xl border-neutral-600 bg-neutral-900 data-[state=active]:bg-white text-white data-[state=active]:text-neutral-900 w-full sm:w-auto"
+          }
         >
           🟡 Enrolled
         </TabsTrigger>
 
         <TabsTrigger
           value="expired"
-          className="text-sm px-4 py-2 rounded-xl border-emerald-600 data-[state=active]:bg-emerald-500 data-[state=active]:text-white w-full sm:w-auto"
+          className={
+            "text-sm px-4 py-2 rounded-xl border-neutral-600 bg-neutral-900 data-[state=active]:bg-white text-white data-[state=active]:text-neutral-900 w-full sm:w-auto"
+          }
         >
           🔴 Missed
         </TabsTrigger>
@@ -72,7 +78,7 @@ export default function MyExams() {
       {/* 🟢 Attempted Exams */}
       <TabsContent value="attempted">
         {attemptedExams.length === 0 ? (
-          <p className="text-gray-500">No attempted exams.</p>
+          <p className="text-white w-full flex justify-center items-center text-4xl font-sans mt-8">You have not attempted any Exam...</p>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 p-4">
             {attemptedExams.map((exam) => (
@@ -85,7 +91,7 @@ export default function MyExams() {
       {/* 🟡 Enrolled Only */}
       <TabsContent value="enrolled">
         {enrolledOnlyExams.length === 0 ? (
-          <p className="text-gray-500">No enrolled exams.</p>
+          <p className="text-white w-full flex justify-center items-center text-4xl font-sans mt-8">No enrolled exams.</p>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 p-4">
             {enrolledOnlyExams.map((exam) => (
@@ -98,7 +104,7 @@ export default function MyExams() {
       {/* 🔴 Missed / Expired */}
       <TabsContent value="expired">
         {expiredExams.length === 0 ? (
-          <p className="text-gray-500">No missed exams.</p>
+          <p className="text-white w-full flex justify-center items-center text-4xl font-sans mt-8">No missed exams.</p>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 p-4">
             {expiredExams.map((exam) => (

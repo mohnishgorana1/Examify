@@ -44,30 +44,28 @@ const ExamCard: React.FC<ExamCardProps> = ({ exam, type, onEnroll }) => {
   }
 
   return (
-    <div className="border rounded-lg p-4 shadow-sm hover:shadow-md transition">
-      <h2 className="text-lg font-semibold text-emerald-700">
+    <div className="bg-neutral-800 rounded-lg p-4 transition flex flex-col items-start justify-between gap-y-2">
+      <h2 className="text-lg font-semibold text-orange-700">
         {exam.title.toUpperCase()}
       </h2>
-      <p className="text-sm text-gray-600 mb-2">{exam.description}</p>
+      <p className="text-sm text-neutral-200 capitalize mb-2">{exam.description}</p>
 
-      <div className="text-sm space-y-1 text-gray-700 mb-3">
+      <div className="text-sm space-y-1 text-neutral-300 mb-3">
         <p>
           <strong>Duration:</strong> {exam.duration} mins
         </p>
         <p>
-          <strong>Scheduled At:</strong>{" "}
-          {examDate.toLocaleString()}
+          <strong>Scheduled At:</strong> {examDate.toLocaleString()}
         </p>
-        {exam.totalMarks !== undefined && (
-          <p>
-            <strong>Total Marks:</strong> {exam.totalMarks}
-          </p>
-        )}
-        {exam.passingMarks !== undefined && (
-          <p>
-            <strong>Passing Marks:</strong> {exam.passingMarks}
-          </p>
-        )}
+
+        <p>
+          <strong>Total Marks:</strong>{" "}
+          {exam.totalMarks ? exam.totalMarks : "NA"}
+        </p>
+
+        <p>
+          <strong>Passing Marks:</strong> {exam.passingMarks ? exam.passingMarks : "NA"}
+        </p>
       </div>
 
       <button
@@ -75,12 +73,12 @@ const ExamCard: React.FC<ExamCardProps> = ({ exam, type, onEnroll }) => {
         disabled={type === "my-exam" && isExpired}
         className={`px-4 py-1 rounded-xl text-white cursor-pointer transition ${
           type === "upcoming"
-            ? "bg-emerald-600 hover:bg-emerald-700"
+            ? "bg-orange-600 hover:bg-orange-700"
             : isAttempted
-            ? "bg-blue-600 hover:bg-blue-700"
+            ? "bg-orange-600 hover:bg-orange-700"
             : isExpired
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-orange-500 hover:bg-orange-600"
+            ? "bg-orange-600 cursor-not-allowed"
+            : "bg-orange-600 hover:bg-orange-700"
         }`}
       >
         {buttonText}

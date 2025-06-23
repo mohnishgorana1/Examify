@@ -104,7 +104,7 @@ function LoginComponent() {
         {/* Submit */}
         <Button
           type="submit"
-          className="w-full bg-emerald-600 hover:bg-emerald-800 text-white"
+          className="w-full bg-orange-600 hover:bg-orange-800 text-white"
           // disabled={loading}
         >
           {/* {loading ? "Logging in..." : "Login"} */}
@@ -116,7 +116,7 @@ function LoginComponent() {
         Don&apos;t have an account?{" "}
         <Link
           href="/register"
-          className="font-medium hover:underline text-emerald-600"
+          className="font-medium hover:underline text-orange-600"
         >
           Register
         </Link>

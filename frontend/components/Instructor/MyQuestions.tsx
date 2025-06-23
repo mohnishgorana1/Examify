@@ -46,17 +46,17 @@ function MyQuestions() {
   }, []);
 
   return (
-    <main className="w-full h-auto">
+    <main className="w-full h-auto ">
       
-      <section className="flex flex-col gap-y-2 md:py-4">
-        <h1 className="font-bold text-2xl self-center bg-gradient-to-tl from-25% from-emerald-300 via-55% via-emerald-700 to-70% to-emerald-800 bg-clip-text text-transparent">
+      <section className="flex flex-col gap-y-8 md:py-4">
+        <h1 className="font-bold text-2xl self-center bg-gradient-to-br from-25% from-orange-500 via-55% via-neutral-600 to-70% to-neutral-500 bg-clip-text text-transparent ">
           Your Created Questions
         </h1>
 
         {/* list of created questions */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-5">
           {myCreatedQuestions && myCreatedQuestions.length === 0 ? (
-            <p className="text-center text-gray-500">No questions found.</p>
+            <p className="text-center text-white text-2xl md:text-4xl mt-8">No questions found.</p>
           ) : (
             myCreatedQuestions && myCreatedQuestions.map((q: any, idx: number) => {
               const isExpanded = expandedIndex === idx;
@@ -64,17 +64,17 @@ function MyQuestions() {
               return (
                 <div
                   key={q._id}
-                  className={`${isExpanded && "shadow-gray-700 shadow-md"} border rounded-lg shadow-sm p-4 bg-white transition-all duration-300`}
+                  className={`${isExpanded && "shadow-neutral-500 shadow-lg"}  rounded-lg shadow-sm p-4 bg-neutral-800 transition-all duration-300`}
                 >
                   {/* Header */}
                   <div
-                    className="md:grid md:grid-cols-12 gap-x-4 cursor-pointer"
+                    className="md:grid md:grid-cols-12 gap-x-4 cursor-pointer items-center"
                     onClick={() => setExpandedIndex(isExpanded ? null : idx)}
                   >
-                    <h2 className="font-semibold text-base col-span-11">
+                    <h2 className="font-semibold text-base col-span-11 text-white">
                       Q{idx + 1}. {q.text}
                     </h2>
-                    <span className="text-xs text-emerald-600">
+                    <span className="text-xs text-orange-500">
                       {isExpanded ? "Hide" : "Show"} details
                     </span>
                   </div>
@@ -86,10 +86,10 @@ function MyQuestions() {
                         {q.options.map((opt: string, i: number) => (
                           <div
                             key={i}
-                            className={`p-1 text-sm border rounded ${
+                            className={`p-2 text-sm border rounded-md ${
                               q.correctAnswer === i
-                                ? "bg-emerald-100 border-emerald-400"
-                                : "border-gray-300"
+                                ? "bg-neutral-900 text-white border-orange-400"
+                                : "border-gray-300 text-neutral-200"
                             }`}
                           >
                             {opt}
@@ -98,12 +98,12 @@ function MyQuestions() {
                       </div>
 
                       {q.explanation && (
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-neutral-200">
                           <strong>Explanation:</strong> {q.explanation}
                         </div>
                       )}
 
-                      <div className="text-xs text-gray-400">
+                      <div className="text-xs text-neutral-400">
                         Created: {formatDateToLongString(q.createdAt)}
                       </div>
                     </div>

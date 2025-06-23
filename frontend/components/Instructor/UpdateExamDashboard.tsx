@@ -148,70 +148,71 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
   if (error) return <p className="text-red-500 p-4">{error}</p>;
 
   return (
-    <section className="min-h-screen py-10 px-4">
-      <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-xl shadow-gray-500 p-6 space-y-4">
-        <h1 className="text-2xl font-bold text-emerald-700">Edit Exam</h1>
+    <section className="min-h-screen py-10 px-4 bg-gradient-to-b from-neutral-800 from-5% via-35% via-neutral-950 to-black to-90%">
+      <div className="max-w-3xl mx-auto bg-neutral-800 rounded-xl shadow-xl shadow-gray-500 p-6 space-y-4">
+        <h1 className="text-2xl font-bold text-orange-500">Edit Exam</h1>
 
         <div className="space-y-2">
-          <label className="block font-medium">
+          <label className="block font-medium text-white">
             Title
             <input
               name="title"
               value={formData.title}
               onChange={handleChange}
-              className="w-full border p-2 rounded mt-1"
+              className="w-full border p-2 rounded mt-1 text-neutral-200"
             />
           </label>
 
-          <label className="block font-medium">
+          <label className="block font-medium text-white">
             Description
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="w-full border p-2 rounded mt-1"
+              className="w-full border p-2 rounded mt-1 text-neutral-200"
             />
           </label>
 
-          <label className="block font-medium">
+          <label className="block font-medium text-white">
             Duration (in minutes)
             <input
               name="duration"
               type="number"
               value={formData.duration}
               onChange={handleChange}
-              className="w-full border p-2 rounded mt-1"
+              className="w-full border p-2 rounded mt-1 text-neutral-200"
             />
           </label>
         </div>
 
         <div className="mt-6">
-          <h2 className="text-lg font-semibold text-emerald-800">
+          <h2 className="text-lg font-semibold text-orange-500">
             Add/Remove Questions
           </h2>
           <Accordion type="single" collapsible className="w-full">
-            {allQuestions.map((q, idx) => (
+            {allQuestions.map((q:any, idx) => (
               <AccordionItem key={q._id} value={q._id}>
-                <AccordionTrigger className="group border grid md:grid-cols-3">
+                <AccordionTrigger className="border grid md:grid-cols-3 px-2 gap-3 text-white">
                   <div className="md:col-span-2 flex items-center gap-2">
                     <input
                       type="checkbox"
                       checked={formData.questions.includes(q._id)}
                       onChange={() => toggleQuestion(q._id)}
                       onClick={(e) => e.stopPropagation()} // to avoid toggling accordion
+                      className="bg-white"
                     />
                     <span className="font-medium">{q.text}</span>
                   </div>
 
-                  <span className="text-left pl-5 md:text-right md:pr-5 md:col-span-1 text-sm text-gray-500 group-data-[state=open]:hidden">
+                  <span className="hover:underline text-left pl-5 md:text-right md:pr-5 md:col-span-1 text-sm text-orange-500 opacity-80 group-data-[state=open]:hidden">
                     Click to view details
                   </span>
-                  <span className="text-left pl-5 md:text-right md:pr-5 md:col-span-1 text-sm text-gray-500 hidden group-data-[state=open]:inline ">
+                  <span className="hover:underline text-left pl-5 md:text-right md:pr-5 md:col-span-1 text-sm text-orange-500 opacity-80 hidden group-data-[state=open]:inline ">
                     Hide details
                   </span>
                 </AccordionTrigger>
 
-                <AccordionContent className="pl-6 text-sm text-gray-700 space-y-1 bg-white rounded p-3 border">
+                <AccordionContent className="pl-6 text-sm text-white space-y-1 bg-neutral-800 rounded p-3 border">
                   <p>
                     <strong>Type:</strong>{" "}
                     {q.type === "mcq" ? "Multiple Choice" : "True/False"}
@@ -255,30 +256,30 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
           </Accordion>
         </div>
 
-        <label className="block font-medium">
+        <label className="block font-medium text-white">
           Marks Per Question
           <select
             value={marksPerQuestion}
             onChange={(e) => setMarksPerQuestion(Number(e.target.value))}
-            className="w-full border p-2 rounded mt-1"
+            className="w-full border p-2 rounded mt-1 text-neutral-200"
           >
             {[1, 2, 4, 5, 10].map((mark) => (
-              <option key={mark} value={mark}>
+              <option key={mark} value={mark} className="bg-neutral-900">
                 {mark}
               </option>
             ))}
           </select>
         </label>
 
-        <label className="block font-medium">
+        <label className="block font-medium text-white">
           Passing Percentage
           <select
             value={passingPercentage}
             onChange={(e) => setPassingPercentage(Number(e.target.value))}
-            className="w-full border p-2 rounded mt-1"
+            className="w-full border p-2 rounded mt-1 text-neutral-200"
           >
             {[33, 40, 50, 60, 70, 80].map((percent) => (
-              <option key={percent} value={percent}>
+              <option key={percent} value={percent} className="bg-neutral-900">
                 {percent}%
               </option>
             ))}
@@ -287,7 +288,7 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
 
         <button
           onClick={handleUpdateExam}
-          className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-800"
+          className="font-medium mt-4 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-800"
           disabled={isUpdating}
         >
           {isUpdating ? (

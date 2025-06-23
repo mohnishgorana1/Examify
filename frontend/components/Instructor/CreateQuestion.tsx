@@ -72,16 +72,16 @@ export default function CreateQuestion() {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-4 bg-white shadow rounded-lg">
-      <h2 className="text-xl font-bold mb-4 text-emerald-700">
+    <div className="w-full max-w-2xl mx-auto p-4 md:px-8 md:py-5 bg-neutral-800 shadow rounded-lg">
+      <h2 className="text-xl font-bold mb-4 text-orange-500">
         Create Question
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <Label className="font-medium">Question Text</Label>
+          <Label className="font-medium text-white my-2">Question Text</Label>
           <textarea
-            className="w-full border rounded p-2"
+            className="w-full border rounded p-2 text-neutral-300"
             value={text}
             onChange={(e) => setText(e.target.value)}
             required
@@ -89,14 +89,14 @@ export default function CreateQuestion() {
         </div>
 
         <div>
-          <Label className="font-medium">Type</Label>
+          <Label className="font-medium text-white my-2">Type</Label>
           <select
-            className="w-full border rounded p-2"
+            className="w-full border rounded p-2 text-neutral-300 bg-neutral-800"
             value={type}
             onChange={(e) => setType(e.target.value)}
           >
-            <option value="mcq">MCQ</option>
-            <option value="truefalse">True / False</option>
+            <option value="mcq" className="bg-neutral-800 hover:bg-neutral-950">MCQ</option>
+            <option value="truefalse" className="bg-neutral-800 hover:bg-neutral-950">True / False</option>
           </select>
         </div>
 
@@ -106,9 +106,9 @@ export default function CreateQuestion() {
             {options.map((opt, index) => (
               <div
                 key={index}
-                className={`flex items-center gap-2 border rounded p-2 ${
+                className={`flex items-center gap-2 border rounded p-2 text-neutral-300 ${
                   correctAnswer === index
-                    ? "bg-emerald-100 border-emerald-500"
+                    ? "border-neutral-200"
                     : ""
                 }`}
               >
@@ -129,8 +129,8 @@ export default function CreateQuestion() {
                   onClick={() => setCorrectAnswer(index)}
                   className={`rounded-full border transition ${
                     correctAnswer === index
-                      ? "bg-emerald-500 text-white border-emerald-600"
-                      : "bg-transparent text-gray-700 border-gray-300 border-0"
+                      ? "bg-orange-500 text-white border-orange-600"
+                      : "bg-transparent text-white-700 border-gray-300 border-0"
                   }`}
                   title="Mark as correct"
                 >
@@ -147,17 +147,17 @@ export default function CreateQuestion() {
                 key={index}
                 className={`flex items-center justify-between border rounded p-2 cursor-pointer ${
                   correctAnswer === index
-                    ? "bg-emerald-100 border-emerald-500"
-                    : "hover:bg-gray-50"
+                    ? "bg-neutral-800"
+                    : "hover:bg-neutral-700"
                 }`}
                 onClick={() => setCorrectAnswer(index)}
               >
-                <span className="text-sm font-medium">{value}</span>
+                <span className="text-sm font-medium text-white my-2">{value}</span>
                 <TiInputChecked
                   className={`text-2xl transition ${
                     correctAnswer === index
-                      ? "text-emerald-600"
-                      : "text-gray-400"
+                      ? "text-orange-600"
+                      : "text-white-400"
                   }`}
                 />
               </div>
@@ -166,9 +166,9 @@ export default function CreateQuestion() {
         )}
 
         <div>
-          <Label className="font-medium">Explanation (Optional)</Label>
+          <Label className="font-medium text-white my-2">Explanation (Optional)</Label>
           <textarea
-            className="w-full border rounded p-2"
+            className="w-full border rounded p-2 text-neutral-300"
             value={explanation}
             onChange={(e) => setExplanation(e.target.value)}
           />
@@ -177,7 +177,7 @@ export default function CreateQuestion() {
         <button
           type="submit"
           disabled={loading}
-          className="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 transition"
+          className="bg-orange-500 font-medium text-white px-4 py-2 rounded-md hover:bg-orange-600 transition"
         >
           {loading ? "Creating..." : "Create Question"}
         </button>

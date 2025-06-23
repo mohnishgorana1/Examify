@@ -49,7 +49,7 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
     <div className="[perspective:1200px] [transform-style:preserve-3d]">
       <li
         ref={slideRef}
-        className="w-[70vmin] h-[70vmin] mx-[4vmin] rounded-xl border bg-white text-black shadow-lg p-6 transition-all duration-500 ease-in-out flex flex-col justify-between"
+        className="w-[70vmin] h-[70vmin] mx-[4vmin] rounded-xl border bg-neutral-800 text-white shadow-lg p-6 transition-all duration-500 ease-in-out flex flex-col justify-between"
         onClick={() => handleSlideClick(index)}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
@@ -61,14 +61,14 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
           transformOrigin: "bottom",
         }}
       >
-        <p className="text-sm text-gray-700 leading-relaxed mb-4">
+        <p className="text-sm text-white-700 leading-relaxed mb-4">
           “{slide.feedback}”
         </p>
         <div className="mt-auto">
-          <h3 className="text-lg font-semibold text-emerald-600">
+          <h3 className="text-lg font-semibold text-orange-600">
             {slide.name}
           </h3>
-          <p className="text-sm text-gray-500">{slide.role}</p>
+          <p className="text-sm text-white-500">{slide.role}</p>
           <p className="text-yellow-400 mt-1 text-sm">
             {"★".repeat(Math.floor(slide.rating)) +
               (slide.rating % 1 ? "½" : "")}

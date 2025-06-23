@@ -1,7 +1,5 @@
 "use client";
 
-import { Carousel } from "../ui/carousel";
-
 export default function TestimonialSection() {
   const testimonials = [
     {
@@ -42,12 +40,12 @@ export default function TestimonialSection() {
   ];
 
   return (
-    <section className="bg-[url('/patterns/paper-texture.png')] bg-repeat py-20 px-6 md:px-20">
+    <section className="bg-neutral-900 text-white py-20 px-6 md:px-20">
       <div className="max-w-6xl mx-auto text-center mb-12">
-        <h2 className="text-4xl font-bold text-gray-800 mb-4">
+        <h2 className="text-4xl font-bold text-white-800 mb-4">
           What Our Users Say
         </h2>
-        <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+        <p className="text-white-600 text-lg max-w-3xl mx-auto">
           Hear from students and educators who’ve transformed their exam
           experience with Examify.
         </p>
@@ -57,14 +55,14 @@ export default function TestimonialSection() {
         {testimonials.map((t, i) => (
           <div
             key={i}
-            className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 flex flex-col justify-between"
+            className="bg-neutral-800 rounded-xl shadow-lg border border-gray-100 p-6 flex flex-col justify-between"
           >
-            <p className="text-gray-700 text-sm leading-relaxed mb-4">
+            <p className="text-white-700 text-sm leading-relaxed mb-4">
               "{t.feedback}"
             </p>
             <div className="mt-auto">
-              <div className="text-emerald-600 font-semibold">{t.name}</div>
-              <div className="text-gray-500 text-sm">{t.role}</div>
+              <div className="text-orange-500 font-semibold">{t.name}</div>
+              <div className="text-white-500 text-sm">{t.role}</div>
               <div className="text-yellow-400 mt-2 text-sm">
                 {"★".repeat(Math.floor(t.rating)) + (t.rating % 1 ? "½" : "")}
               </div>
