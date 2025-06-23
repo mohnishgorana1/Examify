@@ -423,6 +423,7 @@ export const upcomingExams = async (req: any, res: any) => {
     const attemptedExamIds = attemptedSubmissions.map((s) =>
       s.examId.toString()
     );
+    console.log("attemptedExamIds", attemptedExamIds);
 
     // 🔥 Fetch already enrolled exams
     const enrolledExamDocs = await Enrollment.find({ studentId }).select(
@@ -430,14 +431,25 @@ export const upcomingExams = async (req: any, res: any) => {
     );
     const enrolledExamIds = enrolledExamDocs.map((e) => e.examId.toString());
 
+    console.log("enrolledexamIds", enrolledExamIds);
+
     // 🕒 Fetch exams scheduled in the future
     const now = new Date();
+
+    const allExams = await Exam.find().select("_id");
+    console.log("All exams", allExams);
 
     // fetch exams scheduled in future and not attempted
     const upcomingExams = await Exam.find({
       scheduledAt: { $gte: now },
-      _id: { $nin: [...attemptedExamIds, ...enrolledExamIds] },
+      _id: {
+        $nin: [...attemptedExamIds, ...enrolledExamIds].map(
+          (id) => new mongoose.Types.ObjectId(id)
+        ),
+      },
     }).sort({ scheduledAt: 1 });
+
+    console.log("upcoiming exam", upcomingExams);
 
     return res.status(200).json({
       success: true,
@@ -572,7 +584,7 @@ export const myExams = async (req: any, res: any) => {
     const expiredExams = enrolledExams.filter(
       (exam) => new Date(exam.scheduledAt) < now
     );
-    
+
     return res.status(200).json({
       success: true,
       attemptedExams,
