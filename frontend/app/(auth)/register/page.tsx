@@ -9,7 +9,7 @@ function RegisterPage() {
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-orange-500 tracking-tight">
             Create Your Examify Account
           </h2>
-          <p className="text-white-600 text-sm mt-1">
+          <p className="text-white text-sm mt-1">
             Register to access courses, exams and personalized dashboard.
           </p>
         </div>

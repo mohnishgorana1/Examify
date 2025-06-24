@@ -72,28 +72,28 @@ function LoginComponent() {
       >
         <div className="flex flex-col gap-4">
           <div className="w-full space-y-1 flex flex-col">
-            <Label htmlFor="email" className="text-sm md:text-md">
+            <Label htmlFor="email" className="text-sm md:text-md text-white">
               Email
             </Label>
             <Input
               id="email"
               {...register("email")}
               placeholder="you@example.com"
-              className="text-sm md:text-md"
+              className="text-sm md:text-md text-neutral-300"
             />
             {errors.email && (
               <p className="text-red-500 text-sm">{errors.email.message}</p>
             )}
           </div>
           <div className="w-full flex flex-col space-y-1">
-            <Label htmlFor="password" className="text-sm md:text-md">
+            <Label htmlFor="password" className="text-sm md:text-md text-white">
               Password
             </Label>
             <Input
               id="password"
               type="password"
               {...register("password")}
-              className="text-sm md:text-md"
+              className="text-sm md:text-md text-neutral-300"
             />
             {errors.password && (
               <p className="text-red-500 text-sm">{errors.password.message}</p>
@@ -104,7 +104,7 @@ function LoginComponent() {
         {/* Submit */}
         <Button
           type="submit"
-          className="w-full bg-orange-600 hover:bg-orange-800 text-white"
+          className="w-full bg-orange-500 hover:bg-orange-500/85 text-white"
           // disabled={loading}
         >
           {/* {loading ? "Logging in..." : "Login"} */}
@@ -112,11 +112,11 @@ function LoginComponent() {
         </Button>
       </form>
 
-      <p className="text-sm text-center mt-4">
+      <p className="text-sm text-center mt-4 text-white">
         Don&apos;t have an account?{" "}
         <Link
           href="/register"
-          className="font-medium hover:underline text-orange-600"
+          className="font-medium hover:underline text-orange-500"
         >
           Register
         </Link>

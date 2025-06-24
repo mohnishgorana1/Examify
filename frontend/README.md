@@ -3,9 +3,13 @@ frontend
         layout.tsx    // rootlayout
         globals.css
         (app)   
-            admin
-            instructor
-            student
+            about
+            career
+            contact
+            dashboard
+                instructor
+                student
+                layout.tsx
             layout.tsx  // applayout
             page.tsx    // homepage
         (auth)
@@ -13,8 +17,10 @@ frontend
                 page.tsx
             register
                 page.tsx
+            layout.tsx
         (exam)
     components
+    
 
 refresh token
     eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODQ3MDY4NDhmZDRmZmRhNDc2MDVkMmQiLCJpYXQiOjE3NTAyNjM3MzEsImV4cCI6MTc1MDg2ODUzMX0.fim9G4tA4OxLCEvSUnUpeBPwNOfosaCdbjGe2ojLh-Y
