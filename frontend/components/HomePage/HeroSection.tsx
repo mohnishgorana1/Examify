@@ -25,7 +25,7 @@ export default function HeroSection() {
           succeed in online exams — smarter and faster.
         </p>
 
-        {user ? (
+        {!user ? (
           <div className="mx-auto space-x-5">
             <Link href="/register">
               <Button className="cursor-pointer bg-orange-500 hover:bg-orange-500 w-30 md:w-48">

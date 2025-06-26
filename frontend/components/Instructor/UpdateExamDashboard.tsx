@@ -120,7 +120,7 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
 
       const res = await axios.put(
         `${URLs.backend}/api/v1/exam/${examId}`,
-        { title, description, duration, questions, totalMarks, passingMarks },
+        { title, description, duration, questions, totalMarks, passingMarks, marksPerQuestion },
         {
           headers: {
             Authorization: `Bearer ${token}`,

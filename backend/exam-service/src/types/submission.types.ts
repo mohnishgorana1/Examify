@@ -9,8 +9,10 @@ export interface ISubmission {
   examId: mongoose.Types.ObjectId;
   studentId: string;
   answers: ISubmissionAnswer[];
-  submittedAt: Date;
-  score: number;
+  status: string;
+  startedAt: Date;
+  submittedAt?: Date;
+  score?: number;
   isAutoSubmitted: boolean;
   attemptNumber: number;
   timeTaken: number;

@@ -18,6 +18,10 @@ const examSchema = new Schema<IExamDoc>(
     ], // referencing
     totalMarks: { type: Number },
     passingMarks: { type: Number },
+    marksPerQuestion: {
+      type: Number,
+      default: 1,
+    },
   },
   { timestamps: true }
 );

@@ -30,7 +30,9 @@ const ExamCard: React.FC<ExamCardProps> = ({ exam, type, onEnroll }) => {
     if (type === "upcoming" && onEnroll) {
       onEnroll(exam._id);
     } else if (type === "my-exam") {
-      router.push(`/student/exam/${exam._id}`);
+      console.log("Navigating to exam ID:", exam._id, exam._id.length);
+
+      router.push(`/exam/${exam._id}`);
     }
   };
 
@@ -45,10 +47,12 @@ const ExamCard: React.FC<ExamCardProps> = ({ exam, type, onEnroll }) => {
 
   return (
     <div className="bg-neutral-800 rounded-lg p-4 transition flex flex-col items-start justify-between gap-y-2">
-      <h2 className="text-lg font-semibold text-orange-700">
+      <h2 className="text-lg font-semibold text-orange-500">
         {exam.title.toUpperCase()}
       </h2>
-      <p className="text-sm text-neutral-200 capitalize mb-2">{exam.description}</p>
+      <p className="text-sm text-neutral-200 capitalize mb-2">
+        {exam.description}
+      </p>
 
       <div className="text-sm space-y-1 text-neutral-300 mb-3">
         <p>
@@ -64,24 +68,22 @@ const ExamCard: React.FC<ExamCardProps> = ({ exam, type, onEnroll }) => {
         </p>
 
         <p>
-          <strong>Passing Marks:</strong> {exam.passingMarks ? exam.passingMarks : "NA"}
+          <strong>Passing Marks:</strong>{" "}
+          {exam.passingMarks ? exam.passingMarks : "NA"}
         </p>
       </div>
 
       <button
         onClick={handleClick}
-        disabled={type === "my-exam" && isExpired}
-        className={`px-4 py-1 rounded-xl text-white cursor-pointer transition ${
-          type === "upcoming"
-            ? "bg-orange-600 hover:bg-orange-700"
-            : isAttempted
-            ? "bg-orange-600 hover:bg-orange-700"
-            : isExpired
-            ? "bg-orange-600 cursor-not-allowed"
-            : "bg-orange-600 hover:bg-orange-700"
-        }`}
+        disabled={type === "upcoming"}
+        className={`px-4 py-1 rounded-xl text-white transition
+          ${
+            type !== "my-exam"
+              ? "bg-gray-500 cursor-not-allowed opacity-60"
+              : "bg-orange-500 hover:bg-orange-500/85 cursor-pointer"
+          }`}
       >
-        {buttonText}
+        {buttonText} {exam._id}
       </button>
     </div>
   );

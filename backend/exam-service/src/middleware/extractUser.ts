@@ -6,10 +6,10 @@ export const extractUser = (req: any, res: any, next: any) => {
   }
 
   try {
-    console.log("user header", userHeader);
+    // console.log("user header", userHeader);
     
     req.user = JSON.parse(userHeader);
-    console.log("req.user in extract user", req.user);
+    // console.log("req.user in extract user", req.user);
     
     next();
   } catch (err) {

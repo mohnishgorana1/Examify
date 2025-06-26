@@ -17,7 +17,7 @@ export default function AuthLayout({
           <span className="">Examify</span>
         </Link>
       </header>
-      <div className="flex-1 overflow-y-auto bg-gradient-to-b from-neutral-900 via-neutral-800 to-neutral-950">{children}</div>
+      <div className="min-h-max flex-1 overflow-y-auto bg-gradient-to-b from-neutral-900 via-neutral-800 to-neutral-950">{children}</div>
     </main>
   );
 }

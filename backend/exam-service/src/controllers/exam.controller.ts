@@ -207,8 +207,15 @@ export const updateExam = async (req: any, res: any) => {
   }
 
   const { examId } = req.params;
-  const { title, description, duration, questions, totalMarks, passingMarks } =
-    req.body;
+  const {
+    title,
+    description,
+    duration,
+    questions,
+    totalMarks,
+    passingMarks,
+    marksPerQuestion,
+  } = req.body;
 
   if (!examId) {
     return res.status(400).json({
@@ -217,7 +224,13 @@ export const updateExam = async (req: any, res: any) => {
     });
   }
 
-  if (!title || !description || !duration || !Array.isArray(questions)) {
+  if (
+    !title ||
+    !description ||
+    !duration ||
+    !marksPerQuestion ||
+    !Array.isArray(questions)
+  ) {
     return res.status(400).json({
       success: false,
       message: "Missing or invalid fields",
@@ -282,6 +295,7 @@ export const updateExam = async (req: any, res: any) => {
     exam.questions = questions;
     exam.totalMarks = totalMarks;
     exam.passingMarks = passingMarks;
+    exam.marksPerQuestion = marksPerQuestion;
 
     await exam.save();
 
@@ -464,66 +478,6 @@ export const upcomingExams = async (req: any, res: any) => {
   }
 };
 
-export const enrollToExam = async (req: any, res: any) => {
-  const token = req.headers.authorization?.split(" ")[1];
-
-  if (!req.user) {
-    return res.status(401).json({
-      success: false,
-      message: "Unauthorized: user not found in request",
-    });
-  }
-
-  const { examId } = req.body;
-
-  if (!examId) {
-    return res.status(400).json({
-      success: false,
-      message: "examId is required",
-    });
-  }
-
-  try {
-    const { data } = await axios.get(
-      `${process.env.USER_SERVICE_URL}/api/v1/user/me`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-
-    if (data?.user?.role !== "student") {
-      return res.status(403).json({
-        success: false,
-        message: "Only students can enroll in exams",
-      });
-    }
-
-    const studentId = data.user._id;
-
-    // ❌ Prevent duplicate enrollment
-    const alreadyEnrolled = await Enrollment.findOne({ studentId, examId });
-    if (alreadyEnrolled) {
-      return res.status(400).json({
-        success: false,
-        message: "You are already enrolled in this exam",
-      });
-    }
-
-    // ✅ Create enrollment
-    const enrollment = await Enrollment.create({ studentId, examId });
-    return res.status(201).json({
-      success: true,
-      message: "Successfully enrolled in the exam",
-      enrollment,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "Internal Server Error",
-    });
-  }
-};
-
 export const myExams = async (req: any, res: any) => {
   const token = req.headers.authorization?.split(" ")[1];
 
@@ -597,5 +551,335 @@ export const myExams = async (req: any, res: any) => {
       success: false,
       message: "Internal Server Error",
     });
+  }
+};
+
+export const getFullExamDetails = async (req: any, res: any) => {
+  console.log("insidew fulld examdetails");
+
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized: user not found in request",
+    });
+  }
+
+  const { examId } = req.params;
+  const studentId = req.user._id;
+
+  try {
+    const exam = await Exam.findById(examId).populate("questions").exec();
+
+    if (!exam) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Exam not found" });
+    }
+
+    // ✅ Check if the student submitted the exam
+    const submission = await Submission.findOne({ examId, studentId });
+
+    const isAttempted = !!submission;
+
+    return res.status(200).json({
+      success: true,
+      message: "Exam details fetched",
+      exam,
+      isAttempted,
+      score: submission?.score || null,
+      submittedAt: submission?.submittedAt || null,
+      userAnswers: submission?.answers || [],
+    });
+  } catch (error) {
+    console.log("Error", error);
+
+    return res
+      .status(500)
+      .json({ success: false, message: "Server Error", error });
+  }
+};
+
+export const enrollToExam = async (req: any, res: any) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized: user not found in request",
+    });
+  }
+
+  const { examId } = req.body;
+
+  if (!examId) {
+    return res.status(400).json({
+      success: false,
+      message: "examId is required",
+    });
+  }
+
+  try {
+    const { data } = await axios.get(
+      `${process.env.USER_SERVICE_URL}/api/v1/user/me`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    if (data?.user?.role !== "student") {
+      return res.status(403).json({
+        success: false,
+        message: "Only students can enroll in exams",
+      });
+    }
+
+    const studentId = data.user._id;
+
+    // ❌ Prevent duplicate enrollment
+    const alreadyEnrolled = await Enrollment.findOne({ studentId, examId });
+    if (alreadyEnrolled) {
+      return res.status(400).json({
+        success: false,
+        message: "You are already enrolled in this exam",
+      });
+    }
+
+    // ✅ Create enrollment
+    const enrollment = await Enrollment.create({ studentId, examId });
+    return res.status(201).json({
+      success: true,
+      message: "Successfully enrolled in the exam",
+      enrollment,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const startExam = async (req: any, res: any) => {
+  console.log("inside star exam");
+
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized: user not found in request",
+    });
+  }
+
+  const { examId } = req.body;
+  if (!examId) {
+    return res.status(401).json({
+      success: false,
+      message: "Exam id not in request",
+    });
+  }
+
+  try {
+    const exam = await Exam.findById(examId).populate("questions").exec();
+    if (!exam) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Exam not found" });
+    }
+
+    // Check if already submitted
+    const alreadySubmitted = await Submission.findOne({
+      examId,
+      studentId: req.user._id,
+      status: { $in: ["submitted", "auto-submitted"] },
+    });
+
+    if (alreadySubmitted) {
+      return res.status(403).json({
+        success: false,
+        message: "You have already submitted this exam.",
+      });
+    }
+
+    // Count previous submissions for attempt number
+    const previousAttempts = await Submission.countDocuments({
+      examId,
+      studentId: req.user._id,
+    });
+
+    // create new submissions
+    const submission = await Submission.findOneAndUpdate(
+      {
+        examId,
+        studentId: req.user._id,
+        status: "started",
+      },
+      {
+        $setOnInsert: {
+          examId,
+          studentId: req.user._id,
+          status: "started",
+          attemptNumber: previousAttempts + 1,
+          startedAt: new Date(),
+          score: 0,
+        },
+      },
+      {
+        upsert: true,
+        new: true,
+      }
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: "Exam started",
+      submission,
+      exam,
+    });
+  } catch (error) {
+    console.error("Start Exam Error:", error);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const submitExam = async (req: any, res: any) => {
+  console.log("insidew submit exam");
+
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized: user not found in request",
+    });
+  }
+
+  const { examId, answers, timeTaken, isAutoSubmitted, submissionId } =
+    req.body;
+  const studentId = req.user._id;
+
+  console.log(
+    "req body",
+    examId,
+    submissionId,
+    timeTaken,
+    isAutoSubmitted,
+    answers
+  );
+
+  try {
+    const exam = await Exam.findById(examId).populate("questions").exec();
+    if (!exam) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Exam not found" });
+    }
+
+    // console.log("exam", exam);
+
+    // actual logic starts here
+    // see we have exam in it has Questions[] also we have answers having questionId and selectedOpption
+    // to ab me sare questions ka ek map banau or fir sare answers se match kra ke check krlu shi h ya nhi
+    // agar shi hoga to score ko badadunga jo bhi per question mark hoga
+
+    // build questionMap
+    const questionMap = new Map();
+    for (const q of exam.questions as any[]) {
+      questionMap.set(q._id.toString(), q.correctAnswer);
+    }
+
+    console.log("question Map", questionMap);
+
+    let score = 0;
+
+    for (const a of answers) {
+      const correct = questionMap.get(a.questionId);
+      if (correct === a.selectedOption) {
+        score = score + exam.marksPerQuestion!;
+      }
+    }
+
+    console.log("scre ", score);
+
+    const submission = await Submission.findOneAndUpdate(
+      { _id: submissionId },
+      {
+        answers,
+        score,
+        status: isAutoSubmitted ? "auto-submitted" : "submitted",
+        submittedAt: new Date(),
+        isAutoSubmitted,
+        timeTaken,
+      }
+    );
+
+    if (!submission) {
+      return res.status(500).json({ success: false, message: "Error " });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Exam submitted successfully",
+      score,
+      submissionId: submission._id,
+      submittedAt: submission.submittedAt,
+    });
+  } catch (error) {
+    console.log("Error", error);
+
+    return res
+      .status(500)
+      .json({ success: false, message: "Server Error", error });
+  }
+};
+
+export const viewResult = async (req: any, res: any) => {
+  console.log("insidew view exam");
+
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized: user not found in request",
+    });
+  }
+
+  const { examId } = req.params;
+  const studentId = req.user._id;
+
+  try {
+    const exam = await Exam.findById(examId).populate("questions").exec();
+    if (!exam) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Exam not found" });
+    }
+
+    const submission = await Submission.findOne({
+      examId: examId,
+      studentId: studentId,
+    });
+    if (!submission) {
+      return res.status(500).json({
+        success: false,
+        message: "No Submission Found for this exam and student",
+      });
+    }
+
+    return res.status(201).json({
+      success: true,
+      message: "Result found successfully",
+      exam,
+      submission,
+    });
+  } catch (error) {
+    console.log("Error", error);
+
+    return res
+      .status(500)
+      .json({ success: false, message: "Server Error", error });
   }
 };

@@ -10,4 +10,5 @@ export interface IExam{
     questions: mongoose.Types.ObjectId[];
     totalMarks?: number;
     passingMarks?:number;
+    marksPerQuestion?: number;
 }

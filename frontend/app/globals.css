@@ -2,6 +2,28 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Tailwind CSS - add in global styles or use Tailwind plugin */
+/* Custom Scrollbar Styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #6e7278; /* Tailwind's gray-800 or customize */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #c7ced8; /* Tailwind's blue-500 or customize */
+  border-radius: 4px;
+  border: 1px solid #a1aab8; /* For inner padding effect */
+}
+
+/* Firefox support */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #bec8d8 #4a535f;
+}
+
 @theme inline {
   --animate-scroll: scroll var(--animation-duration, 40s)
     var(--animation-direction, forwards) linear infinite;
