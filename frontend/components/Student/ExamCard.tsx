@@ -11,38 +11,51 @@ type ExamCardProps = {
     duration: number;
     totalMarks?: number;
     passingMarks?: number;
-    score?: number;
     submittedAt?: string;
   };
   type: "upcoming" | "my-exam";
+  score?: number;
+  isAttempted: boolean;
   onEnroll?: (examId: string) => void;
 };
 
-const ExamCard: React.FC<ExamCardProps> = ({ exam, type, onEnroll }) => {
+const ExamCard: React.FC<ExamCardProps> = ({
+  exam,
+  type,
+  onEnroll,
+  isAttempted,
+}) => {
   const router = useRouter();
   const now = new Date();
   const examDate = new Date(exam.scheduledAt);
 
-  const isAttempted = exam.score !== undefined;
   const isExpired = !isAttempted && examDate < now;
 
   const handleClick = () => {
     if (type === "upcoming" && onEnroll) {
       onEnroll(exam._id);
     } else if (type === "my-exam") {
-      console.log("Navigating to exam ID:", exam._id, exam._id.length);
-
-      router.push(`/exam/${exam._id}`);
+      if (isAttempted) {
+        router.push(`/exam/${exam._id}/view-result`);
+      } else {
+        console.log("Navigating to exam ID:", exam._id, exam._id.length);
+        router.push(`/exam/${exam._id}`);
+      }
     }
   };
 
   let buttonText = "View Exam";
+
   if (type === "upcoming") {
     buttonText = "Enroll Now";
   } else if (type === "my-exam") {
-    if (isAttempted) buttonText = "View Result";
-    else if (isExpired) buttonText = "Missed";
-    else buttonText = "Start Exam";
+    if (isAttempted) {
+      buttonText = "View Result";
+    } else if (isExpired) {
+      buttonText = "Missed";
+    } else {
+      buttonText = "Start Exam";
+    }
   }
 
   return (
@@ -83,7 +96,7 @@ const ExamCard: React.FC<ExamCardProps> = ({ exam, type, onEnroll }) => {
               : "bg-orange-500 hover:bg-orange-500/85 cursor-pointer"
           }`}
       >
-        {buttonText} {exam._id}
+        {buttonText}
       </button>
     </div>
   );

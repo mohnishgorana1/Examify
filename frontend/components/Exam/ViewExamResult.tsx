@@ -48,7 +48,6 @@ export default function ViewResultRoom() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   const currentQuestion = exam?.questions[currentQuestionIndex];
-  const totalQuestions = exam?.questions.length || 0;
 
   useEffect(() => {
     const fetchResult = async () => {
@@ -89,51 +88,53 @@ export default function ViewResultRoom() {
   const passingMarks = exam.passingMarks;
 
   return (
-    <div className="space-y-6 relative min-h-screen">
-      <header className="sticky top-0 z-50 grid grid-cols-11 gap-x-5 w-full p-4 bg-neutral-900 items-center justify-between">
+    <div className="space-y-6 relative min-h-screen pb-20">
+      <nav className="sticky top-0 z-50 md:grid md:grid-cols-11 flex items-center justify-between md:gap-x-5 w-full px-2 py-4  md:p-4 bg-neutral-900 ">
         <Link
           href="/"
-          className="col-span-8 flex items-center gap-1 text-2xl font-bold tracking-tight text-orange-500/80 hover:text-orange-500 transition"
+          className=" md:col-span-8 flex items-center gap-1 text-2xl font-bold tracking-tight text-orange-500/80 hover:text-orange-500 transition"
         >
           <GraduationCap size={24} className="mt-1" />
           <span className="font-[Playfair_Display]">Examify</span>
         </Link>
-        <div className="col-span-3 flex items-center justify-end">
+        <div className="md:col-span-3 flex items-center md:justify-end">
           <Link
             href={"/dashboard/student"}
-            className="bg-transparent border border-orange-500 text-orange-500 py-1 px-4 rounded-xl "
+            className="bg-transparent border border-orange-500 text-orange-500 py-1 px-4 rounded-sm text-sm"
           >
-            Go To Dashboard
+            Visit Dashboard
           </Link>
         </div>
-      </header>
+      </nav>
 
-      <section className=" text-white grid grid-cols-11 px-4 items-center">
-        <div className="col-span-8 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Exam Title: {exam.title}</h1>
+      <header className="text-white md:grid md:grid-cols-11 md:px-4 items-center flex flex-col gap-y-4">
+        <div className="w-full md:col-span-8 flex gap-y-2 items-center justify-between px-2 md:px-0">
+          <h1 className="text-xl md:text-3xl font-bold">{exam.title}</h1>
           <span
             className={`${
               submission.score >= passingMarks! ? "bg-green-600" : "bg-red-600"
-            } px-4 py-1 rounded-3xl text-sm`}
+            } px-4 py-1 rounded-3xl text-xs md:text-sm w-32 text-center`}
           >
             {submission.score >= passingMarks! ? "Passed" : "Failed"}
           </span>
         </div>
-        <span className="col-span-3 font-bold  text-white text-xl w-full flex justify-evenly ">
-          <p>Score: {submission.score}</p>
-          <p>Passing Marks: {exam.passingMarks}</p>
-        </span>
-      </section>
+        <div className="md:col-span-3 font-bold text-white text-sm md:text-md w-full  px-3 ">
+          <div className="bg-neutral-800 px-4 py-2 rounded-3xl flex md:items-center justify-evenly">
+            <p>Score: {submission.score}</p>
+            <p>Passing Marks: {exam.passingMarks}</p>
+          </div>
+        </div>
+      </header>
 
-      <div className="md:min-h-[80vh] flex flex-col gap-y-2">
-        <div className="grid grid-cols-11 gap-x-5 md:min-h-[60vh]">
+      <section className="md:min-h-[80vh]">
+        <div className="md:grid md:grid-cols-11 gap-x-5 md:min-h-[60vh] px-2 md:px-4">
           {/* Left: Question Panel */}
-          <section className="text-xl col-span-8 border md:py-4 py-2 px-2 flex flex-col gap-y-8">
-            <h2 className="font-semibold text-white">
+          <section className="text-xl md:col-span-8 border border-neutral-600 rounded-md md:py-4 py-2 px-2 flex flex-col gap-y-8">
+            <h2 className="font-semibold text-white text-lg md:text-xl text-justify">
               Q.{currentQuestionIndex + 1} {currentQuestion?.text}
             </h2>
 
-            <div className="flex flex-col gap-y-3 text-white text-lg pl-2">
+            <div className="flex flex-col gap-y-3 text-white text-sm md:text-lg md:pl-2 px-3 md:px-0">
               {currentQuestion?.options.map((option, idx) => {
                 const selected = getSelectedAnswer(currentQuestion._id);
                 const isCorrect = idx === currentQuestion.correctAnswer;
@@ -154,14 +155,14 @@ export default function ViewResultRoom() {
             </div>
 
             {currentQuestion?.explanation && (
-              <p className="text-sm text-gray-400">
+              <p className="text-xs md:text-sm text-neutral-300 text-justify">
                 Explanation: {currentQuestion.explanation}
               </p>
             )}
           </section>
 
-          {/* Right: Question Tray */}
-          <section className="md:min-h-[60vh] col-span-3 border space-y-4">
+          {/* Right: Question Tray for desktop */}
+          <section className="hidden md:block md:min-h-[60vh] md:col-span-3 border border-neutral-600 rounded-md space-y-4">
             <div className="h-[5vh] flex justify-center items-center border-b py-2 text-white">
               Question Status
             </div>
@@ -179,8 +180,25 @@ export default function ViewResultRoom() {
               ))}
             </div>
           </section>
+
+          {/* Bottom Question Tray for Mobile */}
+          <section className="block md:hidden fixed bottom-0 left-0 w-full bg-neutral-900 border-t border-neutral-200 px-3 py-3 overflow-x-auto custom-scrollbar ">
+            <div className="flex space-x-2">
+              {exam.questions.map((q, idx) => (
+                <button
+                  key={q._id}
+                  onClick={() => setCurrentQuestionIndex(idx)}
+                  className={`min-w-[36px] h-8 rounded-md text-sm flex items-center justify-center font-medium text-white ${getQuestionStatusColor(
+                    q
+                  )}`}
+                >
+                  {idx + 1}
+                </button>
+              ))}
+            </div>
+          </section>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

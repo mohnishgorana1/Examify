@@ -82,7 +82,7 @@ export default function MyExams() {
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 p-4">
             {attemptedExams.map((exam) => (
-              <ExamCard key={exam._id} exam={exam} type="my-exam" />
+              <ExamCard key={exam._id} exam={exam} type="my-exam" isAttempted={true}/>
             ))}
           </div>
         )}
@@ -95,7 +95,7 @@ export default function MyExams() {
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 p-4">
             {enrolledOnlyExams.map((exam) => (
-              <ExamCard key={exam._id} exam={exam} type="my-exam" />
+              <ExamCard key={exam._id} exam={exam} type="my-exam" isAttempted={false}/>
             ))}
           </div>
         )}
@@ -108,7 +108,7 @@ export default function MyExams() {
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 p-4">
             {expiredExams.map((exam) => (
-              <ExamCard key={exam._id} exam={exam} type="my-exam" />
+              <ExamCard key={exam._id} exam={exam} type="my-exam" isAttempted={false}/>
             ))}
           </div>
         )}
