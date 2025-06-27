@@ -19,8 +19,11 @@ frontend
                 page.tsx
             layout.tsx
         (exam)
-            [examId]
-                page.tsx
+            exam
+               [examId] 
+                    exam-room
+                    view-result
+                    page.tsx
             layout.tsx
     components
     

@@ -1,11 +1,38 @@
-// no header full screen mode
-// import { GraduationCap } from "lucide-react";
+"use client";
+
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function ExamLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  const [allowed, setAllowed] = useState(false);
+
+  useEffect(() => {
+    if (!loading) {
+      if (!user) {
+        router.replace("/login");
+      } else if (user.role === "student") {
+        setAllowed(true);
+      } else {
+        router.replace(`/dashboard/${user.role}`);
+      }
+    }
+  }, [loading, user, router]);
+
+  if (loading || !allowed) {
+    return (
+      <div className="text-white text-center py-20 text-xl">
+        Loading exam...
+      </div>
+    );
+  }
+
   return (
     <main className="flex h-screen flex-col">
       {/* <header className="h-16 bg-neutral-900 shadow flex items-center justify-between px-4">

@@ -13,6 +13,7 @@ type AuthContextType = {
   loading: boolean;
   logout: () => void;
   getValidAccessToken: () => Promise<string | null>;
+  setUser: (user: any) => void;
 };
 
 // ---------------- Context Setup ----------------
@@ -89,7 +90,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.removeItem("user");
     setAccessToken(null);
     setUser(null);
-    router.push("/login");
+    // router.push("/login");
+    router.refresh();
   };
 
   // ---------------- Access Token ----------------
@@ -132,6 +134,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         loading,
         logout,
         getValidAccessToken,
+        setUser
       }}
     >
       {children}

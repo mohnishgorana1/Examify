@@ -1,30 +1,43 @@
 "use client";
 import { useAuth } from "@/context/AuthContext";
-import { ReactNode } from "react";
-
-
-const heroContent: any = {
-  instructor: {
-    title: "Welcome, Instructor ",
-    logo: "👨‍🏫",
-    description: "Manage your exams, students, and results.",
-  },
-  student: {
-    title: "Welcome, Student ",
-    logo: "🎓",
-    description: "Take exams, view your results, and more.",
-  },
-  admin: {
-    title: "Welcome, Admin 🛠️",
-    logo: "🛠️",
-    description: "Monitor all activities and manage users.",
-  },
-};
+import { usePathname, useRouter } from "next/navigation";
+import { ReactNode, useEffect, useState } from "react";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
-  const { user, getValidAccessToken, logout } = useAuth();
-  const { title, description, logo } =
-    heroContent[user?.role] || heroContent["student"];
+  const { user, loading } = useAuth();
+
+  const pathname = usePathname();
+  const router = useRouter();
+  const [allowed, setAllowed] = useState(false);
+
+  useEffect(() => {
+    if (!loading) {
+      if (!user) {
+        router.replace("/login");
+      } else {
+        const role = user?.role;
+        if (
+          (pathname.startsWith("/dashboard/student") && role === "student") ||
+          (pathname.startsWith("/dashboard/instructor") &&
+            role === "instructor")
+        ) {
+          setAllowed(true);
+        } else {
+          // If wrong role trying to access, redirect to correct dashboard
+          router.replace(`/dashboard/${role}`);
+        }
+      }
+    }
+  }, [user, loading, pathname, router]);
+
+  if (loading || !allowed) {
+    return (
+      <div className="text-white text-center py-20 text-xl">
+        Loading dashboard...
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col">
       <div className="">{children}</div>

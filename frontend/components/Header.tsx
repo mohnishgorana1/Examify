@@ -40,24 +40,6 @@ function Header() {
     currentPathname = "/dashboard";
   }
 
-  // useEffect(() => {
-  //   // This runs only on client
-  //   const storedUser = localStorage.getItem("user");
-  //   if (storedUser) {
-  //     try {
-  //       setUser(JSON.parse(storedUser));
-  //     } catch (error) {
-  //       console.error("Failed to parse user:", error);
-  //     }
-  //   }
-  // }, []);
-
-  useEffect(() => {
-    (async () => {
-      const token = await getValidAccessToken();
-      // console.log("Token in Header:", token);
-    })();
-  }, []);
 
   const handleLogout = async () => {
     const token = await getValidAccessToken();

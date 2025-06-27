@@ -10,56 +10,88 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { URLs } from "@/constants/urls";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { Loader2 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
 function LoginComponent() {
   const router = useRouter();
+  const { setUser } = useAuth();
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     mode: "onChange", // 👈 real-time validation as user types
   });
 
+  const [loading, setLoading] = useState(false);
+
   const onSubmit = async (formData: LoginFormData) => {
     console.log("Login FormData", formData);
+    setLoading(true);
 
-    const { data } = await axios.post(
-      `${URLs.backend}/api/v1/auth/login`,
-      formData,
-      {
-        withCredentials: true, // ✅ this is required for cookies
-      }
-    );
-    console.log("login response", data);
-    if (data.success) {
-      const accessToken = data?.accessToken;
-      const accessTokenExpiryTime = data?.accessTokenExpiryTime;
-      console.log("accT", accessToken);
+    try {
+      const { data } = await axios.post(
+        `${URLs.backend}/api/v1/auth/login`,
+        formData,
+        {
+          withCredentials: true, // ✅ this is required for cookies
+        }
+      );
+      console.log("login response", data);
+      if (data.success) {
+        const accessToken = data?.accessToken;
+        const accessTokenExpiryTime = data?.accessTokenExpiryTime;
 
-      if (accessToken && accessTokenExpiryTime) {
+        if (accessToken && accessTokenExpiryTime) {
+          // save token and it expiry
+          localStorage.setItem("accessToken", accessToken);
+          localStorage.setItem("accessTokenExpiryTime", accessTokenExpiryTime);
 
-        // save token and it expiry
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("accessTokenExpiryTime", accessTokenExpiryTime);
+          try {
+            // fetch user profile and save it to localStorage
+            const userResponse = await axios.get(
+              `${URLs.backend}/api/v1/user/me`,
+              {
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                },
+              }
+            );
+            // console.log("user response /me", data);
+            if (userResponse?.data?.success) {
+              localStorage.setItem(
+                "user",
+                JSON.stringify(userResponse.data.user)
+              );
 
+              setUser(userResponse?.data?.user);
 
-        // fetch user profile and save it to localStorage
-        const userResponse = await axios.get(`${URLs.backend}/api/v1/user/me`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        console.log("user response /me", data);
-        if (userResponse?.data?.success) {
-          localStorage.setItem("user", JSON.stringify(userResponse.data.user));
-          router.push("/");
+              toast.success(
+                `Welcome ${userResponse.data.user?.name || "Back"}`
+              );
+              reset();
+              router.push("/");
+              router.refresh();
+            }
+          } catch (error) {
+            toast.error("Login Success But Can't fetch user!");
+            console.log("Error Fetching User", error);
+          }
         }
       }
+    } catch (error) {
+      toast.error("❌ Login Failed");
+      console.log("Error Login!", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -104,11 +136,17 @@ function LoginComponent() {
         {/* Submit */}
         <Button
           type="submit"
-          className="w-full bg-orange-500 hover:bg-orange-500/85 text-white"
-          // disabled={loading}
+          className="cursor-pointer w-full bg-orange-500 hover:bg-orange-500/85 text-white"
+          disabled={loading}
         >
-          {/* {loading ? "Logging in..." : "Login"} */}
-          Login
+          {loading ? (
+            <span className="flex items-center justify-center">
+              <p>Login...</p>
+              <Loader2 className="animate-spin" />
+            </span>
+          ) : (
+            "Login"
+          )}
         </Button>
       </form>
 
