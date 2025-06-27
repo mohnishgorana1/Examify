@@ -47,7 +47,7 @@ function ExamDetails({ examId }: { examId: string }) {
   const hasStarted = now >= scheduledTime;
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 px-4 pt-6 pb-12">
+    <div className="max-w-5xl mx-auto space-y-8 px-2 md:px-4 pt-6 pb-12">
       <div>
         <h1 className="text-3xl font-bold text-orange-500 mb-1">
           {exam.title}
@@ -55,7 +55,7 @@ function ExamDetails({ examId }: { examId: string }) {
         <p className="text-neutral-300 text-md">{exam.description}</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-neutral-300">
+      <div className="grid grid-cols-1 sm:grid-cols-2  gap-2 md:gap-4 text-sm text-neutral-300">
         <p>
           <strong>🕒 Duration:</strong> {exam.duration} minutes
         </p>

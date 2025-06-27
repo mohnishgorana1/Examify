@@ -13,8 +13,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ChevronDownIcon } from "lucide-react";
+import { ChevronDownIcon, Loader2 } from "lucide-react";
 import axios from "axios";
+import { getValidAccessToken } from "@/utils/getValidAccessToken";
+import toast from "react-hot-toast";
 type CreateExamFormData = z.infer<typeof createExamSchema>;
 
 function CreateExam() {
@@ -22,11 +24,14 @@ function CreateExam() {
   const [date, setDate] = React.useState<Date | undefined>(undefined);
   const [token, setToken] = useState("");
 
+  const [isCreating, setIsCreating] = useState(false)
+
   const {
     register,
     handleSubmit,
     setValue,
-    getValues,
+    // getValues,
+    reset,
     formState: { errors },
   } = useForm<CreateExamFormData>({
     resolver: zodResolver(createExamSchema),
@@ -34,8 +39,6 @@ function CreateExam() {
   });
 
   const onSubmit = async (createExamData: CreateExamFormData) => {
-    console.log("env", URLs.backend);
-
     if (!token) {
       console.log("No Authentication Token, Please Login Again");
     }
@@ -46,7 +49,7 @@ function CreateExam() {
       console.error("Date or Time missing");
       return;
     }
-    
+
     const [hours, minutes] = scheduledTime.split(":").map(Number);
     const scheduledDateTime = new Date(date!); // copy to avoid mutation
     scheduledDateTime.setUTCHours(hours, minutes, 0, 0); // sets time in UTC
@@ -55,7 +58,14 @@ function CreateExam() {
 
     // connect to backend here
     try {
-      console.log("Registering:", title, description, duration, scheduledAt);
+      console.log(
+        "Registering exam:",
+        title,
+        description,
+        duration,
+        scheduledAt
+      );
+      setIsCreating(true);
       const { data } = await axios.post(
         `${URLs.backend}/api/v1/exam/create-exam`,
         {
@@ -71,21 +81,27 @@ function CreateExam() {
         }
       );
       console.log("data of create-exam response", data?.exam);
+      if (data.success) {
+        setDate(undefined);
+        reset();
+        toast.success("Exam Created Successfully");
+      }
     } catch (error) {
       console.error("Error", error);
+    }finally{
+      setIsCreating(false);
     }
   };
 
-  useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
-      console.log("accesstoken", accessToken);
 
-      setToken(accessToken);
-    } else {
-      console.log("No token ");
-    }
+  useEffect(() => {
+    const getToken = async () => {
+      const validToken: any = await getValidAccessToken();
+      setToken(validToken);
+    };
+    getToken();
   }, []);
+
   useEffect(() => {
     if (date) {
       setValue("scheduledDate", date.toISOString().split("T")[0]); // YYYY-MM-DD
@@ -124,7 +140,10 @@ function CreateExam() {
               )}
             </div>
             <div className="w-full space-y-1">
-              <Label htmlFor="duration" className="text-sm md:text-md text-white">
+              <Label
+                htmlFor="duration"
+                className="text-sm md:text-md text-white"
+              >
                 Duration
               </Label>
               <input
@@ -144,7 +163,10 @@ function CreateExam() {
 
           <div className="flex flex-col md:flex-row gap-4">
             <div className="w-full space-y-1">
-              <Label htmlFor="description" className="text-sm md:text-md text-white">
+              <Label
+                htmlFor="description"
+                className="text-sm md:text-md text-white"
+              >
                 Description
               </Label>
               <textarea
@@ -213,8 +235,13 @@ function CreateExam() {
           <Button
             type="submit"
             className="w-full bg-orange-600 hover:bg-orange-800 text-white"
+            disabled={isCreating}
           >
-            Confirm
+            {isCreating ? (
+              <span className="flex items-center gap-x-1">Creating <Loader2 className="animate-spin"/></span>
+            ): (
+              "Create Exam"
+            )}
           </Button>
         </form>
       </section>
@@ -224,11 +251,3 @@ function CreateExam() {
 
 export default CreateExam;
 
-//     title,
-//     description,
-//     duration,
-//     scheduledAt,
-
-//     totalMarks,
-//     passingMarks,
-//     questions = [],

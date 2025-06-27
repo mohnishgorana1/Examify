@@ -2,21 +2,20 @@
 "use client";
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import UpcomingExams from "./UpcomingExams";
 import MyExams from "./MyExams";
 import { useState } from "react";
+import NewExams from "./NewExams";
 
 export default function StudentDashboard() {
-  const [tab, setTab] = useState<"my-exams" | "upcoming-exams">("my-exams");
+  const [tab, setTab] = useState<"my-exams" | "new-exams">("my-exams");
 
   return (
     <div className="min-h-[90vh] px-4 py-6 space-y-6 w-full  mx-auto bg-gradient-to-b from-neutral-800 via-neutral-900 to-neutral-950">
       {/* 🔝 Top Nav Buttons */}
-      <div className="flex flex-wrap gap-3 sm:gap-4">
+      <div className="border border-neutral-700 rounded-2xl flex w-full md:w-76 justify-between items-center text-white">
         <button
-          className={`px-3 py-1 rounded-2xl  text-white cursor-pointer font-medium bg-neutral-950 ${
-            tab === "my-exams"
-              && "border border-white"
+          className={`py-1 w-[50%]  ${
+            tab === "my-exams" && "bg-black text-white rounded-3xl duration-100"
           }`}
           onClick={() => setTab("my-exams")}
         >
@@ -24,18 +23,18 @@ export default function StudentDashboard() {
         </button>
 
         <button
-          className={`px-3 py-1 rounded-2xl text-white cursor-pointer font-medium bg-neutral-950  ${
-            tab === "upcoming-exams"
-              && "border border-white"
+          className={`py-1 w-[50%] ${
+            tab === "new-exams" &&
+            "bg-black text-white rounded-3xl duration-100"
           }`}
-          onClick={() => setTab("upcoming-exams")}
+          onClick={() => setTab("new-exams")}
         >
-          📚 Upcoming Exams
+          📚 New Exams
         </button>
       </div>
 
       {/* 🔄 Conditional rendering */}
-      {tab === "my-exams" ? <MyExams /> : <UpcomingExams />}
+      {tab === "my-exams" ? <MyExams /> : <NewExams />}
     </div>
   );
 }

@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { URLs } from "@/constants/urls";
 import { TiInputChecked } from "react-icons/ti";
-import { Button } from "../ui/button";
 import { Label } from "../ui/label";
+import { getValidAccessToken } from "@/utils/getValidAccessToken";
+import { Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
 export default function CreateQuestion() {
   const [text, setText] = useState("");
   const [type, setType] = useState("mcq"); // "mcq" or "truefalse"
@@ -13,18 +15,19 @@ export default function CreateQuestion() {
   const [correctAnswer, setCorrectAnswer] = useState<number | null>(null);
 
   const [explanation, setExplanation] = useState("");
-  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+
+  const [token, setToken] = useState();
+  const [isCreating, setIsCreating] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setIsCreating(true);
     setMessage("");
 
-    const token = localStorage.getItem("accessToken");
     if (!token) {
       setMessage("No token found.");
-      setLoading(false);
+      setIsCreating(false);
       return;
     }
 
@@ -54,22 +57,30 @@ export default function CreateQuestion() {
       );
 
       if (data.success) {
-        setMessage("✅ Question created successfully!");
+        toast.success("✅ Question created successfully!");
         // Reset form
         setText("");
         setOptions(["", "", "", ""]);
         setCorrectAnswer(null);
         setExplanation("");
       } else {
-        setMessage("❌ Failed to create question.");
+        toast.error("❌ Failed to create question.");
       }
     } catch (error: any) {
       console.error("Create Question Error:", error);
-      setMessage("❌ Error creating question.");
+      toast.error("❌ Failed to create question.");
     } finally {
-      setLoading(false);
+      setIsCreating(false);
     }
   };
+
+  useEffect(() => {
+    const getToken = async () => {
+      const validToken: any = await getValidAccessToken();
+      setToken(validToken);
+    };
+    getToken();
+  }, []);
 
   return (
     <div className="w-full max-w-2xl mx-auto p-4 md:px-8 md:py-5 bg-neutral-800 shadow rounded-lg">
@@ -95,8 +106,15 @@ export default function CreateQuestion() {
             value={type}
             onChange={(e) => setType(e.target.value)}
           >
-            <option value="mcq" className="bg-neutral-800 hover:bg-neutral-950">MCQ</option>
-            <option value="truefalse" className="bg-neutral-800 hover:bg-neutral-950">True / False</option>
+            <option value="mcq" className="bg-neutral-800 hover:bg-neutral-950">
+              MCQ
+            </option>
+            <option
+              value="truefalse"
+              className="bg-neutral-800 hover:bg-neutral-950"
+            >
+              True / False
+            </option>
           </select>
         </div>
 
@@ -107,9 +125,7 @@ export default function CreateQuestion() {
               <div
                 key={index}
                 className={`flex items-center gap-2 border rounded p-2 text-neutral-300 ${
-                  correctAnswer === index
-                    ? "border-neutral-200"
-                    : ""
+                  correctAnswer === index ? "border-neutral-200" : ""
                 }`}
               >
                 <input
@@ -152,7 +168,9 @@ export default function CreateQuestion() {
                 }`}
                 onClick={() => setCorrectAnswer(index)}
               >
-                <span className="text-sm font-medium text-white my-2">{value}</span>
+                <span className="text-sm font-medium text-white my-2">
+                  {value}
+                </span>
                 <TiInputChecked
                   className={`text-2xl transition ${
                     correctAnswer === index
@@ -166,7 +184,9 @@ export default function CreateQuestion() {
         )}
 
         <div>
-          <Label className="font-medium text-white my-2">Explanation (Optional)</Label>
+          <Label className="font-medium text-white my-2">
+            Explanation (Optional)
+          </Label>
           <textarea
             className="w-full border rounded p-2 text-neutral-300"
             value={explanation}
@@ -176,10 +196,16 @@ export default function CreateQuestion() {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={isCreating}
           className="bg-orange-500 font-medium text-white px-4 py-2 rounded-md hover:bg-orange-600 transition"
         >
-          {loading ? "Creating..." : "Create Question"}
+          {isCreating ? (
+            <span className="flex items-center gap-x-1">
+              Creating <Loader2 className="animate-spin" />
+            </span>
+          ) : (
+            "Create Question"
+          )}
         </button>
 
         {message && <p className="text-sm mt-2">{message}</p>}

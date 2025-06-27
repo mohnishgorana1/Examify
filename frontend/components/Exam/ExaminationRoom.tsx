@@ -214,13 +214,13 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
   const totalQuestions = exam?.questions.length;
 
   return (
-    <div className="space-y-6 relative min-h-screen">
-      <header className="z-50 sticky grid grid-cols-11 gap-x-5 items-baseline justify-between w-full border">
-        <h1 className="col-span-8 text-2xl font-bold text-orange-500 border">
+    <div className="md:space-y-6 space-y-3 relative min-h-screen">
+      <header className="pl-2 z-50 sticky grid md:grid-cols-11 gap-x-5 items-center justify-between w-full border border-neutral-600 rounded-xl">
+        <h1 className="md:col-span-8 text-xl md:text-2xl font-bold text-orange-500">
           {exam?.title}
         </h1>
-        <div className="col-span-3 text-pink-500 w-full text-center border">
-          <h1>
+        <div className="md:col-span-3  w-full flex items-center justify-center">
+          <h1 className="w-[60%] text-[15px]  text-white animate-pulse font-bold text-center rounded-lg">
             Time Remaining:{" "}
             {Math.floor(timeLeft / 60)
               .toString()
@@ -230,13 +230,13 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
         </div>
       </header>
 
-      <div className="md:min-h-[80vh] flex flex-col gap-y-2">
-        <div className="grid grid-cols-11 gap-x-5 md:min-h-[60vh]">
+      <div className="md:min-h-[80vh] flex flex-col gap-y-4 md:gap-y-2 ">
+        <div className="grid md:grid-cols-11 gap-x-5 md:min-h-[60vh]">
           {/* question */}
-          <section className="text-xl col-span-8 border md:py-4 py-2 px-2 flex flex-col gap-y-8">
-            <h2 className="font-semibold  text-white">
+          <section className="md:col-span-8 border border-neutral-600 rounded-xl md:py-4 py-2 px-2 flex flex-col md:gap-y-8 gap-y-3">
+            <h2 className="font-semibold text-lg md:text-xl text-white">
               Q.{currentQuestionNumber} {currentQuestion.text}{" "}
-              <span className="text-xs ">{currentQuestion._id}</span>
+              {/* <span className="text-xs ">{currentQuestion._id}</span> */}
             </h2>
             {/* options */}
             <RadioGroup
@@ -261,7 +261,7 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
                 }
               }}
             >
-              <div className="flex flex-col gap-y-3 text-white text-lg pl-2">
+              <div className="flex flex-col gap-y-2 md:gap-y-3 text-white text-lg pl-2">
                 {currentQuestion.options &&
                   currentQuestion.options.map((option: any, optionIdx: any) => (
                     <div
@@ -273,7 +273,7 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
                         id={`option-${optionIdx}`}
                       />
                       <Label
-                        className="text-lg"
+                        className="text-sm md:text-lg"
                         htmlFor={`option-${optionIdx}`}
                       >
                         {option}
@@ -283,8 +283,8 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
               </div>
             </RadioGroup>
           </section>
-          {/* question-status/tray*/}
-          <section className="md:min-h-[60vh] col-span-3 border">
+          {/*DESKTOP:  question-status/tray*/}
+          <section className="hidden md:block md:min-h-[60vh] md:col-span-3 border border-neutral-600 rounded-xl">
             <div className="h-[5vh] flex gap-8 items-center justify-center my-2 pb-1 border-b">
               <span className="flex items-center gap-1">
                 <button className="bg-red-500 text-black p-1 w-4 h-4 rounded-md"></button>
@@ -295,7 +295,7 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
                 <span className="text-white">Saved</span>
               </span>
             </div>
-            <div className="max-h-[55vh] overflow-y-auto custom-scrollbar grid md:grid-cols-7 gap-2 px-2 w-full">
+            <div className="max-h-[55vh] overflow-y-auto custom-scrollbar grid grid-cols-5 lg:grid-cols-7 gap-4 md:gap-2 px-2 w-full">
               {exam &&
                 exam?.questions &&
                 exam.questions.length !== 0 &&
@@ -305,7 +305,6 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
                     (a) => a.questionId === question._id
                   );
                   const isSeen = visitedQuestions.includes(question._id);
-
                   let bgColor = "bg-blue-50 text-black"; //default
                   if (isAnswered) {
                     bgColor = "bg-green-500 text-white";
@@ -326,10 +325,10 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
           </section>
         </div>
         {/* control */}
-        <div className="md:h-[10vh] border grid grid-cols-11 gap-x-5 items-center">
-          <div className="col-span-8 flex items-center justify-center gap-x-5">
+        <div className="md:h-[10vh] md:border md:border-neutral-600 rounded-xl grid md:grid-cols-11 gap-x-5 items-center">
+          <div className="md:col-span-8 px-1 sm:px-8 md:px-12 lg:px-20 flex gap-x-2 md:gap-x-3 lg:gap-x-5 justify-evenly ">
             <Button
-              className="w-44 bg-blue-500 hover:bg-blue-500/75"
+              className="h-8 w-20 md:w-32 lg:w-44 text-sm  bg-blue-500 hover:bg-blue-500/75"
               onClick={() => {
                 // If selected, it's already saved via onValueChange.
                 // But if not selected, just move on (no save).
@@ -341,10 +340,10 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
                 }
               }}
             >
-              Save and Continue
+              Save
             </Button>
             <Button
-              className="w-44 bg-red-500 hover:bg-red-500/75"
+              className="h-8 w-20 md:w-32 lg:w-44 text-sm  bg-red-500 hover:bg-red-500/75"
               onClick={() => {
                 if (currentQuestionNumber < totalQuestions) {
                   const nextQuestion = exam.questions[currentQuestionNumber]; // 0-indexed
@@ -356,7 +355,6 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
             >
               Next
             </Button>
-
             <Button
               variant="outline"
               onClick={() =>
@@ -364,12 +362,12 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
                   prev.filter((a) => a.questionId !== currentQuestion._id)
                 )
               }
-              className="cursor-pointer w-44"
+              className="h-8 w-20 md:w-32 lg:w-44 text-sm cursor-pointer "
             >
-              Clear Answer
+              Clear
             </Button>
           </div>
-          <div className="col-span-3 w-full flex items-center justify-center">
+          <div className="hidden md:col-span-3 w-full md:flex items-center justify-center">
             <Button
               onClick={() => handleSubmit(false)}
               disabled={submitting || score !== null}
@@ -378,6 +376,58 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
               Submit
             </Button>
           </div>
+        </div>
+
+        {/*MOBILE:  question-status/tray*/}
+        <section className="block md:hidden md:min-h-[60vh] md:col-span-3 border border-neutral-600 rounded-xl">
+          <div className="h-[5vh] flex gap-8 items-center justify-center my-2 pb-1 border-b">
+            <span className="flex items-center gap-1">
+              <button className="bg-red-500 text-black p-1 w-4 h-4 rounded-md"></button>
+              <span className="text-white">Not Saved</span>
+            </span>
+            <span className="flex items-center gap-1">
+              <button className="bg-green-500 text-black p-1 w-4 h-4 rounded-md"></button>
+              <span className="text-white">Saved</span>
+            </span>
+          </div>
+          <div className="max-h-[55vh] overflow-x-auto custom-scrollbar flex  gap-x-4 px-2 py-3 w-full">
+            {exam &&
+              exam?.questions &&
+              exam.questions.length !== 0 &&
+              exam.questions.map((question: any, idx) => {
+                // const isCurrent = currentQuestion._id === question._id;
+                const isAnswered = answers.some(
+                  (a) => a.questionId === question._id
+                );
+                const isSeen = visitedQuestions.includes(question._id);
+
+                let bgColor = "bg-blue-50 text-black"; //default
+                if (isAnswered) {
+                  bgColor = "bg-green-500 text-white";
+                } else if (isSeen) {
+                  bgColor = "bg-red-500 text-white";
+                }
+                return (
+                  <button
+                    onClick={() => visitQuestion(question, idx + 1)}
+                    className={`cursor-pointer font-medium text-sm  min-w-8 min-h-8 rounded-md flex items-center justify-center ${bgColor}`}
+                    key={idx}
+                  >
+                    {idx + 1}
+                  </button>
+                );
+              })}
+          </div>
+        </section>
+        {/* SUBMIT BTN FOR MOBILE */}
+        <div className="w-full md:hidden items-center justify-center">
+          <Button
+            onClick={() => handleSubmit(false)}
+            disabled={submitting || score !== null}
+            className="w-full bg-green-600 hover:bg-green-600/65 cursor-pointer"
+          >
+            Submit
+          </Button>
         </div>
       </div>
     </div>

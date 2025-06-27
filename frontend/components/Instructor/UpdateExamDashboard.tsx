@@ -11,6 +11,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
 
 type Question = {
   createdBy: string;
@@ -120,7 +121,15 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
 
       const res = await axios.put(
         `${URLs.backend}/api/v1/exam/${examId}`,
-        { title, description, duration, questions, totalMarks, passingMarks, marksPerQuestion },
+        {
+          title,
+          description,
+          duration,
+          questions,
+          totalMarks,
+          passingMarks,
+          marksPerQuestion,
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -129,16 +138,16 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
       );
 
       if (res.data.success) {
-        alert("Exam updated successfully!");
+        toast.success("Exam updated successfully!");
         console.log("res", res.data);
 
         // router.push("/dashboard/instructor");
       } else {
-        alert("Failed to update exam.");
+        toast.error("Failed to update exam.");
       }
     } catch (err) {
       console.error(err);
-      alert("Something went wrong.");
+      toast.error("Failed to update exam.");
     } finally {
       setIsUpdating(false);
     }
@@ -189,8 +198,8 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
           <h2 className="text-lg font-semibold text-orange-500">
             Add/Remove Questions
           </h2>
-          <Accordion type="single" collapsible className="w-full">
-            {allQuestions.map((q:any, idx) => (
+          <Accordion type="single" collapsible className="w-full space-y-2.5">
+            {allQuestions.map((q: any, idx) => (
               <AccordionItem key={q._id} value={q._id}>
                 <AccordionTrigger className="border grid md:grid-cols-3 px-2 gap-3 text-white">
                   <div className="md:col-span-2 flex items-center gap-2">

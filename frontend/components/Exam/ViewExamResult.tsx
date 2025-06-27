@@ -171,7 +171,7 @@ export default function ViewResultRoom() {
                 <button
                   key={q._id}
                   onClick={() => setCurrentQuestionIndex(idx)}
-                  className={`w-8 h-8 rounded-md text-sm flex items-center justify-center font-medium text-white ${getQuestionStatusColor(
+                  className={`cursor-pointer w-8 h-8 rounded-md text-sm flex items-center justify-center font-medium text-white ${getQuestionStatusColor(
                     q
                   )}`}
                 >

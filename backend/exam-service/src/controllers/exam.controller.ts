@@ -400,7 +400,7 @@ export const myCreatedQuestions = async (req: any, res: any) => {
 };
 
 // FOR STUDENTS
-export const upcomingExams = async (req: any, res: any) => {
+export const newExams = async (req: any, res: any) => {
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!req.user) {
@@ -424,20 +424,11 @@ export const upcomingExams = async (req: any, res: any) => {
     if (data?.user?.role !== "student") {
       return res.status(403).json({
         success: false,
-        message: "Only students can access upcoming exams",
+        message: "Only students can access new exams",
       });
     }
 
     const studentId = data.user._id;
-
-    // Exclude exams already attempted by the student
-    const attemptedSubmissions = await Submission.find({ studentId }).select(
-      "examId"
-    );
-    const attemptedExamIds = attemptedSubmissions.map((s) =>
-      s.examId.toString()
-    );
-    console.log("attemptedExamIds", attemptedExamIds);
 
     // 🔥 Fetch already enrolled exams
     const enrolledExamDocs = await Enrollment.find({ studentId }).select(
@@ -447,27 +438,18 @@ export const upcomingExams = async (req: any, res: any) => {
 
     console.log("enrolledexamIds", enrolledExamIds);
 
-    // 🕒 Fetch exams scheduled in the future
-    const now = new Date();
-
-    const allExams = await Exam.find().select("_id");
-    console.log("All exams", allExams);
-
-    // fetch exams scheduled in future and not attempted
-    const upcomingExams = await Exam.find({
-      scheduledAt: { $gte: now },
+    // 📦 Exams NOT enrolled
+    const newExams = await Exam.find({
       _id: {
-        $nin: [...attemptedExamIds, ...enrolledExamIds].map(
-          (id) => new mongoose.Types.ObjectId(id)
-        ),
+        $nin: enrolledExamIds.map((id) => new mongoose.Types.ObjectId(id)),
       },
     }).sort({ scheduledAt: 1 });
 
-    console.log("upcoiming exam", upcomingExams);
+    console.log("upcoiming exam", newExams);
 
     return res.status(200).json({
       success: true,
-      exams: upcomingExams,
+      exams: newExams,
     });
   } catch (error) {
     console.error("Error fetching upcoming exams:", error);

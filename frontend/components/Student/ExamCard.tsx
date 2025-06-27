@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 type ExamCardProps = {
   exam: {
@@ -13,10 +14,11 @@ type ExamCardProps = {
     passingMarks?: number;
     submittedAt?: string;
   };
-  type: "upcoming" | "my-exam";
+  type: "new" | "my-exam";
   score?: number;
   isAttempted: boolean;
   onEnroll?: (examId: string) => void;
+  enrolling?: boolean;
 };
 
 const ExamCard: React.FC<ExamCardProps> = ({
@@ -24,6 +26,7 @@ const ExamCard: React.FC<ExamCardProps> = ({
   type,
   onEnroll,
   isAttempted,
+  enrolling,
 }) => {
   const router = useRouter();
   const now = new Date();
@@ -32,7 +35,7 @@ const ExamCard: React.FC<ExamCardProps> = ({
   const isExpired = !isAttempted && examDate < now;
 
   const handleClick = () => {
-    if (type === "upcoming" && onEnroll) {
+    if (type === "new" && onEnroll) {
       onEnroll(exam._id);
     } else if (type === "my-exam") {
       if (isAttempted) {
@@ -46,13 +49,13 @@ const ExamCard: React.FC<ExamCardProps> = ({
 
   let buttonText = "View Exam";
 
-  if (type === "upcoming") {
+  if (type === "new") {
     buttonText = "Enroll Now";
   } else if (type === "my-exam") {
     if (isAttempted) {
       buttonText = "View Result";
     } else if (isExpired) {
-      buttonText = "Missed";
+      buttonText = "Give Exam";
     } else {
       buttonText = "Start Exam";
     }
@@ -88,15 +91,20 @@ const ExamCard: React.FC<ExamCardProps> = ({
 
       <button
         onClick={handleClick}
-        disabled={type === "upcoming"}
-        className={`px-4 py-1 rounded-xl text-white transition
-          ${
-            type !== "my-exam"
-              ? "bg-gray-500 cursor-not-allowed opacity-60"
-              : "bg-orange-500 hover:bg-orange-500/85 cursor-pointer"
-          }`}
+        disabled={type === "new" && enrolling}
+        className={`cursor-pointer px-4 py-1 rounded-xl text-white transition ${
+          enrolling
+            ? "bg-orange-400 cursor-not-allowed"
+            : "bg-orange-500 hover:bg-orange-500/85"
+        }`}
       >
-        {buttonText}
+        {type === "new" && enrolling ? (
+          <span className="flex items-center gap-2">
+            Enrolling... <Loader2 className="animate-spin" />
+          </span>
+        ) : (
+          buttonText
+        )}
       </button>
     </div>
   );

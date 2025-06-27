@@ -15,7 +15,7 @@ export default function InstructorDashboard() {
   return (
     <div className="space-y-4 pt-8">
       {/* 🔹 Tab List */}
-      <section className="flex">
+      <section className="flex px-2">
         <Tabs
           value={tab}
           onValueChange={setTab}

@@ -6,7 +6,7 @@ import {
   myCreatedQuestions,
   fetchExamDetails,
   updateExam,
-  upcomingExams,
+  newExams,
   myExams,
   getFullExamDetails,
   enrollToExam,
@@ -19,7 +19,7 @@ const router = express.Router();
 
 router.get("/my-created-exams", extractUser, myCreatedExams);
 router.get("/my-created-questions", extractUser, myCreatedQuestions);
-router.get("/upcoming-exams", extractUser, upcomingExams);
+router.get("/new-exams", extractUser, newExams);
 router.get("/my-exams", extractUser, myExams);
 
 router.get("/full/:examId", extractUser, getFullExamDetails);

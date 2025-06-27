@@ -21,6 +21,21 @@ const config: Config = {
         sm: "0 1px 2px rgba(0,0,0,0.05)",
         md: "0 4px 6px rgba(0,0,0,0.1)",
       },
+      animation: {
+        "bounce-2s": "bounce 2s linear infinite", // Define a custom animation named 'bounce-2s'
+      },
+      keyframes: {
+        bounce: {
+          "0%, 100%": {
+            transform: "translateY(-25%)",
+            animationTimingFunction: "cubic-bezier(0.8,0,1,1)",
+          },
+          "50%": {
+            transform: "translateY(0)",
+            animationTimingFunction: "cubic-bezier(0,0,0.2,1)",
+          },
+        },
+      },
     },
   },
   plugins: [],

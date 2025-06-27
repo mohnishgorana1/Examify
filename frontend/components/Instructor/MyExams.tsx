@@ -50,7 +50,7 @@ function MyExams() {
         </span>
       </section>
       <section className="md:pr-1 md:pl-3 md:col-span-2 flex flex-col gap-y-2 md:py-4">
-        <h1 className="font-bold text-2xl self-center md:hidden bg-gradient-to-br from-25% from-orange-300 via-55% via-neutral-700 to-70% to-neutral-800 bg-clip-text text-transparent">
+        <h1 className="font-bold text-3xl self-center md:hidden bg-gradient-to-br from-25% from-orange-400 via-55% via-orange-200 to-90% to-neutral-800 bg-clip-text text-transparent">
           Your Created Exam
         </h1>
 
