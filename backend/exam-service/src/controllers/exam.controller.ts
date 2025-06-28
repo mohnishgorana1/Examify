@@ -399,6 +399,209 @@ export const myCreatedQuestions = async (req: any, res: any) => {
   }
 };
 
+export const getResults = async (req: any, res: any) => {
+  console.log("Inside all results ");
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!req.user) {
+    console.error("Can't get req.user:");
+    return res
+      .status(500)
+      .json({ success: false, message: "Can't get req.user" });
+  }
+  if (!token) {
+    console.error("Can't get Token");
+    return res
+      .status(401)
+      .json({ success: false, message: "Can't get Authorization Token" });
+  }
+
+  try {
+    const { data } = await axios.get(
+      `${process.env.USER_SERVICE_URL}/api/v1/user/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (data?.user?.role !== "instructor") {
+      return res.status(403).json({
+        success: false,
+        message: "Only instructors can get their exam results",
+      });
+    }
+
+    // now find exams of the instructore
+    const instructorId = req.user?._id;
+
+    console.log("instructor", instructorId);
+
+    const exams = await Exam.find({ createdBy: instructorId })
+      .populate("questions")
+      .exec();
+    // console.log("Exams", exams, exams.length);
+
+    if (exams.length === 0) {
+      return res
+        .status(200)
+        .json({ success: true, message: "You have not created any exams" });
+    }
+
+    // get all examIds
+    // and find submission from all examIds
+
+    let examIds: any = [];
+    exams.map((exam, idx) => {
+      examIds.push(exam._id);
+    });
+    console.log("Exams", exams);
+
+    console.log("exam ids", examIds);
+
+    const submissions = await Submission.find({
+      examId: { $in: examIds },
+    }).populate("examId");
+
+    console.log("submissions", submissions);
+
+    // iske pass vo sare exams hai jo iss instructor ke h
+    // fir  iske pass vo sare submsions h jo iski banai exams ke hai
+
+    const examResults = exams.map((exam: any) => {
+      // Har exam ke liye uske submissions filter krte hai
+      const examSubmissions = submissions.filter(
+        (sub) => sub.examId._id.toString() === exam._id.toString()
+      );
+
+      return {
+        examId: exam._id,
+        title: exam.title,
+        description: exam.description,
+        scheduledAt: exam.scheduledAt,
+        totalMarks: exam.totalMarks,
+        passingMarks: exam.passingMarks,
+        submissions: examSubmissions.map((sub) => ({
+          submissionId: sub._id,
+          studentId: sub.studentId,
+          score: sub.score,
+          status: sub.status,
+          submittedAt: sub.submittedAt,
+          attemptNumber: sub.attemptNumber,
+          timeTaken: sub.timeTaken,
+        })),
+      };
+    });
+
+    console.log("exam results", examResults);
+
+    return res.status(201).json({
+      success: true,
+      message: "Results fetched successfully",
+      // results: submissions,
+      // exams: exams,
+
+      examResults,
+    });
+  } catch (error) {
+    console.error("Error in fetching results:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error", error });
+  }
+};
+
+export const viewSubmissionByExamId = async (req: any, res: any) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  const { examId } = req.params;
+  console.log("Inside view submisiosns for exam", examId);
+
+  if (!req.user) {
+    console.error("Can't get req.user:");
+    return res
+      .status(500)
+      .json({ success: false, message: "Can't get req.user" });
+  }
+  if (!token) {
+    console.error("Can't get Token");
+    return res
+      .status(401)
+      .json({ success: false, message: "Can't get Authorization Token" });
+  }
+
+  try {
+    const { data } = await axios.get(
+      `${process.env.USER_SERVICE_URL}/api/v1/user/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (data?.user?.role !== "instructor") {
+      return res.status(403).json({
+        success: false,
+        message: "Only instructors can get their exam results",
+      });
+    }
+
+    const instructorId = req.user?._id;
+
+    const submissions = await Submission.find({
+      examId,
+    })
+      .populate("examId")
+      .exec();
+
+    // console.log("submissions", submissions);
+
+    // now we need all submissions students
+    const studentIds = submissions.map((sub) => sub.studentId);
+
+    // find all users details
+    const usersResponse = await axios.post(
+      `${process.env.USER_SERVICE_URL}/api/v1/user/fetch-users`,
+      { studentIds: studentIds },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const users = usersResponse?.data?.users;
+    if (!usersResponse.data.success) {
+      throw new Error("Failed to fetch student details");
+    }
+
+    // now sare students ki details aa gyi
+    // now ab jis jis submission me jo jo studentId hogi us us submission me us studentId ke user details daal dete h
+
+    const studentsMap: any = {};
+    users &&
+      users.forEach((user: any) => {
+        studentsMap[user._id] = user;
+      });
+
+    const enrichedSubmissions = submissions.map((sub) => ({
+      ...sub.toObject(),
+      studentInfo: studentsMap[sub.studentId] || null,
+    }));
+
+    return res.status(200).json({
+      success: true,
+      message: "Submissions fetched successfully",
+      submissions: enrichedSubmissions,
+      exam: submissions[0].examId,
+    });
+  } catch (error) {
+    console.error("Error in fetching submissions:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error", error });
+  }
+};
+
 // FOR STUDENTS
 export const newExams = async (req: any, res: any) => {
   const token = req.headers.authorization?.split(" ")[1];

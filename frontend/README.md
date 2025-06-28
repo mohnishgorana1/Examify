@@ -31,6 +31,18 @@ frontend
 
 
 
+data:
 
-    
+    exam
+    submissions[]
+        {
+            answers[],
+            attemptNumber
+            examId: {},
+            score,
+            startedAt,
+            studentId,
+            studentInfo 
+                name, email, role, phone, 
+        }
 
