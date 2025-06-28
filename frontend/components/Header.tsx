@@ -130,7 +130,9 @@ function Header() {
               <MenubarSeparator />
               {user && (
                 <>
-                  <MenubarItem>Account</MenubarItem>
+                  <MenubarItem>
+                    <Link href={"/profile"}>View Profile</Link>
+                  </MenubarItem>
                   <MenubarItem onClick={handleLogout}>Logout</MenubarItem>
                 </>
               )}
