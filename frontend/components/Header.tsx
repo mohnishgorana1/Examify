@@ -40,7 +40,6 @@ function Header() {
     currentPathname = "/dashboard";
   }
 
-
   const handleLogout = async () => {
     const token = await getValidAccessToken();
 
@@ -153,7 +152,9 @@ function Header() {
                   <MenubarItem>
                     <Link href={getDashboardLink()}>Dashboard</Link>
                   </MenubarItem>
-                  <MenubarItem onClick={() => {}}>View Profile</MenubarItem>
+                  <MenubarItem>
+                    <Link href={"/profile"}>View Profile</Link>
+                  </MenubarItem>
                   <MenubarSeparator />
                   <MenubarItem onClick={handleLogout}>Logout</MenubarItem>
                 </>
