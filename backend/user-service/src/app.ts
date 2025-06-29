@@ -20,7 +20,7 @@ const app = express();
 // middleware
 app.use(
   cors({
-    origin: "http://localhost:3000", // ya jo bhi frontend origin ho
+    origin: process.env.EXAMIFY_FRONTEND_URL, // ya jo bhi frontend origin ho
     credentials: true, // ✅ This is most important
   })
 );

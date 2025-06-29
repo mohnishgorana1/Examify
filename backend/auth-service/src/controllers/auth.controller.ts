@@ -210,12 +210,14 @@ export const login = async (req: any, res: any) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       path: "/",
+      maxAge: getMs(REFRESH_TOKEN_EXPIRY)
     });
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       path: "/",
+      maxAge: getMs(ACCESS_TOKEN_EXPIRY)
     });
 
     //* ONLY FOR LOCALHOST
