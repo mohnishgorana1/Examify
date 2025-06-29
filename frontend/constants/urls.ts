@@ -1,3 +1,3 @@
 export const URLs = {
-    backend: process.env.BACKEND_URL,
+    backend: String(process.env.BACKEND_URL),
 }
