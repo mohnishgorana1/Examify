@@ -17,15 +17,20 @@ import { useForm } from "react-hook-form";
 import { URLs } from "@/constants/urls";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 function RegisterComponent() {
   const router = useRouter();
+  const [isRegistering, setIsRegistering] = useState(false);
   const {
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -33,9 +38,7 @@ function RegisterComponent() {
   });
 
   const onSubmit = async (registerData: RegisterFormData) => {
-    console.log("env", URLs.backend);
-    console.log("Registering:", registerData);
-
+    setIsRegistering(true);
     // connect to backend here
     try {
       const { data } = await axios.post(
@@ -45,10 +48,15 @@ function RegisterComponent() {
       console.log("data", data);
       if (data.success) {
         alert("Registration successful!");
+        toast.success("✅ Registration Success");
+        reset();
         router.push("/login");
       }
     } catch (error) {
-      console.log("Error Registering User", error);
+      // console.log("Error Registering User", error);
+      toast.error("❌ Error in Registration");
+    } finally {
+      setIsRegistering(false);
     }
   };
 
@@ -198,9 +206,19 @@ function RegisterComponent() {
         {/* Submit */}
         <Button
           type="submit"
-          className="w-full bg-orange-600 hover:bg-orange-800 text-white"
+          disabled={isRegistering}
+          className={`w-full bg-orange-500 hover:bg-orange-500 text-white cursor-pointer `}
         >
-          Register
+          {
+            isRegistering ? (
+              <span className="flex gap-x-1 items-center">
+                <span>Registering...</span>
+                <Loader2 className="animate-spin" />
+              </span>
+            ) : (
+              <span>Register</span>
+            )
+          }
         </Button>
       </form>
 

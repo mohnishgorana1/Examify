@@ -3,10 +3,10 @@ import { connectKafkaProducer } from "./kafka/kafkaClient";
 
 const PORT = process.env.PORT || 5001;
 
-
-connectKafkaProducer().catch((err) => {
-  console.error("Kafka Producer Connection Error:", err);
-});
+// TODO: Uncomment below part if using kafka
+// connectKafkaProducer().catch((err) => {
+//   console.error("Kafka Producer Connection Error:", err);
+// });
 
 
 app.listen(PORT, () => {

@@ -2,6 +2,67 @@ import { User } from "../models/user.model";
 import dotenv from "dotenv";
 dotenv.config();
 
+export const createProfile = async (req: any, res: any) => {
+  const { userId, name, email, phone, dob, role, isVerified } = req.body;
+  try {
+    console.log(
+      "Register user profile req",
+      userId,
+      name,
+      email,
+      phone,
+      dob,
+      role,
+      isVerified
+    );
+
+    if (
+      !userId ||
+      !name ||
+      !email ||
+      !phone ||
+      !dob ||
+      !role ||
+      isVerified === undefined
+    ) {
+      return res.status(500).json({
+        success: false,
+        message: "Missing Required Fields",
+      });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User already exists" });
+    }
+
+    const newUser = new User({
+      userId,
+      name,
+      email,
+      phone,
+      dob,
+      role,
+      isVerified,
+    });
+    await newUser.save();
+
+    console.log("new User", newUser);
+
+    return res
+      .status(201)
+      .json({ success: true, message: "User Profile Made", user: newUser });
+  } catch (error) {
+    console.log("error creating user profile", error);
+
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error", error: error });
+  }
+};
+
 export const getProfile = async (req: any, res: any) => {
   try {
     const user = await User.findById(req.user?.id);

@@ -5,6 +5,7 @@ import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
 import { loginSchema, registerSchema } from "../validators/auth.validator";
 import { kafkaProducer } from "../kafka/kafkaClient";
 import { getExpirySeconds, getMs } from "../utils/tokenUtils";
+import axios from "axios";
 dotenv.config();
 
 export const register = async (req: any, res: any) => {
@@ -26,9 +27,10 @@ export const register = async (req: any, res: any) => {
     });
   }
 
+  let newUser: any = null;
+
   try {
     const existingUser = await AuthUser.findOne({ email });
-    console.log("Existing", existingUser);
 
     if (existingUser) {
       return res
@@ -38,53 +40,63 @@ export const register = async (req: any, res: any) => {
 
     // console.log("creating new user");
 
-    const newUser = new AuthUser({
+    newUser = new AuthUser({
       email,
       password,
     });
 
-    // // generate JWT TOKENS
-    // console.log("generating tokens");
-
-    // const accessToken = generateAccessToken(String(newUser._id));
-    // const refreshToken = generateRefreshToken(String(newUser._id));
-
-    // newUser.refreshToken = refreshToken;
     await newUser.save();
 
-    // TODO: REDIS : storing refreshtoken in redis later onwards!
-
-    // kafka
-
-    await kafkaProducer.send({
-      topic: "user_registered",
-      messages: [
-        {
-          key: String(newUser._id),
-          value: JSON.stringify({
-            userId: newUser._id,
-            name: req.body.name,
-            email: newUser.email,
-            phone: req.body.phone,
-            dob: req.body.dob,
-            role: req.body.role || "student",
-            isVerified: newUser.isVerified,
-          }),
-        },
-      ],
-    });
-
-    console.log("📤 Event sent: user_registered");
-
-    // res.cookie("refreshToken", refreshToken, {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === "production",
-    //   sameSite: "strict",
-    //   path: "/",
+    //* kafka
+    //* We can use this if we want to setup kafka
+    // await kafkaProducer.send({
+    //   topic: "user_registered",
+    //   messages: [
+    //     {
+    //       key: String(newUser._id),
+    //       value: JSON.stringify({
+    //         userId: newUser._id,
+    //         name: req.body.name,
+    //         email: newUser.email,
+    //         phone: req.body.phone,
+    //         dob: req.body.dob,
+    //         role: req.body.role || "student",
+    //         isVerified: newUser.isVerified,
+    //       }),
+    //     },
+    //   ],
     // });
+    // console.log("📤 Event sent: user_registered");
 
     // console.log("registered success", newUser, accessToken, refreshToken);
     console.log("registered success");
+
+    //* since user registered for auth model
+    //* lets request to user-service for making the profile if we dont want to use kafka
+
+    const userServiceResponse = await axios.post(
+      `${process.env.USER_SERVICE_URL}/api/v1/user/create-profile`,
+      {
+        userId: newUser._id,
+        name: req.body.name,
+        email: newUser.email,
+        phone: req.body.phone,
+        dob: req.body.dob,
+        role: req.body.role || "student",
+        isVerified: newUser.isVerified,
+      }
+    );
+
+    if (!userServiceResponse.data.success) {
+      console.log("User service profile creation failed, deleting auth user");
+      await AuthUser.findByIdAndDelete(newUser._id);
+      return res.status(500).json({
+        success: false,
+        message: "Failed To create user. Please try again.",
+      });
+    }
+
+
 
     return res.status(201).json({
       success: true,
@@ -93,12 +105,18 @@ export const register = async (req: any, res: any) => {
         id: newUser._id,
         email: newUser.email,
       },
-      // accessToken,
       // verificationToken, // This should be sent via email in a real application
     });
   } catch (error) {
-    console.log("error", error);
-
+    // console.log("error", error);
+    if (newUser && newUser._id) {
+      try {
+        await AuthUser.findByIdAndDelete(newUser._id);
+        console.log("Deleted AuthUser due to error during profile creation");
+      } catch (deleteError) {
+        console.log("Error deleting user after failure:", deleteError);
+      }
+    }
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error", error: error });
@@ -337,7 +355,7 @@ export const refreshAccessToken = async (req: any, res: any) => {
       return res.status(200).json({
         success: true,
         accessToken: newAccessToken,
-        accessTokenExpiryTime
+        accessTokenExpiryTime,
       });
     }
   );
