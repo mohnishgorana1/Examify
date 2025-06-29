@@ -1,3 +1,3 @@
 export const URLs = {
-    backend: "http://localhost:8000",
+    backend: process.env.BACKEND_URL,
 }

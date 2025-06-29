@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { URLs } from "@/constants/urls";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
@@ -94,6 +94,10 @@ function LoginComponent() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    console.log("URLs.backend", URLs.backend);
+  }, []);
 
   return (
     <>
