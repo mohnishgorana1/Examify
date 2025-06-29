@@ -11,8 +11,6 @@ dotenv.config();
 export const register = async (req: any, res: any) => {
   const { email, password, name, phone, dob, role } = req.body;
 
-  console.log("register data: ", email, password, name, phone, dob);
-
   // zod validations
   if (!registerSchema.safeParse(req.body).success) {
     console.log(
@@ -67,9 +65,8 @@ export const register = async (req: any, res: any) => {
     //   ],
     // });
     // console.log("📤 Event sent: user_registered");
-
     // console.log("registered success", newUser, accessToken, refreshToken);
-    console.log("registered success");
+    // console.log("registered success");
 
     //* since user registered for auth model
     //* lets request to user-service for making the profile if we dont want to use kafka
@@ -88,15 +85,13 @@ export const register = async (req: any, res: any) => {
     );
 
     if (!userServiceResponse.data.success) {
-      console.log("User service profile creation failed, deleting auth user");
+      // console.log("User service profile creation failed, deleting auth user");
       await AuthUser.findByIdAndDelete(newUser._id);
       return res.status(500).json({
         success: false,
         message: "Failed To create user. Please try again.",
       });
     }
-
-
 
     return res.status(201).json({
       success: true,
@@ -112,7 +107,7 @@ export const register = async (req: any, res: any) => {
     if (newUser && newUser._id) {
       try {
         await AuthUser.findByIdAndDelete(newUser._id);
-        console.log("Deleted AuthUser due to error during profile creation");
+        // console.log("Deleted AuthUser due to error during profile creation");
       } catch (deleteError) {
         console.log("Error deleting user after failure:", deleteError);
       }
@@ -132,43 +127,39 @@ export const logout = async (req: any, res: any) => {
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }
 
-    // TODO: If using REDIS then remove Refres Token from redis also
-
-    // TODO : Uncomment below part for production
-    // Clear refresh token and accessToken cookie from client
-    // res.clearCookie("refreshToken", {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === "production",
-    //   sameSite: "strict",
-    //   path: "/",
-    // });
-    //  res.clearCookie("accessToken", {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === "production",
-    //   sameSite: "strict",
-    //   path: "/",
-    // });
-
-    // TODO: COmment below part for production
-    // for localhost
+    //* FOR PRODUCTION
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       path: "/",
     });
     res.clearCookie("accessToken", {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       path: "/",
     });
+
+    //* FOR LOCALHOST
+    // res.clearCookie("refreshToken", {
+    //   httpOnly: true,
+    //   secure: false,
+    //   sameSite: "lax",
+    //   path: "/",
+    // });
+    // res.clearCookie("accessToken", {
+    //   httpOnly: true,
+    //   secure: false,
+    //   sameSite: "lax",
+    //   path: "/",
+    // });
 
     return res
       .status(200)
       .json({ success: true, message: "Logout successful" });
   } catch (error) {
-    console.error("Logout Error:", error);
+    // console.error("Logout Error:", error);
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error", error });
@@ -179,7 +170,7 @@ export const login = async (req: any, res: any) => {
   const { email, password } = req.body;
 
   if (!loginSchema.safeParse(req.body).success) {
-    console.log("error in login schema validation");
+    // console.log("error in login schema validation");
 
     return res.status(500).json({
       success: false,
@@ -213,49 +204,41 @@ export const login = async (req: any, res: any) => {
     const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY || "45m";
     const REFRESH_TOKEN_EXPIRY = process.env.REFRESH_TOKEN_EXPIRY || "7d";
 
-    // TODO: Stroring Refresh Token in REDIS
-
-    // TODO: JAB PRODUCTIOn ME JAE TAB BELOW PART UNCOMMENT KR DENA " Set refreshtoken and accessToken as an HTTP-only cookie
-    // res.cookie("refreshToken", refreshToken, {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === "production",
-    //   sameSite: "strict",
-    //   path: "/",
-    // });
-    // res.cookie("accessToken", accessToken, {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === "production",
-    //   sameSite: "strict",
-    //   path: "/",
-    // });
-    console.log(
-      "EXPIRATIONS",
-      getMs(ACCESS_TOKEN_EXPIRY),
-      getMs(REFRESH_TOKEN_EXPIRY)
-    );
-
-    // TODO: ONLY FOR LOCALHOST: production me jane ke liye niche wala part comment kr dena
+    //* FOR PRODUCTION
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: false, // ✅ false for localhost
-      sameSite: "lax", // ✅ 'lax' is safer for dev
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       path: "/",
-      maxAge: getMs(REFRESH_TOKEN_EXPIRY), // 7days (in ms)
     });
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: false, // ✅ false for localhost
-      sameSite: "lax", // ✅ 'lax' is safer for dev
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       path: "/",
-      maxAge: getMs(ACCESS_TOKEN_EXPIRY), // minutes (in ms)
     });
 
-    // Update refreshtoken in db
+    //* ONLY FOR LOCALHOST
+    // res.cookie("refreshToken", refreshToken, {
+    //   httpOnly: true,
+    //   secure: false, // ✅ false for localhost
+    //   sameSite: "lax", // ✅ 'lax' is safer for dev
+    //   path: "/",
+    //   maxAge: getMs(REFRESH_TOKEN_EXPIRY), // 7days (in ms)
+    // });
+    // res.cookie("accessToken", accessToken, {
+    //   httpOnly: true,
+    //   secure: false, // ✅ false for localhost
+    //   sameSite: "lax", // ✅ 'lax' is safer for dev
+    //   path: "/",
+    //   maxAge: getMs(ACCESS_TOKEN_EXPIRY), // minutes (in ms)
+    // });
 
+    // Update refreshtoken in db
     user.refreshToken = refreshToken;
     await user.save();
 
-    console.log("Login Succcess");
+    // console.log("Login Succcess");
 
     const currentTime = Math.floor(Date.now() / 1000); // in seconds
 
@@ -273,7 +256,7 @@ export const login = async (req: any, res: any) => {
       accessTokenExpiryTime,
     });
   } catch (error) {
-    console.error("Login Error:", error);
+    // console.error("Login Error:", error);
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error", error });
@@ -282,7 +265,7 @@ export const login = async (req: any, res: any) => {
 
 export const refreshAccessToken = async (req: any, res: any) => {
   const refreshToken = req.cookies?.refreshToken;
-  console.log("refreshToken", refreshToken);
+  // console.log("refreshToken", refreshToken);
 
   if (!refreshToken) {
     return res
@@ -295,7 +278,7 @@ export const refreshAccessToken = async (req: any, res: any) => {
     process.env.REFRESH_TOKEN_SECRET as string,
     async (err: any, decoded: any) => {
       if (err) {
-        console.log("err verify", err);
+        // console.log("err verify", err);
 
         return res.status(403).json({
           success: false,
@@ -304,11 +287,11 @@ export const refreshAccessToken = async (req: any, res: any) => {
       }
 
       const userId = decoded.userId;
-      console.log("userID", decoded.userId);
+      // console.log("userID", decoded.userId);
 
       const user = await AuthUser.findById(userId);
       const storedRefreshTokenInDB = user?.refreshToken;
-      console.log("storedRefreshTokenInDB", storedRefreshTokenInDB);
+      // console.log("storedRefreshTokenInDB", storedRefreshTokenInDB);
 
       if (!storedRefreshTokenInDB) {
         return res.status(403).json({
@@ -317,7 +300,7 @@ export const refreshAccessToken = async (req: any, res: any) => {
         });
       }
       if (storedRefreshTokenInDB !== refreshToken) {
-        console.log("stored token is not matches with refreshtoken");
+        // console.log("stored token is not matches with refreshtoken");
         return res.status(403).json({
           success: false,
           message: "Invalid session, please log in again",
@@ -325,30 +308,28 @@ export const refreshAccessToken = async (req: any, res: any) => {
       }
 
       // Generate new access token
-
       const newAccessToken = generateAccessToken(String(userId));
       const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY || "15m";
-      console.log("new accessToken", newAccessToken);
+      // console.log("new accessToken", newAccessToken);
 
-      // TODO: JAB PRODUCTIOn ME JAE TAB BELOW PART UNCOMMENT KR DENA " Set accessToken as an HTTP-only cookie
-      // res.cookie("accessToken", accessToken, {
-      //   httpOnly: true,
-      //   secure: process.env.NODE_ENV === "production",
-      //   sameSite: "strict",
-      //   path: "/",
-      // });
-
-      // TODO: ONLY FOR LOCALHOST: production me jane ke liye niche wala part comment kr dena
+      //* FOR PRODUCTION
       res.cookie("accessToken", newAccessToken, {
         httpOnly: true,
-        secure: false, // ✅ false for localhost
-        sameSite: "lax", // ✅ 'lax' is safer for dev
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
         path: "/",
-        maxAge: getMs(ACCESS_TOKEN_EXPIRY), // minutes (in ms)
       });
 
-      const currentTime = Math.floor(Date.now() / 1000); // in seconds
+      //* FOR LOCALHOST
+      // res.cookie("accessToken", newAccessToken, {
+      //   httpOnly: true,
+      //   secure: false, // ✅ false for localhost
+      //   sameSite: "lax", // ✅ 'lax' is safer for dev
+      //   path: "/",
+      //   maxAge: getMs(ACCESS_TOKEN_EXPIRY), // minutes (in ms)
+      // });
 
+      const currentTime = Math.floor(Date.now() / 1000); // in seconds
       const accessTokenExpiryTime =
         currentTime + getExpirySeconds(ACCESS_TOKEN_EXPIRY);
 
@@ -378,7 +359,7 @@ export const verifyToken = async (req: any, res: any) => {
     if (!user) {
       return res.status(404).json({ message: "Authenticated User not found" });
     }
-    console.log("Token Verified at Auth for gateway", user);
+    // console.log("Token Verified at Auth for gateway", user);
 
     return res.status(200).json({
       success: true,
@@ -386,7 +367,7 @@ export const verifyToken = async (req: any, res: any) => {
       user,
     });
   } catch (error) {
-    console.log("Error verify token", error);
+    // console.log("Error verify token", error);
 
     // Check for token expiration or invalid token
     if (error instanceof TokenExpiredError) {
