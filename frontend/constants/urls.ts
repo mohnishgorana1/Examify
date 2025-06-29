@@ -1,3 +1,3 @@
 export const URLs = {
-    backend: process.env.NEXT_PUBLIC_BACKEND_URL,
-}
+  backend: String(process.env.NEXT_PUBLIC_BACKEND_URL),
+};
