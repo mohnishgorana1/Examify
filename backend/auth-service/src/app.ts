@@ -8,18 +8,15 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.routes";
 import connectDB from "./config/db";
 
-
 dotenv.config();
 connectDB();
 
-
 const app = express();
-
 
 // middleware
 app.use(
   cors({
-    origin: "http://localhost:3000", // ya jo bhi frontend origin ho
+    origin: process.env.EXAMIFY_FRONTEND_URL, // ya jo bhi frontend origin ho
     credentials: true, // ✅ This is most important
   })
 );
@@ -29,10 +26,6 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 app.use(cookieParser());
-
-
-
-
 
 // Routes
 app.use("/api/v1/auth", authRoutes);
