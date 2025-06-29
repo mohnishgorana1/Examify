@@ -101,6 +101,7 @@ function LoginComponent() {
 
   return (
     <>
+      <h1 className="text-pink-500">BACKEND: {URLs.backend}</h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4"
