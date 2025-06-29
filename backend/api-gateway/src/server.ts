@@ -17,7 +17,7 @@ app.use(limiter);
 // middleware
 app.use(
   cors({
-    origin: "http://localhost:3000", // ya jo bhi frontend origin ho
+    origin: process.env.EXAMIFY_FRONTEND_URL,
     credentials: true, // ✅ This is most important
   })
 );
