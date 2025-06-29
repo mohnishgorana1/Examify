@@ -55,8 +55,7 @@ export default function TestimonialSection() {
         {testimonials.map((t, i) => (
           <div
             key={i}
-            className="bg-neutral-800 rounded-xl shadow-lg border border-gray-100 p-6 flex flex-col justify-between"
-          >
+            className="bg-neutral-800 rounded-xl shadow-sm border border-neutral-700 p-6 flex flex-col justify-between  hover:shadow-neutral-500 ">
             <p className="text-white-700 text-sm leading-relaxed mb-4">
               "{t.feedback}"
             </p>
