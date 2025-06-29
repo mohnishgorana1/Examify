@@ -4,7 +4,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-neutral-800 from-20% via-neutral-900 to-neutral-950 px-6 py-16 md:px-20">
       <div className="max-w-5xl mx-auto text-center">
-        <h1 className="text-4xl md:text-5xl font-bold text-orange-700 mb-6">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-orange-500 mb-6">
           About Examify
         </h1>
         <p className="text-lg text-neutral-400 mb-12 max-w-3xl mx-auto">
@@ -28,9 +28,9 @@ export default function AboutPage() {
           ].map((item, index) => (
             <div
               key={index}
-              className="bg-neutral-800 hover:shadow-md hover:shadow-orange-700 transition-all duration-300 rounded-xl p-6 text-left"
+              className="bg-neutral-800 hover:shadow-md hover:shadow-orange-500 transition-all duration-300 rounded-xl p-6 text-left"
             >
-              <h3 className="text-sm md:text-lg font-semibold text-orange-600 mb-2">
+              <h3 className="text-sm md:text-lg font-semibold text-orange-500 mb-2">
                 {item.title}
               </h3>
               <p className="text-neutral-500 text-xs md:text-sm">{item.desc}</p>
@@ -39,7 +39,7 @@ export default function AboutPage() {
         </div>
 
         <div className="mt-16">
-          <h2 className="text-2xl md:text-3xl font-semibold text-orange-800 mb-4">
+          <h2 className="text-2xl md:text-3xl font-semibold text-orange-500 mb-4">
             Our Mission
           </h2>
           <p className="text-white max-w-2xl mx-auto">

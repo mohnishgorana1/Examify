@@ -2,16 +2,19 @@ import React, { useEffect, useState } from "react";
 import { URLs } from "@/constants/urls";
 import axios from "axios";
 import { formatDateToLongString } from "@/utils";
-import { Button } from "../ui/button";
 import Link from "next/link";
 import { getValidAccessToken } from "@/utils/getValidAccessToken";
+import Loader from "../Loader";
+import toast from "react-hot-toast";
 
 function MyExams() {
   const [myCreatedExams, setMyCreatedExams] = useState<any>();
+  const [isFetchingExams, setIsFetchingExams] = useState(true);
 
   useEffect(() => {
     const fetch = async () => {
       try {
+        setIsFetchingExams(true);
         const accessToken = await getValidAccessToken();
         const { data } = await axios.get(
           `${URLs.backend}/api/v1/exam/my-created-exams`,
@@ -24,17 +27,31 @@ function MyExams() {
 
         if (data.success) {
           setMyCreatedExams(data.exams);
-          console.log("created exams", data.exams);
+          console.log("you exams", data.exams);
+          toast.success("✅ Fetched Exams Successfully", { duration: 2000 });
         } else {
           console.log("Failed to get exams");
+          toast.error("❌ Error Fetching Exams", { duration: 2000 });
         }
       } catch (err) {
         console.error("Error fetching exams", err);
+        toast.error("❌ Error Fetching Exams", { duration: 2000 });
+      } finally {
+        setIsFetchingExams(false);
       }
     };
 
     fetch();
   }, []);
+
+  if (isFetchingExams) {
+    return (
+      <main className="w-full h-[40vh] md:h-[50vh] flex items-center flex-col justify-center gap-y-2">
+        <Loader />
+        <h1 className="text-white">Fetching you exams</h1>
+      </main>
+    );
+  }
 
   return (
     <main className="w-full h-auto md:grid md:grid-cols-3 md:px-3">
@@ -56,11 +73,10 @@ function MyExams() {
 
         {/* list of created exams */}
         <div className="flex flex-col gap-4">
-          {!myCreatedExams ? (
-            <p className="text-center text-white">Loading your exams...</p>
-          ) : myCreatedExams.length === 0 ? (
+          {myCreatedExams && myCreatedExams.length === 0 ? (
             <p className="text-center text-white">No exams found.</p>
           ) : (
+            myCreatedExams &&
             myCreatedExams.map((exam: any) => (
               <div
                 key={exam._id}

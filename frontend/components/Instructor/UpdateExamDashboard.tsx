@@ -1,7 +1,6 @@
 "use client";
 import { URLs } from "@/constants/urls";
 import axios from "axios";
-import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useState, useEffect } from "react";
 import {
@@ -12,6 +11,7 @@ import {
 } from "@/components/ui/accordion";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import Loader from "../Loader";
 
 type Question = {
   createdBy: string;
@@ -30,9 +30,7 @@ type Exam = {
 };
 
 function UpdateExamDashboard({ examId }: { examId: string }) {
-  const pathname = usePathname();
-  const router = useRouter();
-  const { user, getValidAccessToken, logout } = useAuth();
+  const { getValidAccessToken } = useAuth();
 
   const [formData, setFormData] = useState<Exam>({
     title: "",
@@ -45,15 +43,15 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
 
   const [allQuestions, setAllQuestions] = useState<Question[]>([]);
 
-  const [loading, setLoading] = useState(true);
+  const [isFetchingExamDetails, setIsFetchingExamDetails] = useState(true);
+
   const [error, setError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
 
   // 🔹 Fetch exam and instructor questions
   const fetchDetails = async () => {
     const token = await getValidAccessToken();
-    console.log("Token for fetcing exam details", token);
-
+    setIsFetchingExamDetails(true);
     try {
       const examRes = await axios.get(`${URLs.backend}/api/v1/exam/${examId}`, {
         headers: {
@@ -73,12 +71,15 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
         const { title, description, duration, questions } = examRes.data.exam;
         setFormData({ title, description, duration, questions });
         setAllQuestions(questionsRes.data.questions);
+
+        toast.success("Exam Details Fetched", { duration: 2000 });
       }
     } catch (error) {
       console.error("Something went wrong while fetching data: ", error);
+      toast.success("Error fetching Exam Details", { duration: 2000 });
       setError("Something went wrong while fetching data.");
     } finally {
-      setLoading(false);
+      setIsFetchingExamDetails(false);
     }
   };
 
@@ -109,7 +110,6 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
 
   // 🔹 Submit update
   const handleUpdateExam = async () => {
-    console.log("formdata", formData);
     setIsUpdating(true);
 
     try {
@@ -140,8 +140,6 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
       if (res.data.success) {
         toast.success("Exam updated successfully!");
         console.log("res", res.data);
-
-        // router.push("/dashboard/instructor");
       } else {
         toast.error("Failed to update exam.");
       }
@@ -153,11 +151,24 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
     }
   };
 
-  if (loading) return <p className="p-4">Loading...</p>;
-  if (error) return <p className="text-red-500 p-4">{error}</p>;
+  if (isFetchingExamDetails) {
+    return (
+      <section className="w-full h-[60vh] flex flex-col gap-y-3 items-center justify-center">
+        <Loader />
+        <h1 className="text-white">Fetching Exam Details</h1>
+      </section>
+    );
+  }
+
+  if (error)
+    return (
+      <section className="w-full h-[60vh] flex flex-col gap-y-3 items-center justify-center">
+        <p className="text-red-500 p-4 text-xl">ERROR: {error}</p>;
+      </section>
+    );
 
   return (
-    <section className="min-h-screen py-10 px-4 bg-gradient-to-b from-neutral-800 from-5% via-35% via-neutral-950 to-black to-90%">
+    <section className="min-h-[95vh] py-10 px-4 bg-gradient-to-b from-neutral-800 from-5% via-35% via-neutral-950 to-black to-90%">
       <div className="max-w-3xl mx-auto bg-neutral-800 rounded-xl shadow-xl shadow-gray-500 p-6 space-y-4">
         <h1 className="text-2xl font-bold text-orange-500">Edit Exam</h1>
 

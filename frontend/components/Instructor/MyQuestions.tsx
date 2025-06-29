@@ -3,24 +3,19 @@ import { URLs } from "@/constants/urls";
 
 import axios from "axios";
 import { formatDateToLongString } from "@/utils";
+import { getValidAccessToken } from "@/utils/getValidAccessToken";
+import toast from "react-hot-toast";
+import Loader from "../Loader";
 
 function MyQuestions() {
-  const [token, setToken] = useState("");
   const [myCreatedQuestions, setMyCreatedQuestions] = useState<any>();
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [isFetchingQuestions, setisFetchingQuestions] = useState(true);
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-
-    if (!accessToken) {
-      console.log("No token ");
-      return;
-    }
-
-    console.log("Access token found:", accessToken);
-    setToken(accessToken);
-
     const fetch = async () => {
+      const accessToken = await getValidAccessToken();
+      setisFetchingQuestions(true);
       try {
         const { data } = await axios.get(
           `${URLs.backend}/api/v1/exam/my-created-questions`,
@@ -33,21 +28,35 @@ function MyQuestions() {
 
         if (data.success) {
           setMyCreatedQuestions(data.questions);
-          console.log("created questions", data.questions);
+          toast.success("✅ Fetched Questions Successfully", {
+            duration: 2000,
+          });
         } else {
           console.log("Failed to get questions");
+          toast.error("❌ Error Fetching Questions", { duration: 2000 });
         }
       } catch (err) {
         console.error("Error fetching questions", err);
+        toast.error("❌ Error Fetching Questions", { duration: 2000 });
+      } finally {
+        setisFetchingQuestions(false);
       }
     };
 
     fetch();
   }, []);
 
+  if (isFetchingQuestions) {
+    return (
+      <main className="w-full h-[40vh] md:h-[50vh] flex items-center flex-col justify-center gap-y-2">
+        <Loader />
+        <h1 className="text-white">Fetching you questions</h1>
+      </main>
+    );
+  }
+
   return (
     <main className="w-full h-auto ">
-      
       <section className="flex flex-col gap-y-8 md:py-4">
         <h1 className="font-bold text-2xl self-center bg-gradient-to-br from-25% from-orange-500 via-55% via-neutral-600 to-70% to-neutral-500 bg-clip-text text-transparent ">
           Your Created Questions
@@ -56,15 +65,20 @@ function MyQuestions() {
         {/* list of created questions */}
         <div className="flex flex-col gap-5">
           {myCreatedQuestions && myCreatedQuestions.length === 0 ? (
-            <p className="text-center text-white text-2xl md:text-4xl mt-8">No questions found.</p>
+            <p className="text-center text-white text-2xl md:text-4xl mt-8">
+              No questions found.
+            </p>
           ) : (
-            myCreatedQuestions && myCreatedQuestions.map((q: any, idx: number) => {
+            myCreatedQuestions &&
+            myCreatedQuestions.map((q: any, idx: number) => {
               const isExpanded = expandedIndex === idx;
 
               return (
                 <div
                   key={q._id}
-                  className={`${isExpanded && "shadow-neutral-500 shadow-lg"}  rounded-lg shadow-sm p-4 bg-neutral-800 transition-all duration-300`}
+                  className={`${
+                    isExpanded && "shadow-neutral-500 shadow-lg"
+                  }  rounded-lg shadow-sm p-4 bg-neutral-800 transition-all duration-300`}
                 >
                   {/* Header */}
                   <div

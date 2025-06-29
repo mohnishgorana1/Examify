@@ -12,7 +12,7 @@ async function UpdateExamPage({ params }: Params) {
   const { examId } = await params;
 
   return (
-    <main>
+    <main className="w-full min-h-[90vh] bg-gradient-to-b from-neutral-800 from-5% via-35% via-neutral-950 to-black to-90%">
       <UpdateExamDashboard examId={examId} />
     </main>
   );
