@@ -14,6 +14,7 @@ connectDB();
 const app = express();
 
 // middleware
+
 app.use(
   cors({
     origin: process.env.EXAMIFY_FRONTEND_URL, // ya jo bhi frontend origin ho

@@ -8,11 +8,19 @@ dotenv.config();
 
 const router = express.Router();
 
+function copyCORSHeaders(proxyRes, proxyResData, req, res) {
+  const origin = process.env.EXAMIFY_FRONTEND_URL;
+  res.header("Access-Control-Allow-Origin", origin);
+  res.header("Access-Control-Allow-Credentials", "true");
+  return proxyResData;
+}
+
 // 🟢 AUTH SERVICE
 router.use(
   "/api/v1/auth",
   expressProxy(process.env.AUTH_SERVICE_URL!, {
     proxyReqPathResolver: (req) => `/api/v1/auth${req.url}`,
+    userResDecorator: copyCORSHeaders,
   })
 );
 
@@ -21,6 +29,7 @@ router.use(
   "/api/v1/user",
   expressProxy(process.env.USER_SERVICE_URL!, {
     proxyReqPathResolver: (req) => `/api/v1/user${req.url}`,
+    userResDecorator: copyCORSHeaders,
   })
 );
 
@@ -35,6 +44,7 @@ router.use(
       proxyReqOpts.headers["x-user"] = JSON.stringify(req.user);
       return proxyReqOpts;
     },
+    userResDecorator: copyCORSHeaders,
   })
 );
 
