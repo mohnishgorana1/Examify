@@ -2,6 +2,8 @@ import jwt from "jsonwebtoken";
 import { User } from "../models/user.model";
 
 export const authMiddleware = async (req: any, res: any, next: any) => {
+  console.log("inside authmiddleware of user service");
+  
   try {
     const authHeader = req.headers.authorization;
 
@@ -12,6 +14,8 @@ export const authMiddleware = async (req: any, res: any, next: any) => {
     }
 
     const token = authHeader.split(" ")[1];
+    console.log("tokne in side user sercice", token);
+    
 
     // Verify token
     const decoded: any = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!);

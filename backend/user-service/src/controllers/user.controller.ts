@@ -64,6 +64,8 @@ export const createProfile = async (req: any, res: any) => {
 };
 
 export const getProfile = async (req: any, res: any) => {
+  console.log("inside getProfile");
+  
   try {
     const user = await User.findById(req.user?.id);
     if (!user) {
