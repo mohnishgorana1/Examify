@@ -8,7 +8,7 @@ dotenv.config();
 
 const router = express.Router();
 
-function copyCORSHeaders(proxyRes, proxyResData, req, res) {
+function copyCORSHeaders(proxyRes: any, proxyResData: any, req: any, res: any) {
   const origin = process.env.EXAMIFY_FRONTEND_URL;
   res.header("Access-Control-Allow-Origin", origin);
   res.header("Access-Control-Allow-Credentials", "true");
