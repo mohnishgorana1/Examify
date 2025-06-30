@@ -216,7 +216,7 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
   return (
     <div className="md:space-y-6 space-y-3 relative min-h-screen">
       <header className="py-2 pl-2 z-50 sticky grid grid-cols-11 gap-x-5 items-center md:justify-between justify-center w-full border border-neutral-600 rounded-xl">
-        <h1 className="col-span-11 md:col-span-8 text-xl md:text-2xl font-bold text-orange-500">
+        <h1 className="col-span-11 md:col-span-8 text-xl md:text-2xl font-bold text-center md:text-start text-orange-500 w-max ">
           {exam?.title}
         </h1>
         <div className="col-span-11 md:col-span-3 w-full flex items-center justify-center">
@@ -326,9 +326,9 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
         </div>
         {/* control */}
         <div className="md:h-[10vh] md:border md:border-neutral-600 rounded-xl grid md:grid-cols-11 gap-x-5 items-center">
-          <div className="md:col-span-8 px-1 sm:px-8 md:px-12 lg:px-20 flex flex-col items-center md:flex-row gap-x-2 md:gap-x-3 lg:gap-x-5 justify-evenly">
+          <div className="md:col-span-8 px-2 sm:px-8 md:px-12 lg:px-20 flex flex-col md:items-center md:flex-row gap-x-2 md:gap-x-3 lg:gap-x-5 justify-evenly gap-y-3">
             <Button
-              className="h-8 w-24 md:w-32 lg:w-44 text-sm  bg-blue-500 hover:bg-blue-500/75"
+              className="h-8 w-[80vw] md:w-32 lg:w-44 text-sm  bg-blue-500 hover:bg-blue-500/75"
               onClick={() => {
                 // If selected, it's already saved via onValueChange.
                 // But if not selected, just move on (no save).
@@ -343,7 +343,7 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
               Save
             </Button>
             <Button
-              className="h-8 w-24 md:w-32 lg:w-44 text-sm  bg-red-500 hover:bg-red-500/75"
+              className="h-8 w-[80vw] md:w-32 lg:w-44 text-sm  bg-red-500 hover:bg-red-500/75"
               onClick={() => {
                 if (currentQuestionNumber < totalQuestions) {
                   const nextQuestion = exam.questions[currentQuestionNumber]; // 0-indexed
@@ -362,7 +362,7 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
                   prev.filter((a) => a.questionId !== currentQuestion._id)
                 )
               }
-              className="h-8 w-24 md:w-32 lg:w-44 text-sm cursor-pointer "
+              className="h-8 w-[80vw] md:w-32 lg:w-44 text-sm cursor-pointer "
             >
               Clear
             </Button>
