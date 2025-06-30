@@ -230,7 +230,7 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
         </div>
       </header>
 
-      <div className="md:min-h-[80vh] flex flex-col gap-y-4 md:gap-y-2 ">
+      <div className="md:min-h-[80vh] flex flex-col gap-y-6 md:gap-y-2 ">
         <div className="grid md:grid-cols-11 gap-x-5 md:min-h-[60vh]">
           {/* question */}
           <section className="md:col-span-8 border border-neutral-600 rounded-xl md:py-4 py-2 px-2 flex flex-col md:gap-y-8 gap-y-4">
@@ -325,7 +325,7 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
           </section>
         </div>
         {/* control */}
-        <div className="md:h-[10vh] md:border md:border-neutral-600 rounded-xl grid md:grid-cols-11 gap-x-5 items-center">
+        <div className="my-2 md:h-[10vh] md:border md:border-neutral-600 rounded-xl grid md:grid-cols-11 gap-x-5 items-center">
           <div className="md:col-span-8 px-2 sm:px-8 md:px-12 lg:px-20 flex flex-col items-center md:flex-row gap-x-2 md:gap-x-3 lg:gap-x-5 justify-evenly gap-y-3">
             <Button
               className="h-8 w-[80vw] md:w-32 lg:w-44 text-sm  bg-blue-500 hover:bg-blue-500/75"
@@ -379,7 +379,7 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
         </div>
 
         {/*MOBILE:  question-status/tray*/}
-        <section className="block md:hidden md:min-h-[60vh] md:col-span-3 border border-neutral-600 rounded-xl">
+        <section className="mt-2 block md:hidden md:min-h-[60vh] md:col-span-3 border border-neutral-600 rounded-xl">
           <div className="h-[5vh] flex gap-8 items-center justify-center my-2 pb-1 border-b">
             <span className="flex items-center gap-2">
               <button className="bg-red-500 text-black p-1 w-4 h-4 rounded-md"></button>
@@ -420,7 +420,7 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
           </div>
         </section>
         {/* SUBMIT BTN FOR MOBILE */}
-        <div className="w-full md:hidden items-center justify-center">
+        <div className="w-full md:hidden mt-2 items-center justify-center">
           <Button
             onClick={() => handleSubmit(false)}
             disabled={submitting || score !== null}
