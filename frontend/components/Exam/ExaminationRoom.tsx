@@ -216,7 +216,7 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
   return (
     <div className="md:space-y-6 space-y-3 relative min-h-screen">
       <header className="py-2 pl-2 z-50 sticky grid grid-cols-11 gap-x-5 items-center md:justify-between justify-center w-full border border-neutral-600 rounded-xl">
-        <h1 className="col-span-11 md:col-span-8 text-xl md:text-2xl font-bold text-center md:text-start text-orange-500 w-max ">
+        <h1 className="col-span-11 md:col-span-8 text-2xl font-bold text-center md:text-start text-orange-500 w-max ">
           {exam?.title}
         </h1>
         <div className="col-span-11 md:col-span-3 w-full flex items-center justify-center">
@@ -233,8 +233,8 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
       <div className="md:min-h-[80vh] flex flex-col gap-y-4 md:gap-y-2 ">
         <div className="grid md:grid-cols-11 gap-x-5 md:min-h-[60vh]">
           {/* question */}
-          <section className="md:col-span-8 border border-neutral-600 rounded-xl md:py-4 py-2 px-2 flex flex-col md:gap-y-8 gap-y-3">
-            <h2 className="font-semibold text-lg md:text-xl text-white">
+          <section className="md:col-span-8 border border-neutral-600 rounded-xl md:py-4 py-2 px-2 flex flex-col md:gap-y-8 gap-y-4">
+            <h2 className="font-semibold text-xl md:text-xl text-white">
               Q.{currentQuestionNumber} {currentQuestion.text}{" "}
               {/* <span className="text-xs ">{currentQuestion._id}</span> */}
             </h2>
@@ -261,7 +261,7 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
                 }
               }}
             >
-              <div className="flex flex-col gap-y-2 md:gap-y-3 text-white text-lg pl-2">
+              <div className="flex flex-col gap-y-3 md:gap-y-3 text-white text-lg pl-2">
                 {currentQuestion.options &&
                   currentQuestion.options.map((option: any, optionIdx: any) => (
                     <div
@@ -273,7 +273,7 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
                         id={`option-${optionIdx}`}
                       />
                       <Label
-                        className="text-sm md:text-lg"
+                        className="text-md md:text-lg"
                         htmlFor={`option-${optionIdx}`}
                       >
                         {option}
@@ -326,7 +326,7 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
         </div>
         {/* control */}
         <div className="md:h-[10vh] md:border md:border-neutral-600 rounded-xl grid md:grid-cols-11 gap-x-5 items-center">
-          <div className="md:col-span-8 px-2 sm:px-8 md:px-12 lg:px-20 flex flex-col md:items-center md:flex-row gap-x-2 md:gap-x-3 lg:gap-x-5 justify-evenly gap-y-3">
+          <div className="md:col-span-8 px-2 sm:px-8 md:px-12 lg:px-20 flex flex-col items-center md:flex-row gap-x-2 md:gap-x-3 lg:gap-x-5 justify-evenly gap-y-3">
             <Button
               className="h-8 w-[80vw] md:w-32 lg:w-44 text-sm  bg-blue-500 hover:bg-blue-500/75"
               onClick={() => {
@@ -381,16 +381,16 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
         {/*MOBILE:  question-status/tray*/}
         <section className="block md:hidden md:min-h-[60vh] md:col-span-3 border border-neutral-600 rounded-xl">
           <div className="h-[5vh] flex gap-8 items-center justify-center my-2 pb-1 border-b">
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-2">
               <button className="bg-red-500 text-black p-1 w-4 h-4 rounded-md"></button>
               <span className="text-white">Not Saved</span>
             </span>
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-2">
               <button className="bg-green-500 text-black p-1 w-4 h-4 rounded-md"></button>
               <span className="text-white">Saved</span>
             </span>
           </div>
-          <div className="max-h-[55vh] overflow-x-auto custom-scrollbar flex  gap-x-4 px-2 py-3 w-full">
+          <div className="max-h-[55vh] overflow-x-auto custom-scrollbar flex items-center gap-x-5 px-3 pt-4 pb-5 w-full">
             {exam &&
               exam?.questions &&
               exam.questions.length !== 0 &&
