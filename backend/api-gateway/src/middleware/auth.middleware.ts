@@ -2,11 +2,7 @@ import axios from "axios";
 
 export const authenticateUser = async (req: any, res: any, next: any) => {
   const token = req.headers.authorization?.split(" ")[1];
-  // if (!token) {
-  //   return res.status(401).json({ message: "No token Provided in middleware of api gateway" });
-  // }
   console.log("TOKEN AT API GATEWAY", token);
-
   try {
     const { data } = await axios.post(
       `${process.env.AUTH_SERVICE_URL}/api/v1/auth/verify-token`!,

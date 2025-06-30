@@ -13,6 +13,7 @@ const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
   max: 100,
 });
+
 app.use(limiter);
 // middleware
 app.use(
@@ -21,8 +22,7 @@ app.use(
     credentials: true, // ✅ This is most important
   })
 );
-// Gateway test route
-// app.get("/", (req: any, res: any) => res.send("API Gateway is running"));
+
 
 // Mount proxy routes
 app.use("/", proxyRoutes);
