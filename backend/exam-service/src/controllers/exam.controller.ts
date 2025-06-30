@@ -6,18 +6,18 @@ import { Submission } from "../models/submission.model";
 import { Enrollment } from "../models/enrollment";
 
 export const createExam = async (req: any, res: any) => {
-  console.log("Inside create exam");
+  // console.log("Inside create exam");
   const token = req.headers.authorization?.split(" ")[1];
-  console.log("TOKEN IN CONTORLLER ", token);
+  // console.log("TOKEN IN CONTORLLER ", token);
 
   if (!req.user) {
-    console.error("Can't get req.user:");
+    // console.error("Can't get req.user:");
     return res
       .status(500)
       .json({ success: false, message: "Can't get req.user" });
   }
   if (!token) {
-    console.error("Can't get Token");
+    // console.error("Can't get Token");
     return res
       .status(500)
       .json({ success: false, message: "Can't get Authorization Token" });
@@ -38,7 +38,7 @@ export const createExam = async (req: any, res: any) => {
         .json({ success: false, message: "Only instructors can create exams" });
     }
 
-    console.log("DATA from user service response", data);
+    // console.log("DATA from user service response", data);
 
     const {
       title,
@@ -67,31 +67,31 @@ export const createExam = async (req: any, res: any) => {
     });
 
     await newExam.save();
-    console.log("Exam created success", newExam);
+    // console.log("Exam created success", newExam);
     return res.status(201).json({
       success: true,
       message: "Exam created successfully",
       exam: newExam,
     });
   } catch (error) {
-    console.error("Error in creating exam:", error);
+    // console.error("Error in creating exam:", error);
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error", error });
   }
 };
 export const fetchExamDetails = async (req: any, res: any) => {
-  console.log("Inside fetch signle exam details");
+  // console.log("Inside fetch signle exam details");
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!req.user) {
-    console.error("Can't get req.user:");
+    // console.error("Can't get req.user:");
     return res
       .status(500)
       .json({ success: false, message: "Can't get req.user" });
   }
   if (!token) {
-    console.error("Can't get Token");
+    // console.error("Can't get Token");
     return res
       .status(401)
       .json({ success: false, message: "Can't get Authorization Token" });
@@ -99,7 +99,7 @@ export const fetchExamDetails = async (req: any, res: any) => {
 
   const { examId } = req.params;
   if (!examId) {
-    console.error("Can't get examID in params");
+    // console.error("Can't get examID in params");
     return res
       .status(400)
       .json({ success: false, message: "Can't get examID in params" });
@@ -112,14 +112,14 @@ export const fetchExamDetails = async (req: any, res: any) => {
         .json({ success: false, message: "Can't get any exam" });
     }
 
-    console.log("Exam fetched success", exam);
+    // console.log("Exam fetched success", exam);
     return res.status(201).json({
       success: true,
       message: "Exam fetched successfully",
       exam: exam,
     });
   } catch (error) {
-    console.error("Error in fetching exam:", error);
+    // console.error("Error in fetching exam:", error);
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error", error });
@@ -130,13 +130,13 @@ export const createQuestion = async (req: any, res: any) => {
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!req.user) {
-    console.error("Can't get req.user:");
+    // console.error("Can't get req.user:");
     return res
       .status(500)
       .json({ success: false, message: "Can't get req.user" });
   }
   if (!token) {
-    console.error("Can't get Token");
+    // console.error("Can't get Token");
     return res
       .status(500)
       .json({ success: false, message: "Can't get Authorization Token" });
@@ -183,7 +183,7 @@ export const createQuestion = async (req: any, res: any) => {
       question: question,
     });
   } catch (error) {
-    console.error("Error in creating question:", error);
+    // console.error("Error in creating question:", error);
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error", error });
@@ -193,14 +193,14 @@ export const createQuestion = async (req: any, res: any) => {
 export const updateExam = async (req: any, res: any) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!req.user) {
-    console.error("Unable to extract user from request. Auth failed?");
+    // console.error("Unable to extract user from request. Auth failed?");
     return res.status(500).json({
       success: false,
       message: "Unable to extract user from request. Auth failed?",
     });
   }
   if (!token) {
-    console.error("Can't get Token");
+    // console.error("Can't get Token");
     return res
       .status(500)
       .json({ success: false, message: "Can't get Authorization Token" });
@@ -305,7 +305,7 @@ export const updateExam = async (req: any, res: any) => {
       exam,
     });
   } catch (error) {
-    console.error("Error in updating exam: ", error);
+    // console.error("Error in updating exam: ", error);
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error", error });
@@ -315,14 +315,14 @@ export const updateExam = async (req: any, res: any) => {
 export const myCreatedExams = async (req: any, res: any) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!req.user) {
-    console.error("Unable to extract user from request. Auth failed?");
+    // console.error("Unable to extract user from request. Auth failed?");
     return res.status(500).json({
       success: false,
       message: "Unable to extract user from request. Auth failed?",
     });
   }
   if (!token) {
-    console.error("Can't get Token in myCreatedExams controller");
+    // console.error("Can't get Token in myCreatedExams controller");
     return res
       .status(500)
       .json({ success: false, message: "Can't get Authorization Token" });
@@ -339,18 +339,18 @@ export const myCreatedExams = async (req: any, res: any) => {
       exams,
     });
   } catch (error) {
-    console.error("Error in fetching your created exams", error);
+    // console.error("Error in fetching your created exams", error);
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error", error });
   }
 };
 export const myCreatedQuestions = async (req: any, res: any) => {
-  console.log("inside mycreated ques");
+  // console.log("inside mycreated ques");
 
   const token = req.headers.authorization?.split(" ")[1];
   if (!req.user) {
-    console.error("Unable to extract user from request. Auth failed?");
+    // console.error("Unable to extract user from request. Auth failed?");
     return res.status(500).json({
       success: false,
       message: "Unable to extract user from request. Auth failed?",
@@ -358,7 +358,7 @@ export const myCreatedQuestions = async (req: any, res: any) => {
   }
 
   if (!token) {
-    console.error("Can't get Token in myCreatedExams controller");
+    // console.error("Can't get Token in myCreatedExams controller");
     return res
       .status(500)
       .json({ success: false, message: "Can't get Authorization Token" });
@@ -384,7 +384,7 @@ export const myCreatedQuestions = async (req: any, res: any) => {
     if (!questions) {
       return res.status(403).json({ message: "No questions Found" });
     }
-    console.log("QUESTIONS", questions);
+    // console.log("QUESTIONS", questions);
 
     return res.status(201).json({
       success: true,
@@ -392,7 +392,7 @@ export const myCreatedQuestions = async (req: any, res: any) => {
       questions,
     });
   } catch (error) {
-    console.error("Error in fetching your created questions", error);
+    // console.error("Error in fetching your created questions", error);
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error", error });
@@ -400,17 +400,17 @@ export const myCreatedQuestions = async (req: any, res: any) => {
 };
 
 export const getResults = async (req: any, res: any) => {
-  console.log("Inside all results ");
+  // console.log("Inside all results ");
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!req.user) {
-    console.error("Can't get req.user:");
+    // console.error("Can't get req.user:");
     return res
       .status(500)
       .json({ success: false, message: "Can't get req.user" });
   }
   if (!token) {
-    console.error("Can't get Token");
+    // console.error("Can't get Token");
     return res
       .status(401)
       .json({ success: false, message: "Can't get Authorization Token" });
@@ -435,7 +435,7 @@ export const getResults = async (req: any, res: any) => {
     // now find exams of the instructore
     const instructorId = req.user?._id;
 
-    console.log("instructor", instructorId);
+    // console.log("instructor", instructorId);
 
     const exams = await Exam.find({ createdBy: instructorId })
       .populate("questions")
@@ -455,15 +455,15 @@ export const getResults = async (req: any, res: any) => {
     exams.map((exam, idx) => {
       examIds.push(exam._id);
     });
-    console.log("Exams", exams);
+    // console.log("Exams", exams);
 
-    console.log("exam ids", examIds);
+    // console.log("exam ids", examIds);
 
     const submissions = await Submission.find({
       examId: { $in: examIds },
     }).populate("examId");
 
-    console.log("submissions", submissions);
+    // console.log("submissions", submissions);
 
     // iske pass vo sare exams hai jo iss instructor ke h
     // fir  iske pass vo sare submsions h jo iski banai exams ke hai
@@ -493,7 +493,7 @@ export const getResults = async (req: any, res: any) => {
       };
     });
 
-    console.log("exam results", examResults);
+    // console.log("exam results", examResults);
 
     return res.status(201).json({
       success: true,
@@ -504,7 +504,7 @@ export const getResults = async (req: any, res: any) => {
       examResults,
     });
   } catch (error) {
-    console.error("Error in fetching results:", error);
+    // console.error("Error in fetching results:", error);
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error", error });
@@ -515,16 +515,16 @@ export const viewSubmissionByExamId = async (req: any, res: any) => {
   const token = req.headers.authorization?.split(" ")[1];
 
   const { examId } = req.params;
-  console.log("Inside view submisiosns for exam", examId);
+  // console.log("Inside view submisiosns for exam", examId);
 
   if (!req.user) {
-    console.error("Can't get req.user:");
+    // console.error("Can't get req.user:");
     return res
       .status(500)
       .json({ success: false, message: "Can't get req.user" });
   }
   if (!token) {
-    console.error("Can't get Token");
+    // console.error("Can't get Token");
     return res
       .status(401)
       .json({ success: false, message: "Can't get Authorization Token" });
@@ -595,7 +595,7 @@ export const viewSubmissionByExamId = async (req: any, res: any) => {
       exam: submissions[0].examId,
     });
   } catch (error) {
-    console.error("Error in fetching submissions:", error);
+    // console.error("Error in fetching submissions:", error);
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error", error });
@@ -639,7 +639,7 @@ export const newExams = async (req: any, res: any) => {
     );
     const enrolledExamIds = enrolledExamDocs.map((e) => e.examId.toString());
 
-    console.log("enrolledexamIds", enrolledExamIds);
+    // console.log("enrolledexamIds", enrolledExamIds);
 
     // 📦 Exams NOT enrolled
     const newExams = await Exam.find({
@@ -648,14 +648,14 @@ export const newExams = async (req: any, res: any) => {
       },
     }).sort({ scheduledAt: 1 });
 
-    console.log("upcoiming exam", newExams);
+    // console.log("upcoiming exam", newExams);
 
     return res.status(200).json({
       success: true,
       exams: newExams,
     });
   } catch (error) {
-    console.error("Error fetching upcoming exams:", error);
+    // console.error("Error fetching upcoming exams:", error);
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
@@ -731,7 +731,7 @@ export const myExams = async (req: any, res: any) => {
       expiredExams,
     });
   } catch (error) {
-    console.error("Error fetching my exams:", error);
+    // console.error("Error fetching my exams:", error);
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
@@ -740,7 +740,7 @@ export const myExams = async (req: any, res: any) => {
 };
 
 export const getFullExamDetails = async (req: any, res: any) => {
-  console.log("insidew fulld examdetails");
+  // console.log("insidew fulld examdetails");
 
   const token = req.headers.authorization?.split(" ")[1];
 
@@ -778,7 +778,7 @@ export const getFullExamDetails = async (req: any, res: any) => {
       userAnswers: submission?.answers || [],
     });
   } catch (error) {
-    console.log("Error", error);
+    // console.log("Error", error);
 
     return res
       .status(500)
@@ -847,7 +847,7 @@ export const enrollToExam = async (req: any, res: any) => {
 };
 
 export const startExam = async (req: any, res: any) => {
-  console.log("inside star exam");
+  // console.log("inside star exam");
 
   const token = req.headers.authorization?.split(" ")[1];
 
@@ -924,13 +924,13 @@ export const startExam = async (req: any, res: any) => {
       exam,
     });
   } catch (error) {
-    console.error("Start Exam Error:", error);
+    // console.error("Start Exam Error:", error);
     return res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
 export const submitExam = async (req: any, res: any) => {
-  console.log("insidew submit exam");
+  // console.log("insidew submit exam");
 
   const token = req.headers.authorization?.split(" ")[1];
 
@@ -945,14 +945,14 @@ export const submitExam = async (req: any, res: any) => {
     req.body;
   const studentId = req.user._id;
 
-  console.log(
-    "req body",
-    examId,
-    submissionId,
-    timeTaken,
-    isAutoSubmitted,
-    answers
-  );
+  // console.log(
+  //   "req body",
+  //   examId,
+  //   submissionId,
+  //   timeTaken,
+  //   isAutoSubmitted,
+  //   answers
+  // );
 
   try {
     const exam = await Exam.findById(examId).populate("questions").exec();
@@ -975,7 +975,7 @@ export const submitExam = async (req: any, res: any) => {
       questionMap.set(q._id.toString(), q.correctAnswer);
     }
 
-    console.log("question Map", questionMap);
+    // console.log("question Map", questionMap);
 
     let score = 0;
 
@@ -986,7 +986,7 @@ export const submitExam = async (req: any, res: any) => {
       }
     }
 
-    console.log("scre ", score);
+    // console.log("scre ", score);
 
     const submission = await Submission.findOneAndUpdate(
       { _id: submissionId },
@@ -1012,7 +1012,7 @@ export const submitExam = async (req: any, res: any) => {
       submittedAt: submission.submittedAt,
     });
   } catch (error) {
-    console.log("Error", error);
+    // console.log("Error", error);
 
     return res
       .status(500)
@@ -1021,7 +1021,7 @@ export const submitExam = async (req: any, res: any) => {
 };
 
 export const viewResult = async (req: any, res: any) => {
-  console.log("insidew view exam");
+  // console.log("insidew view exam");
 
   const token = req.headers.authorization?.split(" ")[1];
 
@@ -1061,7 +1061,7 @@ export const viewResult = async (req: any, res: any) => {
       submission,
     });
   } catch (error) {
-    console.log("Error", error);
+    // console.log("Error", error);
 
     return res
       .status(500)

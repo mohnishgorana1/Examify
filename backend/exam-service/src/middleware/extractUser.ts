@@ -1,7 +1,7 @@
 export const extractUser = (req: any, res: any, next: any) => {
   const userHeader = req.headers["x-user"];
   if (!userHeader) {
-    console.log("missing user info");
+    console.log("missing user info in extract-user");
     return res.status(401).json({ message: "User info missing" });
   }
 

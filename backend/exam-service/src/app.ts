@@ -8,16 +8,9 @@ import cookieParser from "cookie-parser";
 import examRoutes from "./routes/exam.routes";
 import connectDB from "./config/db";
 
-
 dotenv.config();
 connectDB();
-
-
 const app = express();
-
-
-// middleware
-// middleware
 app.use(
   cors({
     origin: process.env.EXAMIFY_FRONTEND_URL, // ya jo bhi frontend origin ho
@@ -27,9 +20,7 @@ app.use(
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.json());
-
 app.use(cookieParser());
-
 
 // Routes
 app.use("/api/v1/exam", examRoutes);

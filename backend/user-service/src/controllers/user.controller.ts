@@ -5,16 +5,16 @@ dotenv.config();
 export const createProfile = async (req: any, res: any) => {
   const { userId, name, email, phone, dob, role, isVerified } = req.body;
   try {
-    console.log(
-      "Register user profile req",
-      userId,
-      name,
-      email,
-      phone,
-      dob,
-      role,
-      isVerified
-    );
+    // console.log(
+    //   "Register user profile req",
+    //   userId,
+    //   name,
+    //   email,
+    //   phone,
+    //   dob,
+    //   role,
+    //   isVerified
+    // );
 
     if (
       !userId ||
@@ -49,7 +49,7 @@ export const createProfile = async (req: any, res: any) => {
     });
     await newUser.save();
 
-    console.log("new User", newUser);
+    // console.log("new User", newUser);
 
     return res
       .status(201)
@@ -64,7 +64,7 @@ export const createProfile = async (req: any, res: any) => {
 };
 
 export const getProfile = async (req: any, res: any) => {
-  console.log("inside getProfile");
+  // console.log("inside getProfile");
   
   try {
     const user = await User.findById(req.user?.id);

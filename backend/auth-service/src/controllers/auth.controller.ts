@@ -13,10 +13,10 @@ export const register = async (req: any, res: any) => {
 
   // zod validations
   if (!registerSchema.safeParse(req.body).success) {
-    console.log(
-      "error in schema validation",
-      registerSchema.safeParse(req.body).error
-    );
+    // console.log(
+    //   "error in schema validation",
+    //   registerSchema.safeParse(req.body).error
+    // );
 
     return res.status(500).json({
       success: false,
@@ -109,7 +109,7 @@ export const register = async (req: any, res: any) => {
         await AuthUser.findByIdAndDelete(newUser._id);
         // console.log("Deleted AuthUser due to error during profile creation");
       } catch (deleteError) {
-        console.log("Error deleting user after failure:", deleteError);
+        // console.log("Error deleting user after failure:", deleteError);
       }
     }
     return res
@@ -122,7 +122,7 @@ export const logout = async (req: any, res: any) => {
     const userId = await req.user?.id; // Extract user ID from `req.user` (middleware should add this)
 
     if (!userId) {
-      console.log("userId", userId);
+      // console.log("userId", userId);
 
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }
