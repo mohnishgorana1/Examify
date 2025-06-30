@@ -216,7 +216,8 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
   return (
     <div className="md:space-y-6 space-y-3 relative min-h-screen">
       <header className="py-2 pl-2 z-50 sticky grid grid-cols-11 gap-x-5 items-center md:justify-between justify-center w-full border border-neutral-600 rounded-xl">
-        <h1 className="col-span-11 md:col-span-8 text-2xl font-bold text-center md:text-start text-orange-500 w-max ">
+        <h1 className="col-span-11 md:col-span-8 text-2xl font-bold text-center md:text-start text-orange-500 w-full 
+        flex items-center justify-center md:items-start md:justify-normal">
           {exam?.title}
         </h1>
         <div className="col-span-11 md:col-span-3 w-full flex items-center justify-center">
