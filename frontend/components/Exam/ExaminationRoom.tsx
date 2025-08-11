@@ -184,13 +184,13 @@ export default function ExaminationRoom({ examId }: { examId: string }) {
 
   if (score !== null) {
     return (
-      <main className="min-h-[85vh] w-full text-white flex items-center justify-center">
+      <main className="px-4 min-h-[85vh] w-full text-white flex items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-y-8">
-          <h1 className="text-2xl md:text-4xl font-bold">
+          <h1 className="text-2xl md:text-4xl font-bold text-center">
             You have successfully submitted exam!
           </h1>
 
-          <div className="flex gap-x-5 justify-between">
+          <div className="flex flex-col md:flex-row items-center gap-x-5 justify-between">
             <Link href={`/exam/${examId}/view-result`}>
               <button className="w-56 px-3 py-1 rounded-xl cursor-pointer bg-transparent  border border-orange-500 text-orange-500 hover:text-orange-600 hover:border-orange-600/85 duration-500 ">
                 View Result

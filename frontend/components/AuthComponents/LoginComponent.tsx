@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { URLs } from "@/constants/urls";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
@@ -95,13 +95,12 @@ function LoginComponent() {
     }
   };
 
-  useEffect(() => {
-    console.log("URLs.backend", URLs.backend);
-  }, []);
+  // useEffect(() => {
+  //   console.log("URLs.backend", URLs.backend);
+  // }, []);
 
   return (
     <>
-      <h1 className="text-pink-500">BACKEND: {URLs.backend}</h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4"
