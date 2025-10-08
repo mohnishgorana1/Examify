@@ -8,13 +8,15 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TypewriterEffectSmooth } from "../ui/typewriter-effect";
 import { useUser } from "@clerk/nextjs";
+import { useAppUser } from "@/contexts/UserContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function HomePageContent() {
   const { user, isLoaded } = useUser();
+  const { appUser, loading, refreshUser } = useAppUser();
 
-  const homeClientHeadingText = user
+  const homeClientHeadingText = appUser
     ? [{ text: "Welcome" }, { text: "back," }, { text: `${user.firstName} 👋` }]
     : [{ text: "Why" }, { text: "Choose" }, { text: "Examify ?" }];
 
@@ -161,7 +163,7 @@ export default function HomePageContent() {
             succeed in online exams — smarter and faster.
           </p>
 
-          {user ? (
+          {!user ? (
             <div className="space-x-5 animate-fade-in-up delay-400">
               <Link href="/register">
                 <Button className="cursor-pointer bg-indigo-600 hover:bg-indigo-700 w-30 md:w-48 transition-all duration-300 hover:scale-105 hover:shadow-md shadow-indigo-500/40 text-white">
@@ -175,7 +177,7 @@ export default function HomePageContent() {
               </Link>
             </div>
           ) : (
-            <Link href={`/dashboard/${user.publicMetadata.role || "student"}`}>
+            <Link href={`/dashboard/${appUser?.role || "student"}`}>
               <Button className="bg-indigo-600 text-white px-6 py-3 rounded-md text-lg font-semibold hover:bg-indigo-700 transition-all duration-300 hover:scale-105 hover:shadow-sm shadow-indigo-500/40">
                 Go to Dashboard
               </Button>

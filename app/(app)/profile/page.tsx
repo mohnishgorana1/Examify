@@ -1,4 +1,3 @@
-import ProfileComponent from "@/components/AuthComponents/ProfileComponent";
 import React from "react";
 
 function ProfilePage() {

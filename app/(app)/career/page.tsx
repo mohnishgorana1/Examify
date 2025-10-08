@@ -1,59 +1,74 @@
-// app/career/page.tsx
-
 export default function CareerPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-neutral-800 from-5% via-neutral-900 via-20% to-neutral-950 to-70% px-6 py-16 md:px-20">
-      <div className="max-w-5xl mx-auto text-center mb-16">
-        <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+    <div className="min-h-screen bg-gradient-to-b from-neutral-900 via-neutral-950 to-black px-6 py-20 md:px-20 text-white">
+      {/* Header Section */}
+      <div className="max-w-5xl mx-auto text-center mb-20">
+        <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600 bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient">
           Work With Us
         </h1>
-        <p className="text-lg text-white opacity-45 max-w-2xl mx-auto">
-          Join our mission to revolutionize the exam experience. We’re always on the lookout for passionate educators, engineers, and creators.
+        <p className="text-lg text-neutral-400 max-w-2xl mx-auto mt-4">
+          Join our mission to revolutionize the exam experience. We’re always on
+          the lookout for passionate educators, engineers, and creators.
         </p>
       </div>
 
+      {/* Roles Section */}
       <section className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10">
-        <div className="bg-neutral-800 shadow-md rounded-xl p-6 space-y-3 border border-neutral-200">
-          <h3 className="text-lg md:text-xl font-semibold text-orange-600">Frontend Developer</h3>
-          <p className="text-neutral-300 text-sm">
-            Help us build beautiful, intuitive interfaces for our users. Experience with React or Next.js preferred.
-          </p>
-          <p className="text-white mt-5 text-sm">Location: Remote | Type: Full-time</p>
-        </div>
+        {[
+          {
+            title: "Frontend Developer",
+            desc: "Help us build beautiful, intuitive interfaces for our users. Experience with React or Next.js preferred.",
+            details: "Location: Remote | Type: Full-time",
+          },
+          {
+            title: "Instructor (Subject Expert)",
+            desc: "Create and review high-quality exam questions. Must have strong subject knowledge and teaching experience.",
+            details: "Location: Remote | Type: Part-time / Freelance",
+          },
+          {
+            title: "Backend Engineer",
+            desc: "Work on scalable APIs and data security. Experience with Node.js, MongoDB, or Firebase is a plus.",
+            details: "Location: Remote | Type: Full-time",
+          },
+          {
+            title: "Content Reviewer",
+            desc: "Review and verify exam content quality and relevance. Attention to detail and educational background required.",
+            details: "Location: Remote | Type: Freelance",
+          },
+        ].map((job, i) => (
+          <div
+            key={i}
+            className="relative group rounded-2xl bg-neutral-900 p-[2px] overflow-hidden shadow-lg transition-transform hover:scale-105 duration-500 ease-out  hover:shadow-indigo-500/20"
+          >
+            {/* animated border */}
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 opacity-0 group-hover:opacity-100 blur-[2px] animate-border"></div>
 
-        <div className="bg-neutral-800 shadow-md rounded-xl p-6 space-y-3 border border-neutral-200">
-          <h3 className="text-lg md:text-xl font-semibold text-orange-600">Instructor (Subject Expert)</h3>
-          <p className="text-neutral-300 text-sm">
-            Create and review high-quality exam questions. Must have strong subject knowledge and teaching experience.
-          </p>
-          <p className="text-white mt-5 text-sm">Location: Remote | Type: Part-time / Freelance</p>
-        </div>
-
-        <div className="bg-neutral-800 shadow-md rounded-xl p-6 space-y-3 border border-neutral-200">
-          <h3 className="text-lg md:text-xl font-semibold text-orange-600">Backend Engineer</h3>
-          <p className="text-neutral-300 text-sm">
-            Work on scalable APIs and data security. Experience with Node.js, MongoDB, or Firebase is a plus.
-          </p>
-          <p className="text-white mt-5 text-sm">Location: Remote | Type: Full-time</p>
-        </div>
-
-        <div className="bg-neutral-800 shadow-md rounded-xl p-6 space-y-3 border border-neutral-200">
-          <h3 className="text-lg md:text-xl font-semibold text-orange-600">Content Reviewer</h3>
-          <p className="text-neutral-300 text-sm">
-            Review and verify exam content quality and relevance. Attention to detail and educational background required.
-          </p>
-          <p className="text-white mt-5 text-sm">Location: Remote | Type: Freelance</p>
-        </div>
+            {/* Card content */}
+            <div className="relative bg-neutral-900 rounded-2xl p-6 z-10 space-y-3 border border-neutral-800/70 transition-all">
+              <h3 className="text-lg md:text-xl font-semibold text-indigo-400">
+                {job.title}
+              </h3>
+              <p className="text-neutral-400 text-sm leading-relaxed">
+                {job.desc}
+              </p>
+              <p className="text-neutral-300 mt-5 text-sm">{job.details}</p>
+            </div>
+          </div>
+        ))}
       </section>
 
-      <div className="max-w-3xl mx-auto mt-16 text-center">
-        <h2 className="text-2xl font-bold text-white mb-4">Didn’t find the role you’re looking for?</h2>
-        <p className="text-white opacity-45 mb-6">
-          We&apos;re always open to connecting with talented individuals. Share your profile and we’ll reach out when a matching role comes up.
+      {/* CTA Section */}
+      <div className="max-w-3xl mx-auto mt-20 text-center">
+        <h2 className="text-2xl font-bold text-indigo-400 mb-3">
+          Didn’t find the role you’re looking for?
+        </h2>
+        <p className="text-neutral-400 mb-8">
+          We&apos;re always open to connecting with talented individuals. Share
+          your profile and we’ll reach out when a matching role comes up.
         </p>
         <a
           href="mailto:careers@examify.com"
-          className="inline-block bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-700 transition"
+          className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg font-semibold transition-transform hover:-translate-y-0.5 hover:shadow-indigo-500/30"
         >
           Send Your Resume
         </a>

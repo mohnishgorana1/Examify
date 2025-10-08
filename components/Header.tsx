@@ -19,12 +19,15 @@ import {
   useUser,
 } from "@clerk/nextjs";
 import { navLinks } from "@/constants/navlinks";
+import { useAppUser } from "@/contexts/UserContext";
 
 export default function Header() {
   const pathname = usePathname();
   const { user, isSignedIn } = useUser();
   const [open, setOpen] = useState(false);
+  const { appUser } = useAppUser();
 
+  const dashboardPath = `/dashboard/${appUser?.role || "student"}`;
   return (
     <header className="w-full sticky top-0 z-50 bg-neutral-900 pb-3">
       <div className="max-w-7xl md:max-w-[99%] mx-auto flex items-center justify-between px-4 py-3">
@@ -52,6 +55,18 @@ export default function Header() {
               {link.name}
             </Link>
           ))}
+          {isSignedIn && (
+            <Link
+              href={dashboardPath}
+              className={`text-sm font-medium transition-colors ${
+                pathname === dashboardPath
+                  ? "text-indigo-400"
+                  : "text-neutral-300 hover:text-indigo-400"
+              }`}
+            >
+              Dashboard
+            </Link>
+          )}
         </nav>
 
         {/* Auth Buttons */}
@@ -120,6 +135,16 @@ export default function Header() {
                     {link.name}
                   </Link>
                 ))}
+                <Link
+                  href={dashboardPath}
+                  className={`text-sm font-medium transition-colors ${
+                    pathname === dashboardPath
+                      ? "text-indigo-400"
+                      : "text-neutral-300 hover:text-indigo-400"
+                  }`}
+                >
+                  Dashboard
+                </Link>
 
                 <div className="w-full pt-5 border-t border-neutral-800 flex flex-col gap-3 px-3">
                   {isSignedIn ? (
