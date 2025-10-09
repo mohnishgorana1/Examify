@@ -1,0 +1,1 @@
+// GET /api/exam/student/exams/[examId]/submission // get single exam submission details 

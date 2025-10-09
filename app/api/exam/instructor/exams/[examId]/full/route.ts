@@ -1,0 +1,1 @@
+// GET /api/exam/instructor/exams/[examId]/full

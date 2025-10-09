@@ -1,0 +1,1 @@
+// GET /api/exam/student/exams/new (available exams)

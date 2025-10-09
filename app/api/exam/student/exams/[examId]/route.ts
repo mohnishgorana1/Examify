@@ -1,0 +1,1 @@
+// GET /api/exam/student/exams/[examId] (get exam detail for student)
