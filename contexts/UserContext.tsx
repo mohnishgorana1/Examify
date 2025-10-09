@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import axios from "axios";
-import { fetchUserAccountDetails } from "@/actions/user.actions";
 
 interface AppUser {
   _id: string;

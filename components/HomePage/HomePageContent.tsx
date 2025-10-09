@@ -50,7 +50,6 @@ export default function HomePageContent() {
         },
       ];
 
-  // Enhanced content for the HomeClient Section (replacing the previous generic array)
   const homeClientCards = [
     {
       title: "Exam Scheduling",
@@ -379,12 +378,7 @@ export default function HomePageContent() {
             </Tilt>
           ))}
         </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="scroll-section py-6 text-center text-neutral-500 bg-neutral-950">
-        © {new Date().getFullYear()} Examify. All rights reserved.
-      </footer>
+      </section>      
     </div>
   );
 }

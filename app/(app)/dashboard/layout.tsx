@@ -1,10 +1,12 @@
 "use client";
-import { useAuth } from "@/context/AuthContext";
+
+import { TextShimmerWave } from "@/components/ui/text-shimmer-wave";
+import { useAppUser } from "@/contexts/UserContext";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
-  const { user, loading } = useAuth();
+  const { appUser, loading } = useAppUser();
 
   const pathname = usePathname();
   const router = useRouter();
@@ -12,10 +14,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!loading) {
-      if (!user) {
+      if (!appUser) {
         router.replace("/login");
       } else {
-        const role = user?.role;
+        const role = appUser?.role;
         if (
           (pathname.startsWith("/dashboard/student") && role === "student") ||
           (pathname.startsWith("/dashboard/instructor") &&
@@ -28,12 +30,23 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         }
       }
     }
-  }, [user, loading, pathname, router]);
+  }, [appUser, loading, pathname, router]);
+
+  const role = appUser?.role.toLocaleUpperCase();
 
   if (loading || !allowed) {
     return (
-      <div className="text-white text-center py-20 text-xl">
-        Loading dashboard...
+      <div className="text-white text-center py-20 text-xl flex flex-col justify-center items-center mx-auto my-auto w-full min-h-[80vh]">
+        <TextShimmerWave
+          className="font-mono text-lg md:text-2xl lg:text-4xl"
+          duration={0.8}
+          spread={1.5}
+          zDistance={1}
+          scaleDistance={1}
+          rotateYDistance={15}
+        >
+          {`LOADING ${role} DASHBOARD...`}
+        </TextShimmerWave>
       </div>
     );
   }

@@ -29,8 +29,8 @@ export default function Header() {
 
   const dashboardPath = `/dashboard/${appUser?.role || "student"}`;
   return (
-    <header className="w-full sticky top-0 z-50 bg-neutral-900 pb-3">
-      <div className="max-w-7xl md:max-w-[99%] mx-auto flex items-center justify-between px-4 py-3">
+    <header className="w-full sticky top-0 z-50 bg-neutral-900 py-4">
+      <div className="max-w-7xl md:max-w-[99%] mx-auto flex items-center justify-between px-4">
         {/* Logo */}
         <Link
           href="/"

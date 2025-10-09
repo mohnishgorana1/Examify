@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 
 export default function AppLayout({
@@ -7,12 +8,13 @@ export default function AppLayout({
 }>) {
   return (
     <main className="flex flex-col">
-      <div className="">
-        <header>
-          <Header />
-        </header>
+      <header>
+        <Header />
+      </header>
 
-        <div className="">{children}</div>
+      <div className="">
+        <div>{children}</div>
+        <Footer />
       </div>
     </main>
   );
