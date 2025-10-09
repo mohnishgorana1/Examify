@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { GiTeacher } from "react-icons/gi";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   ClipboardList,
   FileText,
@@ -12,7 +10,6 @@ import {
   ChevronRight,
   ChevronLeft,
 } from "lucide-react";
-
 import CreateExam from "./CreateExam";
 import MyExams from "./MyExams";
 import Results from "./Results";
@@ -28,7 +25,7 @@ export default function InstructorDashboard() {
       value: "create-exam",
       label: "Create Exam",
       icon: <FileText size={20} />,
-      component: <CreateExam />,
+      component: <CreateExam onExamCreated={() => setActiveTab("my-exams")} />,
     },
     {
       value: "my-exams",
@@ -139,11 +136,7 @@ export default function InstructorDashboard() {
           </div>
         </div>
       </aside>
-
-      {/* maincontent */}
-      <main className="flex-1 overflow-y-auto">
-        {activeComponent}
-      </main>
+      <main className="flex-1 overflow-y-auto">{activeComponent}</main>
     </div>
   );
 }

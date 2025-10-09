@@ -155,3 +155,7 @@ button {
   background-size: 200% 200%;
   animation: borderFlow 4s linear infinite;
 }
+
+[data-state="open"] > .fixed {
+  z-index: 9999 !important;
+}
