@@ -24,7 +24,7 @@ function MyQuestions() {
       );
 
       if (data.success) {
-        toast.success("Question fetched successfully!");
+        // toast.success("Question fetched successfully!");
         setMyCreatedQuestions(data.data);
       } else {
         toast.error("Failed to fetch question.");

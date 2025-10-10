@@ -15,7 +15,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!loading) {
       if (!appUser) {
-        router.replace("/login");
+        router.replace("/sign-in");
       } else {
         const role = appUser?.role;
         if (
@@ -32,7 +32,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     }
   }, [appUser, loading, pathname, router]);
 
-  const role = appUser?.role.toLocaleUpperCase();
+  const role = appUser?.role?.toUpperCase() || "USER";
 
   if (loading || !allowed) {
     return (

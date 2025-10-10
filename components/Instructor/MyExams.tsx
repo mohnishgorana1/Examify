@@ -22,7 +22,7 @@ function MyExams() {
 
       if (data.success) {
         setMyCreatedExams(data.data);
-        toast.success("Exams Fetched Succesfully!");
+        // toast.success("Exams Fetched Succesfully!");
       }
     } catch (error) {
       console.error("Error fetching your exams");
@@ -38,13 +38,15 @@ function MyExams() {
 
   if (isFetchingExams) {
     return (
-      <main className="w-full h-[40vh] md:h-[50vh] flex items-center flex-col justify-center gap-y-2">
-        <TextShimmerWave
-          className="font-mono text-lg md:text-2xl lg:text-3xl"
-          duration={1}
-        >
-          Fetching your exams...
-        </TextShimmerWave>
+      <main className="w-full border h-[90vh] flex items-center my-auto justify-center">
+        <h1 className="text-white text-lg md:text-2xl ">
+          <TextShimmerWave
+            className="font-mono text-lg md:text-2xl lg:text-3xl"
+            duration={1}
+          >
+            Fetching Exams...
+          </TextShimmerWave>
+        </h1>
       </main>
     );
   }
@@ -74,7 +76,9 @@ function MyExams() {
                     <h2 className="text-xl md:text-2xl font-semibold text-indigo-400 capitalize">
                       {exam.title}
                     </h2>
-                    <p className="text-green-800 font-bold font-mono ">{exam.isPublished && "Live"}</p>
+                    <p className="text-green-800 font-bold font-mono ">
+                      {exam.isPublished && "Live"}
+                    </p>
                   </div>
                   {exam.description && (
                     <p className="text-sm md:text-base text-neutral-200/50 text-justify">

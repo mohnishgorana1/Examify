@@ -24,7 +24,7 @@ const UserContext = createContext<UserContextType>({
 });
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const { user, isSignedIn } = useUser();
+  const { user, isSignedIn, isLoaded } = useUser();
   const [appUser, setAppUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -33,7 +33,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(true);
     try {
       const res = await axios.get("/api/users/me");
-      if (res.data.success) setAppUser(res.data.data);
+      if (res.data.success) {
+        setAppUser(res.data.data);
+        localStorage.setItem("appUser", JSON.stringify(res.data.data)); //cache it
+      }
     } catch (err) {
       console.error("Failed to refresh user:", err);
     } finally {
@@ -42,9 +45,16 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    if (isSignedIn) refreshUser();
-    else setAppUser(null);
-  }, [isSignedIn]);
+    // 🟢 only proceed when Clerk isLoaded
+    if (!isLoaded) return;
+
+    if (isSignedIn) {
+      refreshUser();
+    } else {
+      setAppUser(null);
+      setLoading(false);
+    }
+  }, [isLoaded, isSignedIn]);
 
   return (
     <UserContext.Provider value={{ appUser, loading, refreshUser }}>
