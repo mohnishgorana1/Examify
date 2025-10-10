@@ -70,13 +70,20 @@ function MyExams() {
                 className="w-full p-5 rounded-2xl border border-neutral-700 bg-neutral-900/70 backdrop-blur-sm transition-all duration-300 hover:shadow-md hover:shadow-indigo-600/30 hover:translate-y-[-1px]"
               >
                 <div className="space-y-3">
-                  <h2 className="text-xl md:text-2xl font-semibold text-indigo-400 capitalize">
-                    {exam.title}
-                  </h2>
+                  <div className="flex md:flex-row items-baseline justify-between gap-y-2">
+                    <h2 className="text-xl md:text-2xl font-semibold text-indigo-400 capitalize">
+                      {exam.title}
+                    </h2>
+                    <p className="text-green-800 font-bold font-mono ">{exam.isPublished && "Live"}</p>
+                  </div>
                   {exam.description && (
                     <p className="text-sm md:text-base text-neutral-200/50 text-justify">
-                      {exam.description} Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore aliquam vitae deleniti. 12rem20
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ex aspernatur, iusto nulla exercitationem a qui quam ullam suscipit voluptatibus dolore ipsam ipsum optio deleniti tenetur est ducimus accusamus? Nostrum, quo!
+                      {exam.description} Lorem ipsum, dolor sit amet consectetur
+                      adipisicing elit. Tempore aliquam vitae deleniti. 12rem20
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                      Ex aspernatur, iusto nulla exercitationem a qui quam ullam
+                      suscipit voluptatibus dolore ipsam ipsum optio deleniti
+                      tenetur est ducimus accusamus? Nostrum, quo!
                     </p>
                   )}
 
