@@ -159,3 +159,18 @@ button {
 [data-state="open"] > .fixed {
   z-index: 9999 !important;
 }
+/* Required for shadcn accordion animations */
+[data-state=open] > div {
+  animation: accordion-down 0.2s ease-out;
+}
+[data-state=closed] > div {
+  animation: accordion-up 0.2s ease-out;
+}
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
