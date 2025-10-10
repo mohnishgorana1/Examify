@@ -5,7 +5,11 @@ interface IEnrollmentDoc extends IEnrollment, Document {}
 
 const enrollmentSchema = new Schema<IEnrollmentDoc>(
   {
-    studentId: { type: String, required: true },
+    studentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     examId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Exam",

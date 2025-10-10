@@ -36,7 +36,7 @@ export interface IExam {
   marksPerQuestion?: number;
 }
 export interface IEnrollment {
-  studentId: string;
+  studentId: mongoose.Types.ObjectId; // student id;
   examId: mongoose.Types.ObjectId;
   enrolledAt: Date;
 }

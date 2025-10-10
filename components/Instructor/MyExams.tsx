@@ -81,7 +81,7 @@ function MyExams() {
                     </p>
                   </div>
                   {exam.description && (
-                    <p className="text-sm md:text-base text-neutral-200/50 text-justify">
+                    <p className="text-sm md:text-base text-neutral-200/50 text-justify line-clamp-5">
                       {exam.description} Lorem ipsum, dolor sit amet consectetur
                       adipisicing elit. Tempore aliquam vitae deleniti. 12rem20
                       Lorem ipsum dolor sit amet, consectetur adipisicing elit.

@@ -9,6 +9,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TypewriterEffectSmooth } from "../ui/typewriter-effect";
 import { useUser } from "@clerk/nextjs";
 import { useAppUser } from "@/contexts/UserContext";
+import { TextShimmerWave } from "../ui/text-shimmer-wave";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,7 +18,7 @@ export default function HomePageContent() {
   const { appUser, loading, refreshUser } = useAppUser();
 
   const homeClientHeadingText = appUser
-    ? [{ text: "Welcome" }, { text: "back," }, { text: `${user.firstName} 👋` }]
+    ? [{ text: "Welcome" }, { text: "back," }, { text: `${appUser.name} 👋` }]
     : [{ text: "Why" }, { text: "Choose" }, { text: "Examify ?" }];
 
   const features = user
@@ -141,7 +142,19 @@ export default function HomePageContent() {
     });
   }, []);
 
-  if (!isLoaded) return <div>Loading...</div>;
+  if (!isLoaded)
+    return (
+      <main className="w-full border h-[90vh] flex items-center my-auto justify-center">
+        <h1 className="text-white text-lg md:text-2xl ">
+          <TextShimmerWave
+            className="font-mono text-lg md:text-2xl lg:text-3xl"
+            duration={1}
+          >
+            Loading..
+          </TextShimmerWave>
+        </h1>
+      </main>
+    );
 
   return (
     <div className="relative overflow-hidden text-white bg-neutral-950">
@@ -378,7 +391,7 @@ export default function HomePageContent() {
             </Tilt>
           ))}
         </div>
-      </section>      
+      </section>
     </div>
   );
 }
