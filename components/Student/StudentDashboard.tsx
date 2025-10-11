@@ -112,7 +112,7 @@ export default function StudentDashboard() {
       </aside>
 
       {/* 🧩 Main Content */}
-      <main className="flex-1 overflow-y-auto p-4 animate-fadeIn">
+      <main className="flex-1 overflow-y-auto p-2 md:p-4 animate-fadeIn">
         {activeComponent}
       </main>
     </div>

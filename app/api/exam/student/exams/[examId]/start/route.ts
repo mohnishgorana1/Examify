@@ -1,4 +1,4 @@
-// GET /api/exam/student/exams/[examId]/result  // getAllExamResults
+// POST /api/exam/student/exams/[examId]/start
 
 import connectDB from "@/lib/config/db";
 import { Exam } from "@/models/exam.model";
@@ -7,7 +7,7 @@ import { Submission } from "@/models/submission.model";
 import { User } from "@/models/user.model";
 import { NextResponse } from "next/server";
 
-export async function GET(
+export async function POST(
   req: Request,
   { params }: { params: { examId: string } }
 ) {
@@ -15,8 +15,8 @@ export async function GET(
     await connectDB();
 
     const { examId } = await params;
-    const url = new URL(req.url);
-    const studentId = url.searchParams.get("studentId");
+
+    const { studentId } = await req.json();
 
     if (!studentId) {
       return NextResponse.json(
@@ -55,24 +55,52 @@ export async function GET(
       );
     }
 
-    const submission = await Submission.findOne({
+    const alreadySubmitted = await Submission.findOne({
       examId,
       studentId,
+      status: { $in: ["submitted", "auto-submitted"] },
     });
-    if (!submission) {
+
+    if (alreadySubmitted) {
       return NextResponse.json(
-        {
-          success: false,
-          message: "No Submission Found for this exam and student",
-        },
+        { success: false, message: "You have already submitted this exam" },
         { status: 403 }
       );
     }
 
+    // Count previous submissions for attempt number
+    const previousAttempts = await Submission.countDocuments({
+      examId,
+      studentId,
+    });
+
+    // create new submissions
+    const submission = await Submission.findOneAndUpdate(
+      {
+        examId,
+        studentId,
+        status: "started",
+      },
+      {
+        $setOnInsert: {
+          examId,
+          studentId,
+          status: "started",
+          attemptNumber: previousAttempts + 1,
+          startedAt: new Date(),
+          score: 0,
+        },
+      },
+      {
+        upsert: true,
+        new: true,
+      }
+    );
+
     return NextResponse.json(
       {
         success: true,
-        message: "Result found successfully",
+        message: "Exam Started",
         data: {
           submission,
           exam,
@@ -81,9 +109,9 @@ export async function GET(
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error: fetching your result", error);
+    console.error("Error: starting exam", error);
     return NextResponse.json(
-      { success: false, message: "Error fetching your exam result" },
+      { success: false, message: "Error starting exam" },
       { status: 500 }
     );
   }

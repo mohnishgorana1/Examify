@@ -51,7 +51,7 @@ export async function GET(req: Request) {
       );
     }
 
-    console.log("newExams", newExams);
+    // console.log("newExams", newExams);
 
     return NextResponse.json(
       { success: true, data: newExams, message: "New Exams Fetched Successfully" },

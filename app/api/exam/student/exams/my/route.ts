@@ -62,7 +62,7 @@ export async function GET(req: Request) {
       (exam) => new Date(exam.scheduledAt) < now
     );
 
-    console.log(attemptedExams, enrolledOnlyExams, expiredExams);
+    // console.log(attemptedExams, enrolledOnlyExams, expiredExams);
 
     return NextResponse.json(
       {

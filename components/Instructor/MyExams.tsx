@@ -12,6 +12,8 @@ function MyExams() {
   const [myCreatedExams, setMyCreatedExams] = useState<any>();
   const [isFetchingExams, setIsFetchingExams] = useState(false);
 
+
+
   const fetchExams = async () => {
     if (!appUserId) return;
     setIsFetchingExams(true);

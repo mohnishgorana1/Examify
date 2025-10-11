@@ -62,15 +62,15 @@ export default function MyExamsStudent() {
   ] as const;
 
   return (
-    <div className="w-full min-h-screen py-2 md:py-6 md:px-6 md:p-6 text-white">
+    <div className="w-full min-h-screen  text-white">
       {/* 🔹 Matching Tab Header */}
-      <section className="flex  mb-8">
+      <section className="flex mt-2 mb-4 md:mt-0 md:mb-8 ">
         <div className="flex w-full md:w-auto flex-wrap gap-3 ">
           {tabs.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setActiveTabSection(tab.key)}
-              className={`flex items-center justify-center gap-x-2 
+              className={`w-[30%] flex items-center justify-center gap-x-2 
                 px-3 md:px-5 py-2 rounded-full border text-sm sm:text-base font-medium transition-all duration-300 ease-in-out
               ${
                 activeTabSection === tab.key

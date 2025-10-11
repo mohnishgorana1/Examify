@@ -27,25 +27,25 @@ export async function PUT(
       scheduledAt,
     } = body;
 
-    console.log(
-      "BODY",
-      "\ninstructorId",
-      instructorId,
-      "\ntitle",
-      title,
-      "\ndescription",
-      description,
-      "\nduration",
-      duration,
-      "\nquestions",
-      questions,
-      "\nmarksPerQuestion",
-      marksPerQuestion,
-      "\npassingPercentage",
-      passingPercentage,
-      "\nscheduledAt",
-      scheduledAt
-    );
+    // console.log(
+    //   "BODY",
+    //   "\ninstructorId",
+    //   instructorId,
+    //   "\ntitle",
+    //   title,
+    //   "\ndescription",
+    //   description,
+    //   "\nduration",
+    //   duration,
+    //   "\nquestions",
+    //   questions,
+    //   "\nmarksPerQuestion",
+    //   marksPerQuestion,
+    //   "\npassingPercentage",
+    //   passingPercentage,
+    //   "\nscheduledAt",
+    //   scheduledAt
+    // );
 
     // Validations
     if (!instructorId) {
@@ -107,11 +107,19 @@ export async function PUT(
     exam.duration = duration ?? exam.duration;
     exam.questions = questions ?? exam.questions;
     exam.marksPerQuestion = marksPerQuestion;
-    exam.passingPercentage = passingPercentage;
     exam.totalMarks = totalMarks;
     exam.passingMarks = passingMarks;
 
-    if (scheduledAt) exam.scheduledAt = new Date(scheduledAt);
+    // if (scheduledAt) exam.scheduledAt = new Date(scheduledAt);
+    if (scheduledAt && !isNaN(Date.parse(scheduledAt))) {
+      exam.scheduledAt = new Date(scheduledAt);
+    }
+
+    // auto-unpublish if schedule is in past
+    if (exam.scheduledAt && exam.scheduledAt <= new Date()) {
+      exam.isPublished = false;
+      exam.publishedAt = null;
+    }
 
     await exam.save();
 

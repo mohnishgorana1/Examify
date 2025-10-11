@@ -61,8 +61,10 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
 
   // states for publish exam
   const [isScheduleDirty, setIsScheduleDirty] = useState(false);
+
   const [date, setDate] = useState<Date | undefined>(undefined);
-  const [scheduledTime, setScheduledTime] = useState("10:00");
+  const [scheduledTime, setScheduledTime] = useState("");
+
   const [open, setOpen] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
 
@@ -92,31 +94,31 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
           questions,
           scheduledAt,
           isPublished,
-          marksPerQuestion, // ✅ added
+          marksPerQuestion,
           totalMarks,
           passingMarks,
         } = examRes.data.data;
 
-        const scheduledDateObj = scheduledAt
-          ? new Date(scheduledAt)
-          : undefined;
-        setDate(scheduledDateObj);
+        // new Date() automatically UTC ko local time me convert karta hai.
+        const scheduledDateObj = scheduledAt ? new Date(scheduledAt): undefined;
+
+        setDate(scheduledDateObj); // calendar ke liye local date
+
         setScheduledTime(
           scheduledDateObj
-            ? `${String(scheduledDateObj.getUTCHours()).padStart(
-                2,
-                "0"
-              )}:${String(scheduledDateObj.getUTCMinutes()).padStart(2, "0")}`
+            ? `${String(scheduledDateObj.getHours()).padStart(2, "0")}:${String(
+                scheduledDateObj.getMinutes()
+              ).padStart(2, "0")}`
             : "10:00"
         );
+        
 
-        // ✅ NEW: derive passing percentage from stored values
+        // derive passing percentage from stored values
         const computedPassingPercentage =
           totalMarks && passingMarks
             ? Math.round((passingMarks / totalMarks) * 100)
             : 40; // fallback if missing
 
-        // ✅ set all states properly
         setMarksPerQuestion(marksPerQuestion ?? 1);
         setPassingPercentage(computedPassingPercentage);
 
@@ -180,12 +182,15 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
 
       // Combine date + time into ISO
       let scheduledAt: string | null = null;
+
       if (date) {
         const [hours, minutes] = scheduledTime.split(":").map(Number);
+
         const scheduledDateTime = new Date(date);
-        scheduledDateTime.setUTCHours(hours);
-        scheduledDateTime.setUTCMinutes(minutes);
-        scheduledAt = scheduledDateTime.toISOString();
+        scheduledDateTime.setHours(hours);
+        scheduledDateTime.setMinutes(minutes);
+
+        scheduledAt = scheduledDateTime.toISOString(); // this will automatically convert to UTC ISO for storage
       }
 
       const updateExamRes = await axios.put(
@@ -404,7 +409,7 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
               htmlFor="time-picker"
               className="px-1 text-neutral-100 font-medium block "
             >
-              Scheduled Time (UTC)
+              Scheduled Time (Local)
             </label>
             <input
               type="time"
@@ -548,7 +553,7 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
                   ? "bg-red-700 hover:bg-red-800 text-white shadow-red-700/30"
                   : "bg-green-700 hover:bg-green-800 text-white shadow-green-700/30"
               }`}
-              disabled={isPublishing}
+              disabled={isPublishing || isScheduleDirty}
             >
               {isPublishing ? (
                 <span className="flex items-center justify-center gap-2">

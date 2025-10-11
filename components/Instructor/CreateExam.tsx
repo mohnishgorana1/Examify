@@ -21,6 +21,7 @@ type CreateExamFormData = z.infer<typeof createExamSchema>;
 
 function CreateExam({ onExamCreated }: { onExamCreated?: () => void }) {
   const [open, setOpen] = React.useState(false);
+  
   const [date, setDate] = React.useState<Date | undefined>(undefined);
 
   const [isCreating, setIsCreating] = useState(false);
@@ -52,12 +53,17 @@ function CreateExam({ onExamCreated }: { onExamCreated?: () => void }) {
       return;
     }
 
+
+
+     // Convert local date + time → UTC
     const [hours, minutes] = scheduledTime.split(":").map(Number);
 
-    const scheduledDateTime = new Date(date!); // copy to avoid mutation
+    const scheduledDateTime = new Date(date);
     scheduledDateTime.setHours(hours, minutes, 0, 0);
 
-    const scheduledAt = scheduledDateTime.toISOString(); // "2025-06-11T10:00:00.000Z"
+
+    // convert to ISO UTC format
+    const scheduledAt = scheduledDateTime.toISOString(); 
 
     // connect to backend here
     try {
@@ -83,7 +89,7 @@ function CreateExam({ onExamCreated }: { onExamCreated?: () => void }) {
         reset();
         toast.success("Exam Created Successfully!");
 
-        if (onExamCreated) onExamCreated();
+        // if (onExamCreated) onExamCreated();
       } else {
         toast.error("Exam Creation Failed!");
       }
@@ -231,7 +237,7 @@ function CreateExam({ onExamCreated }: { onExamCreated?: () => void }) {
             </div>
             <div className="flex flex-col gap-2">
               <Label htmlFor="time-picker" className="px-1 text-white">
-                Scheduled Time (UTC)
+                Scheduled Time
               </Label>
               <Input
                 type="time"

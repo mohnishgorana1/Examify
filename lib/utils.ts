@@ -14,4 +14,10 @@ export function formatDateToLongString(dateString: string): string {
   });
 }
 
+function formatDateTimeLocal(dateString: string) {
+  const date = new Date(dateString);
+  const localDate = date.toLocaleDateString();
+  const localTime = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  return { localDate, localTime };
+}
 
