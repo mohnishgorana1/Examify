@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import Tilt from "react-parallax-tilt";
@@ -16,6 +16,15 @@ gsap.registerPlugin(ScrollTrigger);
 export default function HomePageContent() {
   const { user, isLoaded } = useUser();
   const { appUser, loading, refreshUser } = useAppUser();
+
+  // Hero refs for fine-grained intro animations
+  const heroRef = useRef<HTMLElement | null>(null);
+  const headingRef = useRef<HTMLHeadingElement | null>(null);
+  const subRef = useRef<HTMLParagraphElement | null>(null);
+  const ctaRef = useRef<HTMLDivElement | HTMLAnchorElement | null>(null);
+  const setCtaElementRef = (el: HTMLDivElement | HTMLAnchorElement | null) => {
+    ctaRef.current = el ?? null;
+  };
 
   const homeClientHeadingText = appUser
     ? [{ text: "Welcome" }, { text: "back," }, { text: `${appUser.name} 👋` }]
@@ -142,6 +151,48 @@ export default function HomePageContent() {
     });
   }, []);
 
+  // Hero intro animation (respect reduced motion)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!isLoaded) return;
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    if (prefersReduced) return;
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+
+      tl.from(headingRef.current, {
+        opacity: 0,
+        y: 24,
+        filter: "blur(4px)",
+        duration: 0.8,
+      })
+        .from(
+          subRef.current,
+          { opacity: 0, y: 14, duration: 0.6 },
+          "-=0.35"
+        )
+        .from(
+          ctaRef.current,
+          { opacity: 0, y: 10, duration: 0.5 },
+          "-=0.25"
+        );
+
+      // Subtle pop-in for background blobs
+      gsap.from(".animate-blob", {
+        opacity: 0,
+        scale: 0.95,
+        duration: 0.9,
+        stagger: 0.12,
+        ease: "sine.out",
+      });
+    }, heroRef);
+
+    return () => ctx.revert();
+  }, [isLoaded]);
+
   if (!isLoaded)
     return (
       <main className="w-full border h-[90vh] flex items-center my-auto justify-center">
@@ -159,24 +210,49 @@ export default function HomePageContent() {
   return (
     <div className="relative overflow-hidden text-white bg-neutral-950">
       {/* Hero Section - The starting point of the content is synced with the header's neutral-900 background */}
-      <section className="relative overflow-hidden min-h-[85vh] flex flex-col items-center justify-center px-6 md:px-20 py-18  text-center bg-gradient-to-b from-neutral-900 via-neutral-900 to-neutral-950">
-        {/* Animated blobs */}
-        <div className="absolute w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-        <div className="absolute w-72 h-72 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-        <div className="absolute w-72 h-72 bg-indigo-700 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob animation-delay-4000"></div>
+      <section
+        ref={heroRef}
+        className="relative overflow-hidden min-h-[85vh] flex flex-col items-center justify-center px-6 md:px-20 py-18 text-center bg-gradient-to-b from-neutral-900 via-neutral-900 to-neutral-950"
+      >
+        {/* Subtle animated grid overlay */}
+        <div
+          className="absolute inset-0 grid-pattern opacity-20 pointer-events-none"
+          aria-hidden
+        />
 
-        <div className="relative z-10 max-w-4xl mx-auto my-auto animate-fade-in-up">
+        {/* Animated blobs */}
+        <div className="absolute -top-16 -left-16 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" />
+        <div className="absolute top-24 -right-10 w-72 h-72 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000" />
+        <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-80 h-80 bg-indigo-700 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob animation-delay-4000" />
+
+        {/* Aurora accents aligned with indigo theme */}
+        <div className="aurora absolute -top-40 -left-32 w-[42rem] h-[42rem] rounded-full pointer-events-none" aria-hidden />
+        <div className="aurora absolute -bottom-48 -right-32 w-[46rem] h-[46rem] rounded-full pointer-events-none" aria-hidden />
+
+        <Tilt
+          tiltMaxAngleX={4}
+          tiltMaxAngleY={4}
+          scale={1.02}
+          glareEnable
+          glareMaxOpacity={0.07}
+          className="relative z-10 max-w-4xl mx-auto my-auto"
+        >
           {/* Heading Gradient */}
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight tracking-tight bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600 bg-clip-text text-transparent animate-gradient">
+          <h1
+            ref={headingRef}
+            className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight tracking-tight bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600 bg-clip-text text-transparent animate-gradient"
+          >
             Crack Exams with Confidence
           </h1>
-          <p className="text-sm md:text-lg lg:text-lg text-neutral-300 max-w-2xl mx-auto mb-10 animate-fade-in-up delay-200">
+          <p
+            ref={subRef}
+            className="text-sm md:text-lg lg:text-lg text-neutral-300 max-w-2xl mx-auto mb-10"
+          >
             Examify helps students, instructors, and admins manage, prepare, and
             succeed in online exams — smarter and faster.
           </p>
-
           {!user ? (
-            <div className="space-x-5 animate-fade-in-up delay-400">
+            <div ref={setCtaElementRef} className="space-x-5">
               <Link href="/register">
                 <Button className="cursor-pointer bg-indigo-600 hover:bg-indigo-700 w-30 md:w-48 transition-all duration-300 hover:scale-105 hover:shadow-md shadow-indigo-500/40 text-white">
                   Get Started
@@ -189,13 +265,15 @@ export default function HomePageContent() {
               </Link>
             </div>
           ) : (
-            <Link href={`/dashboard/${appUser?.role || "student"}`}>
-              <Button className="bg-indigo-600 text-white px-6 py-3 rounded-md text-lg font-semibold hover:bg-indigo-700 transition-all duration-300 hover:scale-105 hover:shadow-sm shadow-indigo-500/40">
-                Go to Dashboard
-              </Button>
-            </Link>
+            <div ref={setCtaElementRef}>
+              <Link href={`/dashboard/${appUser?.role || "student"}`}>
+                <Button className="bg-indigo-600 text-white px-6 py-3 rounded-md text-lg font-semibold hover:bg-indigo-700 transition-all duration-300 hover:scale-105 hover:shadow-sm shadow-indigo-500/40">
+                  Go to Dashboard
+                </Button>
+              </Link>
+            </div>
           )}
-        </div>
+        </Tilt>
 
         {/* CSS Animations */}
         <style jsx>{`
@@ -255,6 +333,41 @@ export default function HomePageContent() {
           .animate-gradient {
             background-size: 200% 200%;
             animation: gradientShift 5s ease infinite;
+          }
+
+          /* Subtle grid aligned with indigo theme */
+          .grid-pattern {
+            background-image:
+              radial-gradient(rgba(99, 102, 241, 0.18) 1px, transparent 1px),
+              radial-gradient(rgba(99, 102, 241, 0.12) 1px, transparent 1px);
+            background-size: 24px 24px, 24px 24px;
+            background-position: 0 0, 12px 12px;
+            mask-image: radial-gradient(circle at 50% 40%, black, transparent 70%);
+            -webkit-mask-image: radial-gradient(circle at 50% 40%, black, transparent 70%);
+          }
+
+          /* Aurora accents */
+          @keyframes auroraMove {
+            0% {
+              transform: translateY(0px) rotate(0deg) scale(1);
+              opacity: 0.35;
+            }
+            100% {
+              transform: translateY(-20px) rotate(10deg) scale(1.05);
+              opacity: 0.5;
+            }
+          }
+          .aurora {
+            background: conic-gradient(
+              from 180deg at 50% 50%,
+              rgba(99, 102, 241, 0.25),
+              rgba(129, 140, 248, 0.18),
+              rgba(99, 102, 241, 0.25),
+              transparent 70%
+            );
+            filter: blur(70px);
+            animation: auroraMove 10s ease-in-out infinite alternate;
+            mix-blend-mode: screen;
           }
         `}</style>
       </section>
