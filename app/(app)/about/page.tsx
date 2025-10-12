@@ -68,10 +68,7 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Footer Section */}
-      <footer className="mt-20 text-center text-neutral-500 text-sm border-t border-neutral-800 pt-6">
-        © {new Date().getFullYear()} Examify. Built with ❤️ and innovation.
-      </footer>
+     
     </div>
   );
 }

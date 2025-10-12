@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-black py-12 px-6 md:px-16 text-white">
+    <div className="min-h-screen bg-gradient-to-b from-neutral-900 to-black py-12 px-6 md:px-16 text-white">
       <div className="max-w-4xl mx-auto text-center mb-12">
         {/* <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600 bg-clip-text text-transparent animate-gradient">
           Get in Touch

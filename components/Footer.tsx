@@ -5,15 +5,15 @@ function Footer() {
   return (
     <footer className="scroll-section text-neutral-400 pt-12 pb-6 px-6 md:px-20">
       <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
-        <div className="col-span-2 md:col-span-1">
-          <h3 className="text-2xl font-bold text-white mb-4">Examify</h3>
-          <p className="text-sm">
+        <div className="col-span-2 md:col-span-1 space-y-2">
+          <Link href={"/"} className="text-4xl md:text-5xl font-bold mb-4 text-indigo-500">Examify</Link>
+          <p className="text-sm text-white mt-4">
             The premier platform for online exam management, analytics, and
             success.
           </p>
         </div>
         <div>
-          <h4 className="text-lg font-semibold text-indigo-500 mb-4">
+          <h4 className="text-lg font-semibold text-indigo-400 mb-4">
             Quick Links
           </h4>
           <ul className="space-y-2 text-sm">
@@ -52,7 +52,7 @@ function Footer() {
           </ul>
         </div>
         <div>
-          <h4 className="text-lg font-semibold text-indigo-500 mb-4">Legal</h4>
+          <h4 className="text-lg font-semibold text-indigo-400 mb-4">Legal</h4>
           <ul className="space-y-2 text-sm">
             <li>
               <Link
@@ -81,7 +81,7 @@ function Footer() {
           </ul>
         </div>
         <div>
-          <h4 className="text-lg font-semibold text-indigo-500 mb-4">
+          <h4 className="text-lg font-semibold text-indigo-400 mb-4">
             Get In Touch
           </h4>
           <ul className="space-y-2 text-sm">

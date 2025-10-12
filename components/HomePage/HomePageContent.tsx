@@ -10,6 +10,12 @@ import { TypewriterEffectSmooth } from "../ui/typewriter-effect";
 import { useUser } from "@clerk/nextjs";
 import { useAppUser } from "@/contexts/UserContext";
 import { TextShimmerWave } from "../ui/text-shimmer-wave";
+// New hypothetical import for the spotlight effect
+import { Spotlight } from "../ui/spotlight";
+import { BarChart2, Shield, Zap } from "lucide-react";
+import { TextLoop } from "../ui/text-loop";
+import { NumberTicker } from "../ui/number-ticker";
+import { SparklesText } from "../ui/sparkles-text";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -66,21 +72,68 @@ export default function HomePageContent() {
     },
   ];
 
+  const stats = [
+    {
+      value: 50,
+      startValue: "10",
+      valueAppendText: "+",
+      label: "Exams Conducted",
+    },
+    {
+      value: "4",
+      startValue: "0",
+      valueAppendText: "/5",
+      label: "Average User Rating",
+    },
+    {
+      value: 10,
+      startValue: "1",
+      valueAppendText: "+",
+      label: "Institutions Trusted",
+    },
+  ];
+  const staticFeatures = [
+    {
+      icon: Zap,
+      title: "Instant Setup & Deployment",
+      desc: `Launch your first assessment in under 5 minutes. No complex configuration, just rapid deployment.`,
+      descStatus: "",
+      status: "Available",
+    },
+    {
+      icon: Shield,
+      title: "AI-Powered Proctored Security",
+      desc: `Maintain exam integrity with advanced anti-cheating measures and real-time monitoring. `,
+      descStatus: "*Fully launching Q1 2025*",
+      status: "Future Feature",
+    },
+    {
+      icon: BarChart2,
+      title: "Advanced Performance Analytics",
+      desc: `Get deep insights into question performance, student trends, and class proficiency instantly. `,
+      descStatus: "*Data modeling in progress*",
+      status: "Future Feature",
+    },
+  ];
+
   const roles = [
     {
       role: "Student",
-      desc: "Take exams, view results, and track your progress easily. Access study materials and mock tests anytime.",
+      desc: "Track progress, take secure tests, and review results with detailed feedback.",
       href: "/register",
+      color: "text-green-400",
     },
     {
       role: "Instructor",
-      desc: "Create, manage, and evaluate exams for your students. Effortlessly grade subjective answers and provide feedback.",
+      desc: "Effortlessly create exams, manage question banks, and grade subjective answers faster.",
       href: "/register",
+      color: "text-indigo-400",
     },
     {
       role: "Admin",
-      desc: "Manage the platform, users, and permissions with full control. Oversee institutional performance and system security.",
+      desc: "Full institutional oversight, user management, and platform configuration control.",
       href: "/register",
+      color: "text-red-400",
     },
   ];
 
@@ -123,6 +176,7 @@ export default function HomePageContent() {
   ];
 
   useEffect(() => {
+    // Scroll-based animations for sections
     gsap.utils.toArray(".scroll-section").forEach((section: any) => {
       gsap.fromTo(
         section,
@@ -140,11 +194,26 @@ export default function HomePageContent() {
         }
       );
     });
+
+    // Optional: GSAP animation for the Hero Card (on component mount)
+    gsap.fromTo(
+      "#hero-mockup",
+      { scale: 0.9, opacity: 0, y: 50, rotateX: 10 },
+      {
+        scale: 1,
+        opacity: 1,
+        y: 0,
+        rotateX: 0,
+        duration: 1.5,
+        ease: "elastic.out(1, 0.5)",
+        delay: 0.8,
+      }
+    );
   }, []);
 
   if (!isLoaded)
     return (
-      <main className="w-full border h-[90vh] flex items-center my-auto justify-center">
+      <main className="w-full h-[90vh] flex items-center my-auto justify-center bg-neutral-950">
         <h1 className="text-white text-lg md:text-2xl ">
           <TextShimmerWave
             className="font-mono text-lg md:text-2xl lg:text-3xl"
@@ -158,69 +227,54 @@ export default function HomePageContent() {
 
   return (
     <div className="relative overflow-hidden text-white bg-neutral-950">
-      {/* Hero Section - The starting point of the content is synced with the header's neutral-900 background */}
-      <section className="relative overflow-hidden min-h-[85vh] flex flex-col items-center justify-center px-6 md:px-20 py-18  text-center bg-gradient-to-b from-neutral-900 via-neutral-900 to-neutral-950">
-        {/* Animated blobs */}
-        <div className="absolute w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-        <div className="absolute w-72 h-72 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-        <div className="absolute w-72 h-72 bg-indigo-700 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob animation-delay-4000"></div>
-
-        <div className="relative z-10 max-w-4xl mx-auto my-auto animate-fade-in-up">
-          {/* Heading Gradient */}
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight tracking-tight bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600 bg-clip-text text-transparent animate-gradient">
-            Crack Exams with Confidence
+      <section className="relative overflow-hidden min-h-[95vh] flex flex-col items-center justify-center px-6 md:px-20 pt-20 text-center bg-neutral-950 ">
+        <Spotlight
+          className="-top-40 left-0 md:left-20 md:-top-10"
+          fill="rgb(99 102 241 / 0.5)"
+        />
+        <Spotlight
+          className="-top-40 right-0 md:right-20 md:-top-10 scale-x-[-1]"
+          fill="rgb(99 102 241 / 0.5)"
+        />
+        <div className="relative z-10 max-w-6xl mx-auto flex flex-col items-center space-y-10 ">
+          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-snug  bg-gradient-to-r from-indigo-400 via-indigo-300 to-indigo-600 bg-clip-text text-transparent animate-gradient-shift">
+            EXAMIFY
           </h1>
-          <p className="text-sm md:text-lg lg:text-lg text-neutral-300 max-w-2xl mx-auto mb-10 animate-fade-in-up delay-200">
-            Examify helps students, instructors, and admins manage, prepare, and
-            succeed in online exams — smarter and faster.
+
+          <h2 className="text-3xl md:text-5xl font-extrabold mb-6 leading-snug  bg-gradient-to-r from-indigo-400 via-indigo-300 to-indigo-600 bg-clip-text text-transparent animate-gradient-shift">
+            The Future of <br className="md:hidden" /> Online Assessment is Here
+          </h2>
+          <p className="text-lg md:text-xl text-neutral-300 max-w-3xl mx-auto mb-10 animate-fade-in delay-200">
+            Examify delivers secure, scalable, and intelligent platform for all
+            your exam management needs—from practice tests to institutional
+            assessments.
           </p>
 
           {!user ? (
-            <div className="space-x-5 animate-fade-in-up delay-400">
-              <Link href="/register">
-                <Button className="cursor-pointer bg-indigo-600 hover:bg-indigo-700 w-30 md:w-48 transition-all duration-300 hover:scale-105 hover:shadow-md shadow-indigo-500/40 text-white">
-                  Get Started
+            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-5 mb-10 animate-fade-in delay-400">
+              <Link href="/sign-in">
+                <Button className="w-64 sm:w-48 bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 shadow-xl shadow-indigo-500/30 text-white font-semibold py-7 text-lg">
+                  Start for Free
                 </Button>
               </Link>
-              <Link href="/login">
-                <Button className="cursor-pointer bg-neutral-50 hover:bg-neutral-200 text-indigo-600 w-30 md:w-48 transition-all duration-300 hover:scale-105 hover:shadow-md shadow-neutral-300/40 font-semibold">
-                  Login
+              <Link href="/about">
+                <Button
+                  variant="outline"
+                  className="w-64 sm:w-48 bg-neutral-900 border-indigo-500 text-indigo-400 hover:bg-neutral-800 transition-all duration-300 py-7 text-lg"
+                >
+                  Learn More
                 </Button>
               </Link>
             </div>
           ) : (
             <Link href={`/dashboard/${appUser?.role || "student"}`}>
-              <Button className="bg-indigo-600 text-white px-6 py-3 rounded-md text-lg font-semibold hover:bg-indigo-700 transition-all duration-300 hover:scale-105 hover:shadow-sm shadow-indigo-500/40">
+              <Button className="bg-indigo-600 text-white px-8 py-3 rounded-md text-lg font-semibold hover:bg-indigo-700 transition-all duration-300 hover:scale-[1.02] mb-16 shadow-lg shadow-indigo-500/40">
                 Go to Dashboard
               </Button>
             </Link>
           )}
         </div>
-
-        {/* CSS Animations */}
         <style jsx>{`
-          @keyframes blob {
-            0%,
-            100% {
-              transform: translate(0px, 0px) scale(1);
-            }
-            33% {
-              transform: translate(30px, -50px) scale(1.1);
-            }
-            66% {
-              transform: translate(-20px, 20px) scale(0.9);
-            }
-          }
-          .animate-blob {
-            animation: blob 10s infinite ease-in-out;
-          }
-          .animation-delay-2000 {
-            animation-delay: 2s;
-          }
-          .animation-delay-4000 {
-            animation-delay: 4s;
-          }
-
           @keyframes fadeInUp {
             0% {
               opacity: 0;
@@ -231,7 +285,7 @@ export default function HomePageContent() {
               transform: translateY(0);
             }
           }
-          .animate-fade-in-up {
+          .animate-fade-in {
             animation: fadeInUp 1s forwards;
           }
           .delay-200 {
@@ -252,22 +306,221 @@ export default function HomePageContent() {
               background-position: 0% 50%;
             }
           }
-          .animate-gradient {
+          .animate-gradient-shift {
             background-size: 200% 200%;
             animation: gradientShift 5s ease infinite;
+          }
+
+          @keyframes growUp {
+            0% {
+              transform: scaleY(0);
+            }
+            100% {
+              transform: scaleY(1);
+            }
+          }
+          .animate-grow-up {
+            transform-origin: bottom;
+            animation: growUp 1s ease-out forwards;
+          }
+
+          @keyframes progress {
+            0% {
+              width: 0%;
+              opacity: 0;
+            }
+            100% {
+              opacity: 1;
+            }
+          }
+          .animate-progress {
+            animation: progress 1.5s ease-out forwards;
           }
         `}</style>
       </section>
 
-      {/* HomeClient Section - UPDATED CONTENT HERE */}
-      <section className="scroll-section min-h-[75vh] px-5 py-12 md:py-20 md:px-20 text-center flex flex-col items-center justify-center bg-neutral-950">
-        <h2 className="text-4xl font-bold mb-2">
+      <section className="relative overflow-hidden flex flex-col items-center justify-center px-6 md:px-20  pb-12 text-center bg-neutral-950">
+        <Tilt
+          glareEnable
+          scale={1.01}
+          glareMaxOpacity={0.2}
+          perspective={1000}
+          className="w-full max-w-4xl mt-4"
+        >
+          <div
+            id="hero-mockup"
+            className="relative rounded-xl border bg-neutral-900 backdrop-blur-sm shadow-2xl shadow-indigo-900/50 transition duration-500 ease-in-out hover:shadow-indigo-500/30"
+          >
+            <div className="w-full h-80 bg-neutral-800 rounded-xl overflow-hidden relative">
+              {/* Visual element representing the platform/exam interface */}
+              <div className="absolute top-0 left-0 w-full h-full p-4">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-sm font-medium text-indigo-400">
+                    Instructor Dashboard Insights
+                  </span>
+                  <div className="flex space-x-2">
+                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                    <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                    <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[calc(100%-30px)]">
+                  {/* Feature 1: Exam Creation Workflow */}
+                  <div className="col-span-2 bg-neutral-950 p-4 rounded-lg flex flex-col justify-between">
+                    <h3 className="text-xl font-bold text-indigo-400">
+                      Quick Exam Scheduling
+                    </h3>
+                    <p className="text-neutral-500 text-sm">
+                      Define parameters, select question types, and set the exam
+                      time in three simple steps.
+                    </p>
+                    <div className="space-y-2 mt-3">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-indigo-500">1.</span>
+                        <span className="text-neutral-300">Create Exam</span>
+                        <div className="ml-auto w-[25%] h-2 bg-green-500/30 rounded-full animate-progress"></div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-indigo-500">1.</span>
+                        <span className="text-neutral-300">Schedule Exam</span>
+                        <div className="ml-auto w-[40%] h-2 bg-green-500/50 rounded-full animate-progress"></div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-indigo-500">2.</span>
+                        <span className="text-neutral-300">Add Questions</span>
+                        <div className="ml-auto w-[55%] h-2 bg-green-500/60 rounded-full animate-progress delay-100"></div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-indigo-500">3.</span>
+                        <span className="text-neutral-300">Publish</span>
+                        <div className="ml-auto w-[70%] h-2 bg-green-500 rounded-full animate-progress delay-200"></div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Feature 2: Real-time Monitoring/Metrics */}
+                  <div className="col-span-1 bg-neutral-950 p-4 rounded-lg hidden md:block">
+                    <h3 className="text-xl font-bold text-indigo-400 mb-2">
+                      Real-time <br /> Result Monitoring
+                    </h3>
+                    <div className="flex justify-between items-center text-sm mb-1">
+                      <span className="text-neutral-400">Active Students:</span>
+                      <span className="text-green-400 font-bold">45 / 50</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm mb-3">
+                      <span className="text-neutral-400">Avg. Score:</span>
+                      <span className="text-yellow-400 font-bold">78%</span>
+                    </div>
+                    <div className="w-full h-12 bg-indigo-800/50 rounded-md flex items-center justify-center text-sm font-medium">
+                      View Live Analytics
+                    </div>
+                    <p className="text-neutral-500 text-xs mt-3">
+                      Track progress, time, and engagement of all participants
+                      instantly.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Tilt>
+      </section>
+
+      <section className="mt-15 scroll-section py-24 px-6 md:px-20 bg-neutral-950 border-t border-b border-neutral-900/50 ">
+        <div className="grid md:grid-cols-3 gap-10 text-center">
+          {stats.map((stat, idx) => (
+            <div key={idx} className="flex flex-col items-center">
+              <p className="text-5xl md:text-6xl font-extrabold text-indigo-500/70 mb-2">
+                {/* {idx !== 1 ? ( */}
+                <NumberTicker
+                  value={Number(stat.value)}
+                  startValue={Number(stat.startValue)}
+                  delay={`${idx === 1 && Number(1)}`}
+                  className="tracking-tighter font-extrabold whitespace-pre-wrap text-indigo-500/70"
+                />
+                {stat.valueAppendText}
+              </p>
+              <h3 className="text-lg text-neutral-300 font-medium">
+                {stat.label}
+              </h3>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="pt-20 pb-5 px-6 md:px-20 bg-neutral-950">
+        <h2 className="text-3xl md:text-5xl font-bold text-center mb-3 text-indigo-400 uppercase cursor-pointer">
+          Core Platform Advantages
+        </h2>
+        <p className="text-center text-indigo-200/80 max-w-2xl mx-auto mb-16 ">
+          A seamless experience for every user role,
+          <br className="hidden md:flex" /> built on a foundation of security
+          and smart automation.
+        </p>
+
+        {/* Vertical Data Stream Layout */}
+        <div className="relative max-w-4xl mx-auto">
+          {/* Vertical Line Connector */}
+          <div className="absolute left-1/2 -ml-0.5 top-0 w-px h-full bg-neutral-800 hidden md:block"></div>
+
+          {staticFeatures.map((feature, i) => (
+            <div
+              key={i}
+              className={`data-stream-item flex items-start gap-6 md:gap-12 mb-16 relative ${
+                i % 2 === 0 ? "md:flex-row-reverse" : "md:flex-row"
+              }`}
+            >
+              {/* Connector Dot */}
+              <div className="hidden md:block absolute left-1/2 top-15 w-4 h-4 md:w-5 md:h-5 rounded-full bg-indigo-400 border-4 border-neutral-950 z-10 -ml-2.5 md:-ml-[11px]"></div>
+
+              {/* Content Card (Left or Right) */}
+              <div
+                className={`w-full md:w-5/12 bg-neutral-900 shadow-neutral-700/50 rounded-xl p-6 shadow-md ${
+                  i % 2 === 0 ? "md:text-right" : "md:text-left"
+                }`}
+              >
+                <div
+                  className={`flex items-center gap-2 ${
+                    i % 2 === 0 ? "justify-end" : "justify-start"
+                  }`}
+                >
+                  <feature.icon className="w-8 h-8 text-indigo-400 mb-2" />
+                  {/* Status Tag for Future Features */}
+                  {feature.status !== "Available" && (
+                    <span className="mb-2 text-xs font-medium text-yellow-400/50 bg-yellow-900/20 px-2 py-0.5 rounded-full border border-yellow-800/30">
+                      Coming Soon
+                    </span>
+                  )}
+                  {feature.status === "Available" && (
+                    <span className="mb-2 text-xs font-medium text-green-400/50 bg-green-900/20 px-3 py-1 rounded-full border border-green-800/30">
+                      Available
+                    </span>
+                  )}
+                </div>
+
+                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                <p className="text-neutral-400 text-sm">{feature.desc}</p>
+                <p className="text-neutral-200 text-sm font-bold my-0.5">
+                  {feature.descStatus}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="scroll-section min-h-[75vh] px-5 py-12 md:py-10 md:px-20 text-center flex flex-col items-center justify-center bg-neutral-950 border-t">
+        <h2 className="hidden md:flex font-bold mb-2">
           <TypewriterEffectSmooth
             words={homeClientHeadingText}
             className="text-white"
           />
         </h2>
-        <p className="text-neutral-400 mb-8">
+        <h2 className="md:hidden font-bold mb-2 text-xl">
+          {appUser?.name
+            ? `Welcome back ${appUser?.name}`
+            : "Why Choose Examify!"}
+        </h2>
+        <p className="text-neutral-200 mb-8">
           {user
             ? "Continue where you left off, and track your exam performance."
             : "Empowering students and educators to simplify exams with smart tools."}
@@ -281,20 +534,18 @@ export default function HomePageContent() {
               glareMaxOpacity={0.2}
               className="shadow-lg shadow-neutral-800 bg-neutral-950 border-t border-neutral-800 text-white p-6 rounded-lg hover:shadow-md hover:shadow-indigo-800 transition"
             >
-              <h3 className="text-xl font-bold mb-2 text-indigo-500">
+              <h3 className="text-xl font-bold mb-2 text-indigo-400">
                 {card.title}
               </h3>
-              {/* Using the new descriptive text */}
               <p className="text-neutral-400 text-sm">{card.desc}</p>
             </Tilt>
           ))}
         </div>
       </section>
 
-      {/* Features Section - UPDATED CONTENT IN ARRAY DEFINITION */}
       <section className="scroll-section py-18 px-6 md:px-20 bg-neutral-950">
         <h2 className="text-4xl font-bold text-center mb-14">
-          {user ? "Your Personalized Experience" : "Why Choose Examify?"}
+          {user ? "Your Personalized Experience" : "Examify Feature"}
         </h2>
         <div className="grid gap-10 md:grid-cols-3">
           {features.map((feature, i) => (
@@ -305,7 +556,7 @@ export default function HomePageContent() {
               glareMaxOpacity={0.2}
               className="bg-neutral-900 p-6 rounded-2xl shadow-md hover:shadow-indigo-500 transition"
             >
-              <h3 className="text-indigo-500 text-xl font-semibold mb-3">
+              <h3 className="text-indigo-500 text-xl font-bold mb-3">
                 {feature.title}
               </h3>
               <p className="text-neutral-300 text-sm">{feature.desc}</p>
@@ -314,13 +565,12 @@ export default function HomePageContent() {
         </div>
       </section>
 
-      {/* Roles Section - UPDATED CONTENT IN ARRAY DEFINITION */}
-      <section className="scroll-section py-18 px-6 md:px-20 text-center bg-neutral-950">
-        <h2 className="text-4xl font-bold mb-14 text-indigo-500">
+      <section className="scroll-section pt-12  mb-28 px-6 md:px-20 text-center bg-neutral-950">
+        <h2 className="text-4xl font-bold mb-14 text-white">
           {user ? "Know Your Role" : "Who is it for?"}
         </h2>
         <div className="grid gap-8 md:grid-cols-3">
-          {roles.map(({ role, desc, href }, i) => (
+          {roles.map(({ role, desc, href, color }, i) => (
             <Tilt
               key={i}
               glareEnable
@@ -328,8 +578,7 @@ export default function HomePageContent() {
               glareMaxOpacity={0.2}
               className="border-t shadow-lg shadow-neutral-800 p-6 rounded-lg hover:shadow-md hover:shadow-indigo-500 transition"
             >
-              <h3 className="text-xl font-semibold mb-2">{role}</h3>
-              {/* Using the new descriptive text */}
+              <h3 className={`text-xl font-semibold mb-2 ${color}`}>{role}</h3>
               <p className="text-neutral-400 text-sm mb-4">{desc}</p>
               {!user && (
                 <Link
@@ -344,7 +593,6 @@ export default function HomePageContent() {
         </div>
       </section>
 
-      {/* CTA Section (No content change needed, already descriptive) */}
       <section className="scroll-section py-24 px-6 md:px-20 bg-gradient-to-b from-indigo-600 to-indigo-800 text-center">
         <h2 className="text-4xl font-bold mb-6">
           {user ? "Need Help Navigating?" : "Ready to revolutionize exams?"}
@@ -354,16 +602,13 @@ export default function HomePageContent() {
             ? "Visit your dashboard to manage exams, results, and more."
             : "Join hundreds of users simplifying their online assessments with Examify."}
         </p>
-        <Link
-          href={user ? `/dashboard/${user.publicMetadata.role}` : "/register"}
-        >
+        <Link href={appUser ? `/dashboard/${appUser?.role}` : "/sign-in"}>
           <Button className="bg-neutral-900 text-white cursor-pointer px-8 py-3 rounded-md text-lg font-semibold hover:bg-neutral-950 transition">
             {user ? "Go to Dashboard" : "Get Started Now"}
           </Button>
         </Link>
       </section>
 
-      {/* Testimonials Section - UPDATED CONTENT IN ARRAY DEFINITION */}
       <section className="scroll-section py-24 px-6 md:px-20 bg-neutral-900">
         <h2 className="text-4xl font-bold text-center mb-14">
           What Our Users Say
@@ -383,7 +628,6 @@ export default function HomePageContent() {
               <div>
                 <div className="text-indigo-500 font-semibold">{t.name}</div>
                 <div className="text-neutral-400 text-sm">{t.role}</div>
-                {/* Kept stars yellow for universal rating color */}
                 <div className="text-yellow-400 text-sm mt-2">
                   {"★".repeat(Math.floor(t.rating)) + (t.rating % 1 ? "½" : "")}
                 </div>

@@ -28,14 +28,23 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [appUser, setAppUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const refreshUser = async () => {
-    if (!user) return;
-    setLoading(true);
+  const refreshUser = async (isInitialLoad = false) => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    // Only show loader if it's the very first load AND we don't have cached data
+    if (!isInitialLoad) {
+      setLoading(true);
+    }
+
     try {
       const res = await axios.get("/api/users/me");
       if (res.data.success) {
-        setAppUser(res.data.data);
-        localStorage.setItem("appUser", JSON.stringify(res.data.data)); //cache it
+        const fetchedUser: AppUser = res.data.data;
+        setAppUser(fetchedUser);
+        localStorage.setItem("appUser", JSON.stringify(fetchedUser));
       }
     } catch (err) {
       console.error("Failed to refresh user:", err);
@@ -45,16 +54,30 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    // 🟢 only proceed when Clerk isLoaded
     if (!isLoaded) return;
 
     if (isSignedIn) {
-      refreshUser();
+      const cachedUserString = localStorage.getItem("appUser");
+      let hasCachedData = false;
+
+      if (cachedUserString) {
+        try {
+          const cachedUser: AppUser = JSON.parse(cachedUserString);
+          setAppUser(cachedUser);
+          setLoading(false);
+          hasCachedData = true;
+        } catch (e) {
+          console.error("Error parsing cached user data:", e);
+          localStorage.removeItem("appUser");
+        }
+      }
+      refreshUser(!hasCachedData); // Pass true if we have no cache, to control the loader
     } else {
       setAppUser(null);
+      localStorage.removeItem("appUser");
       setLoading(false);
     }
-  }, [isLoaded, isSignedIn]);
+  }, [isLoaded, isSignedIn]); // Dependencies remain the same
 
   return (
     <UserContext.Provider value={{ appUser, loading, refreshUser }}>

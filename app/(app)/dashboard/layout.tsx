@@ -35,6 +35,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const role = appUser?.role?.toUpperCase() || "USER";
 
   if (loading || !allowed) {
+    // This block will now only show if:
+    // 1. Clerk is loading.
+    // 2. The user is signed in but NO CACHE was found (forcing API call).
+    // 3. The user is signed in, but the correct route check is still happening.
     return (
       <div className="text-white text-center py-20 text-xl flex flex-col justify-center items-center mx-auto my-auto w-full min-h-[80vh]">
         <TextShimmerWave
