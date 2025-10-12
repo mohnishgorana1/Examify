@@ -29,20 +29,28 @@ export async function GET(req: Request) {
       );
     }
 
-    const enrolledExamIds = (
-      await Enrollment.find({ studentId }).select("examId")
-    ).map((e) => e.examId.toString());
+    // const enrolledExamIds = (
+    //   await Enrollment.find({ studentId }).select("examId")
+    // ).map((e) => e.examId.toString());
 
-    const now = new Date();
+    // console.log("enrolledExamIds", enrolledExamIds)
 
-    //Exams NOT enrolled
+    // const now = new Date();
+
+    // //Exams NOT enrolled
+    // const newExams = await Exam.find({
+    //   _id: {
+    //     $nin: enrolledExamIds.map((id) => new mongoose.Types.ObjectId(id)),
+    //   },
+    //   isPublished: true,
+    //   scheduledAt: { $gt: now },
+    // }).sort({ scheduledAt: 1 });
+
     const newExams = await Exam.find({
-      _id: {
-        $nin: enrolledExamIds.map((id) => new mongoose.Types.ObjectId(id)),
-      },
       isPublished: true,
-      scheduledAt: { $gt: now },
     }).sort({ scheduledAt: 1 });
+
+    console.log("new exams", newExams);
 
     if (!newExams || newExams.length === 0) {
       return NextResponse.json(
@@ -54,7 +62,11 @@ export async function GET(req: Request) {
     // console.log("newExams", newExams);
 
     return NextResponse.json(
-      { success: true, data: newExams, message: "New Exams Fetched Successfully" },
+      {
+        success: true,
+        data: newExams,
+        message: "New Exams Fetched Successfully",
+      },
       { status: 200 }
     );
   } catch (error) {

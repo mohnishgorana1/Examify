@@ -45,12 +45,12 @@ export default function InstructorDashboard() {
       icon: <Library size={20} />,
       component: <MyQuestions />,
     },
-    {
-      value: "results",
-      label: "Results",
-      icon: <BarChart3 size={20} />,
-      component: <Results />,
-    },
+    // {
+    //   value: "results",
+    //   label: "Results",
+    //   icon: <BarChart3 size={20} />,
+    //   component: <Results />,
+    // },
   ];
 
   const activeComponent = tabs.find(

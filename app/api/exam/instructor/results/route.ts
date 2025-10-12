@@ -1,1 +1,0 @@
-// GET /api/exam/instructor/results (get all results)

@@ -97,6 +97,33 @@ export async function POST(
       }
     );
 
+    if (!submission) {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "Error in Starting, Unable to create new submission to set status as 'started' ",
+        },
+        { status: 500 }
+      );
+    }
+
+    console.log("submission created", submission._id);
+    console.log("Exam to start", exam);
+
+    if (!exam.submissions) {
+      console.log("right now no submission in thi exam");
+      exam.submissions = [];
+    }
+
+    const updatedExam = await Exam.findByIdAndUpdate(
+      examId,
+      { $addToSet: { submissions: submission._id } }, // prevents duplicates
+      { new: true }
+    );
+
+    console.log("updated exam submission arr", updatedExam?.submissions);
+
     return NextResponse.json(
       {
         success: true,

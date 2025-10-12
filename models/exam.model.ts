@@ -28,6 +28,12 @@ const examSchema = new Schema<IExamDoc>(
       type: Number,
       default: 1,
     },
+    submissions: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Submission",
+      },
+    ],
   },
   { timestamps: true }
 );

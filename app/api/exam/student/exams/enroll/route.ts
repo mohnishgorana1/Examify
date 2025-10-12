@@ -47,13 +47,13 @@ export async function POST(req: Request) {
       );
     }
 
-    const now = new Date();
-    if (exam.scheduledAt && new Date(exam.scheduledAt) < now) {
-      return NextResponse.json(
-        { success: false, message: "Exam schedule has already passed" },
-        { status: 400 }
-      );
-    }
+    // const now = new Date();
+    // if (exam.scheduledAt && new Date(exam.scheduledAt) < now) {
+    //   return NextResponse.json(
+    //     { success: false, message: "Exam schedule has already passed" },
+    //     { status: 400 }
+    //   );
+    // }
 
     const existing = await Enrollment.findOne({
       student: studentId,

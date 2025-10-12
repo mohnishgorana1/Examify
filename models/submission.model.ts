@@ -10,7 +10,11 @@ const submissionSchema = new Schema<ISubmissionDoc>(
       ref: "Exam",
       required: true,
     }, // Using Types.ObjectId
-    studentId: { type: String, required: true },
+    studentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User", // MUST match the name used when defining the User model
+      required: true,
+    },
     answers: [
       {
         questionId: {

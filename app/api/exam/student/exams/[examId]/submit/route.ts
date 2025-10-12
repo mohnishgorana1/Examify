@@ -5,6 +5,7 @@ import { Exam } from "@/models/exam.model";
 import { Question } from "@/models/question.model";
 import { Submission } from "@/models/submission.model";
 import { User } from "@/models/user.model";
+import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
 export async function POST(
@@ -19,21 +20,29 @@ export async function POST(
     const { studentId, answers, timeTaken, isAutoSubmitted, submissionId } =
       await req.json();
 
+    console.log("Incoming payload:", {
+      examId,
+      studentId,
+      answersCount: answers?.length,
+      timeTaken,
+      isAutoSubmitted,
+      submissionId,
+    });
 
-      console.log("studentId", studentId, "answers", answers, "timeTaken", timeTaken, "isAutoSubmitted", isAutoSubmitted, "submissionId", submissionId)
+    if (!mongoose.Types.ObjectId.isValid(examId)) {
+      console.log("invalid examId");
 
-
-    if (!studentId) {
       return NextResponse.json(
-        { success: false, message: "Missing studentId" },
+        { success: false, message: "Invalid examId" },
         { status: 400 }
       );
     }
-    if (!examId) {
-      console.log("exam id", examId);
+
+    if (!mongoose.Types.ObjectId.isValid(submissionId)) {
+      console.log("invalid submissionId");
 
       return NextResponse.json(
-        { success: false, message: "Missing examId" },
+        { success: false, message: "Invalid submissionId" },
         { status: 400 }
       );
     }
@@ -70,8 +79,7 @@ export async function POST(
     for (const q of exam.questions) {
       questionMap.set(q._id.toString(), q.correctAnswer);
     }
-
-    console.log("question Map", questionMap);
+    // console.log("question Map", questionMap);
 
     let score = 0;
 
@@ -103,7 +111,7 @@ export async function POST(
       );
     }
 
-    console.log("submission", submission);
+
     
 
     return NextResponse.json(

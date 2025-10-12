@@ -34,6 +34,7 @@ export interface IExam {
   totalMarks?: number;
   passingMarks?: number;
   marksPerQuestion?: number;
+  submissions: mongoose.Types.ObjectId[];
 }
 export interface IEnrollment {
   studentId: mongoose.Types.ObjectId; // student id;
@@ -48,7 +49,7 @@ export interface ISubmissionAnswer {
 
 export interface ISubmission {
   examId: mongoose.Types.ObjectId;
-  studentId: string;
+  studentId: mongoose.Types.ObjectId;
   answers: ISubmissionAnswer[];
   status: string;
   startedAt: Date;

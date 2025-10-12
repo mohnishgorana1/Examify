@@ -12,8 +12,6 @@ function MyExams() {
   const [myCreatedExams, setMyCreatedExams] = useState<any>();
   const [isFetchingExams, setIsFetchingExams] = useState(false);
 
-
-
   const fetchExams = async () => {
     if (!appUserId) return;
     setIsFetchingExams(true);
@@ -111,14 +109,30 @@ function MyExams() {
                           {formatDateToLongString(exam.createdAt)}
                         </span>
                       </p>
+                      <p className="text-sm text-neutral-300 font-medium">
+                        Submissions:{" "}
+                        <span className="text-white font-bold">
+                          {exam.submissions?.length || 0}
+                        </span>
+                      </p>
                     </div>
 
-                    <Link
-                      href={`/dashboard/instructor/update-exam/${exam._id}`}
-                      className="px-3 py-1.5 text-sm md:text-base font-medium rounded-lg border border-indigo-500 text-indigo-400 hover:bg-indigo-500 hover:text-white transition-colors duration-300"
-                    >
-                      Update Exam
-                    </Link>
+                    <div className="flex flex-col md:flex-row gap-2">
+                      {exam.submissions && exam.submissions.length > 0 && (
+                        <Link
+                          href={`/dashboard/instructor/view-exam-results/${exam._id}`}
+                          className="px-3 py-1.5 text-sm md:text-base font-medium rounded-lg border border-green-700 text-green-600 hover:bg-green-700 hover:text-white transition-colors duration-300 text-center"
+                        >
+                          View {exam.submissions.length} Submission(s)
+                        </Link>
+                      )}
+                      <Link
+                        href={`/dashboard/instructor/update-exam/${exam._id}`}
+                        className="px-3 py-1.5 text-sm md:text-base font-medium rounded-lg border border-indigo-500 text-indigo-400 hover:bg-indigo-500 hover:text-white transition-colors duration-300 text-center"
+                      >
+                        Update Exam
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
