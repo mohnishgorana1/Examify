@@ -10,18 +10,21 @@ import { TypewriterEffectSmooth } from "../ui/typewriter-effect";
 import { useUser } from "@clerk/nextjs";
 import { useAppUser } from "@/contexts/UserContext";
 import { TextShimmerWave } from "../ui/text-shimmer-wave";
-// New hypothetical import for the spotlight effect
 import { Spotlight } from "../ui/spotlight";
 import { BarChart2, Shield, Zap } from "lucide-react";
-import { TextLoop } from "../ui/text-loop";
 import { NumberTicker } from "../ui/number-ticker";
-import { SparklesText } from "../ui/sparkles-text";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function HomePageContent() {
   const { user, isLoaded } = useUser();
-  const { appUser, loading, refreshUser } = useAppUser();
+  const { appUser } = useAppUser();
 
   const homeClientHeadingText = appUser
     ? [{ text: "Welcome" }, { text: "back," }, { text: `${appUser.name} 👋` }]
@@ -175,6 +178,61 @@ export default function HomePageContent() {
     },
   ];
 
+  const faqs = [
+    {
+      question:
+        "What types of exams and question formats does Examify support?",
+      answer:
+        "Currently, Examify supports core objective formats, including **Multiple-Choice Questions (MCQ)** and **True/False**. We are actively developing support for **Short Descriptive/Subjective answers** and **Numerical answers**, which will be available soon. You can combine the currently supported types within a single exam for comprehensive assessment.",
+    },
+    {
+      question:
+        "Is Examify secure enough for conducting high-stakes institutional exams?",
+      answer:
+        "While we are confident in our current security measures for individual instructors (including **secure login** and **role-based access**), we are committed to building full institutional security. We are implementing **modern encryption standards** for all data and records. Our **AI-powered proctoring** and advanced anti-cheating measures, launching in Q1 2026, will solidify Examify as a trusted platform for high-stakes assessments.",
+    },
+    {
+      question: "What is the current cost to use Examify?",
+      answer:
+        "Currently, **Examify is completely free to use**! Instructors can create and deploy any number of exams, and students can join and take those exams at no charge. We are focused on growing our user base and gathering feedback. Future paid tiers will be introduced for advanced features and institutional licenses, but core features will remain accessible.",
+    },
+    {
+      question: "What is the 'AI-Powered Proctored Security' feature?",
+      answer:
+        "This is a major future feature (launching **Q1 2026**) designed to maintain exam integrity remotely. It will use artificial intelligence to **monitor student activity** during the exam via webcam and screen. The system will flag potential cheating behaviors, such as looking away from the screen, detecting unauthorized materials, or the presence of a second person, ensuring a fair and verifiable testing environment.",
+    },
+    {
+      question:
+        "Can I integrate Examify with my existing Learning Management System (LMS)?",
+      answer:
+        "While direct, out-of-the-box LMS integration is not yet a core feature, Examify's robust **data export capabilities (e.g., CSV reports)** allow for easy transfer of results and grades to your existing systems. We are currently developing seamless integration APIs for popular LMS platforms like **Moodle and Canvas**.",
+    },
+    {
+      question:
+        "Does Examify offer different dashboards and features for various user roles?",
+      answer:
+        "Yes, the platform is **fully role-based** for maximum efficiency. **Students** get a dashboard to track progress and take secure tests. **Instructors** have dedicated tools for exam creation, question bank management, grading, and analytics. **Admins** maintain comprehensive institutional oversight, including user management and platform configuration.",
+    },
+    {
+      question: "How long does it take to set up and deploy my first exam?",
+      answer:
+        "Our platform is designed for **instant deployment**. Instructors can create their first exam, select questions from the bank (or add new ones), define parameters, and schedule it in **under 5 minutes**. Our intuitive interface eliminates complex setup processes.",
+    },
+    {
+      question:
+        "Is there a limit to the number of students or exams I can host?",
+      answer:
+        "Examify is built to be **scalable**. Our infrastructure can support thousands of concurrent users and a high volume of exams without performance degradation. For institutional licenses, there are typically no hard limits, ensuring reliable service even during peak assessment periods.",
+    },
+    {
+      question: "How do I get technical support or training for my staff?",
+      answer:
+        "We offer dedicated support for all users. Our documentation and **self-help center** are available 24/7. For institutional clients, we provide personalized **onboarding and training sessions** for instructors and administrators, along with priority technical support via email and dedicated chat channels.",
+    },
+  ];
+
+
+
   useEffect(() => {
     // Scroll-based animations for sections
     gsap.utils.toArray(".scroll-section").forEach((section: any) => {
@@ -209,6 +267,7 @@ export default function HomePageContent() {
         delay: 0.8,
       }
     );
+
   }, []);
 
   if (!isLoaded)
@@ -227,6 +286,7 @@ export default function HomePageContent() {
 
   return (
     <div className="relative overflow-hidden text-white bg-neutral-950">
+      {/* hero section */}
       <section className="relative overflow-hidden min-h-[95vh] flex flex-col items-center justify-center px-6 md:px-20 pt-20 text-center bg-neutral-950 ">
         <Spotlight
           className="-top-40 left-0 md:left-20 md:-top-10"
@@ -237,7 +297,7 @@ export default function HomePageContent() {
           fill="rgb(99 102 241 / 0.5)"
         />
         <div className="relative z-10 max-w-6xl mx-auto flex flex-col items-center space-y-10 ">
-          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-snug  bg-gradient-to-r from-indigo-400 via-indigo-300 to-indigo-600 bg-clip-text text-transparent animate-gradient-shift">
+          <h1 className="text-5xl md:text-7xl font-extrabold mb-1 leading-snug  bg-gradient-to-r from-indigo-400 via-indigo-300 to-indigo-600 bg-clip-text text-transparent animate-gradient-shift">
             EXAMIFY
           </h1>
 
@@ -339,7 +399,8 @@ export default function HomePageContent() {
         `}</style>
       </section>
 
-      <section className="relative overflow-hidden flex flex-col items-center justify-center px-6 md:px-20  pb-12 text-center bg-neutral-950">
+      {/* Instructor dashboard insights tilt card */}
+      <section className="hidden relative overflow-hidden md:flex flex-col items-center justify-center px-6 md:px-20  pb-12 text-center bg-neutral-950">
         <Tilt
           glareEnable
           scale={1.01}
@@ -425,6 +486,7 @@ export default function HomePageContent() {
         </Tilt>
       </section>
 
+      {/* Live stats  */}
       <section className="mt-15 scroll-section py-24 px-6 md:px-20 bg-neutral-950 border-t border-b border-neutral-900/50 ">
         <div className="grid md:grid-cols-3 gap-10 text-center">
           {stats.map((stat, idx) => (
@@ -447,6 +509,7 @@ export default function HomePageContent() {
         </div>
       </section>
 
+      {/* data stream layout */}
       <section className="pt-20 pb-5 px-6 md:px-20 bg-neutral-950">
         <h2 className="text-3xl md:text-5xl font-bold text-center mb-3 text-indigo-400 uppercase cursor-pointer">
           Core Platform Advantages
@@ -508,6 +571,7 @@ export default function HomePageContent() {
         </div>
       </section>
 
+      {/* client cards */}
       <section className="scroll-section min-h-[75vh] px-5 py-12 md:py-10 md:px-20 text-center flex flex-col items-center justify-center bg-neutral-950 border-t">
         <h2 className="hidden md:flex font-bold mb-2">
           <TypewriterEffectSmooth
@@ -543,6 +607,7 @@ export default function HomePageContent() {
         </div>
       </section>
 
+      {/* features card */}
       <section className="scroll-section py-18 px-6 md:px-20 bg-neutral-950">
         <h2 className="text-4xl font-bold text-center mb-14">
           {user ? "Your Personalized Experience" : "Examify Feature"}
@@ -565,6 +630,7 @@ export default function HomePageContent() {
         </div>
       </section>
 
+      {/* user roles card */}
       <section className="scroll-section pt-12  mb-28 px-6 md:px-20 text-center bg-neutral-950">
         <h2 className="text-4xl font-bold mb-14 text-white">
           {user ? "Know Your Role" : "Who is it for?"}
@@ -593,6 +659,7 @@ export default function HomePageContent() {
         </div>
       </section>
 
+      {/* navigator messages */}
       <section className="scroll-section py-24 px-6 md:px-20 bg-gradient-to-b from-indigo-600 to-indigo-800 text-center">
         <h2 className="text-4xl font-bold mb-6">
           {user ? "Need Help Navigating?" : "Ready to revolutionize exams?"}
@@ -609,7 +676,32 @@ export default function HomePageContent() {
         </Link>
       </section>
 
-      <section className="scroll-section py-24 px-6 md:px-20 bg-neutral-900">
+      {/* FAQs Accordion based */}
+      <section className="scroll-section py-24 px-6 md:px-20 bg-neutral-950 border-t border-neutral-900/50">
+        <h2 className="text-4xl font-bold text-center mb-14 text-indigo-400">
+          Frequently Asked Questions
+        </h2>
+        <div className="max-w-4xl mx-auto">
+          <Accordion type="single" collapsible className="w-full">
+            {faqs.map((faq, i) => (
+              <AccordionItem
+                key={i}
+                value={`item-${i + 1}`}
+                className="border-b border-neutral-800"
+              >
+                <AccordionTrigger className="text-left text-lg hover:no-underline transition-colors duration-200 py-4 text-white hover:text-indigo-400">
+                  {faq.question}
+                </AccordionTrigger>
+                <AccordionContent className="text-neutral-400 text-base pb-4">
+                  {faq.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+      </section>
+      {/* testimonials */}
+      <section className="scroll-section testimonial-section py-24 px-6 md:px-20 bg-neutral-900">
         <h2 className="text-4xl font-bold text-center mb-14">
           What Our Users Say
         </h2>
@@ -639,3 +731,4 @@ export default function HomePageContent() {
     </div>
   );
 }
+
