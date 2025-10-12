@@ -29,28 +29,28 @@ export async function GET(req: Request) {
       );
     }
 
-    // const enrolledExamIds = (
-    //   await Enrollment.find({ studentId }).select("examId")
-    // ).map((e) => e.examId.toString());
+    const enrolledExamIds = (
+      await Enrollment.find({ studentId }).select("examId")
+    ).map((e) => e.examId.toString());
 
-    // console.log("enrolledExamIds", enrolledExamIds)
+    console.log("enrolledExamIds", enrolledExamIds)
 
-    // const now = new Date();
+    const now = new Date();
 
-    // //Exams NOT enrolled
-    // const newExams = await Exam.find({
-    //   _id: {
-    //     $nin: enrolledExamIds.map((id) => new mongoose.Types.ObjectId(id)),
-    //   },
-    //   isPublished: true,
-    //   scheduledAt: { $gt: now },
-    // }).sort({ scheduledAt: 1 });
-
+    //Exams NOT enrolled
     const newExams = await Exam.find({
+      _id: {
+        $nin: enrolledExamIds.map((id) => new mongoose.Types.ObjectId(id)),
+      },
       isPublished: true,
+      scheduledAt: { $gt: now },
     }).sort({ scheduledAt: 1 });
 
-    console.log("new exams", newExams);
+    // const newExams = await Exam.find({
+    //   isPublished: true,
+    // }).sort({ scheduledAt: 1 });
+
+    // console.log("new exams", newExams);
 
     if (!newExams || newExams.length === 0) {
       return NextResponse.json(

@@ -72,11 +72,11 @@ export default function StudentDashboard() {
               <button
                 key={tab.value}
                 onClick={() => setActiveTab(tab.value)}
-                className={`border rounded-2xl capitalize justify-between text-center py-1.5 flex items-center gap-x-4 font-semibold bg-neutral-800 shadow-sm duration-200 ease-out hover:text-indigo-500 hover:shadow-indigo-500 ${
+                className={`border rounded-2xl capitalize text-center flex items-center gap-x-4 font-semibold bg-neutral-800 shadow-sm duration-200 ease-out hover:text-indigo-500   hover:shadow-indigo-500 ${
                   activeTab === tab.value
                     ? "shadow-indigo-500 text-indigo-500"
                     : "shadow-neutral-950 text-neutral-300"
-                } ${collapsed ? "text-xl px-4 py-4" : "px-3"}`}
+                } ${collapsed ? "text-xl px-4 py-4 justify-center" : "px-3 py-1.5 justify-between"}`}
               >
                 {!collapsed && tab.label} {tab.icon}
               </button>
