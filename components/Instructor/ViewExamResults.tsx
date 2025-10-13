@@ -230,7 +230,7 @@ function ViewExamSubmissions({ examId }: { examId: string }) {
             Submissions for
           </h1>
           <p className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-indigo-400 brightness-150 uppercase break-words text-center md:text-left max-w-full">
-            {examDetails.title}
+            {examDetails?.title}
           </p>
         </div>
 
@@ -241,22 +241,22 @@ function ViewExamSubmissions({ examId }: { examId: string }) {
           </h2>
           <DetailItem
             label="Total Questions"
-            value={examDetails.questions?.length || 0}
+            value={examDetails?.questions?.length || 0}
             color="text-indigo-400"
           />
           <DetailItem
             label="Marks Per Question"
-            value={examDetails.marksPerQuestion}
+            value={examDetails?.marksPerQuestion}
             color="text-indigo-400"
           />
           <DetailItem
             label="Total Marks"
-            value={examDetails.totalMarks}
+            value={examDetails?.totalMarks}
             color="text-indigo-400"
           />
           <DetailItem
             label="Passing Marks"
-            value={examDetails.passingMarks}
+            value={examDetails?.passingMarks}
             color="text-green-400"
           />
         </div>
@@ -313,23 +313,23 @@ function ViewExamSubmissions({ examId }: { examId: string }) {
                     <div className="flex flex-col flex-grow min-w-0">
                       <div className="flex justify-between items-center">
                         <p className="font-bold text-base text-white truncate max-w-[60%]">
-                          {submission.studentId.name}
+                          {submission?.studentId?.name}
                         </p>
                         <span
                           className={`font-bold text-lg ${
                             isPass ? "text-green-500" : "text-red-500"
                           }`}
                         >
-                          {submission.score} pts
+                          {submission?.score} pts
                         </span>
                       </div>
                       <div className="flex justify-between items-center text-xs text-neutral-400">
                         <p className="truncate max-w-[60%]">
-                          {submission.studentId.email}
+                          {submission?.studentId?.email}
                         </p>
                         <p>
                           <span className="text-indigo-300">
-                            {formatTimeTaken(submission.timeTaken)}
+                            {formatTimeTaken(submission?.timeTaken)}
                           </span>
                         </p>
                       </div>
@@ -351,24 +351,24 @@ function ViewExamSubmissions({ examId }: { examId: string }) {
                     {/* Student Name/Email */}
                     <div className="col-span-4 flex flex-col min-w-0">
                       <p className="font-semibold text-white truncate">
-                        {submission.studentId.name}
+                        {submission?.studentId?.name}
                       </p>
                       <p className="text-xs text-neutral-400 truncate">
-                        {submission.studentId.email}
+                        {submission?.studentId?.email}
                       </p>
                     </div>
 
                     {/* Score */}
                     <p className="col-span-2 font-bold text-center text-lg">
-                      <span className="text-white">{submission.score}</span>
+                      <span className="text-white">{submission?.score}</span>
                       <span className="text-neutral-400">
-                        /{examDetails.totalMarks}
+                        /{examDetails?.totalMarks}
                       </span>
                     </p>
 
                     {/* Time Taken */}
                     <p className="col-span-3 text-center text-indigo-300 font-semibold">
-                      {formatTimeTaken(submission.timeTaken)}
+                      {formatTimeTaken(submission?.timeTaken)}
                     </p>
 
                     {/* Result and Details Button */}
