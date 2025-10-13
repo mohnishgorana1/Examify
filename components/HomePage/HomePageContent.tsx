@@ -270,7 +270,7 @@ export default function HomePageContent() {
 
   }, []);
 
-  if (!isLoaded)
+  if (isLoaded)
     return (
       <main className="w-full h-[90vh] flex items-center my-auto justify-center bg-neutral-950">
         <h1 className="text-white text-lg md:text-2xl ">
@@ -278,7 +278,7 @@ export default function HomePageContent() {
             className="font-mono text-lg md:text-2xl lg:text-3xl"
             duration={1}
           >
-            Loading..
+            Loading...
           </TextShimmerWave>
         </h1>
       </main>

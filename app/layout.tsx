@@ -19,6 +19,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Examify",
   description: "",
+  icons:{
+    icon: "/graduation-cap.svg"
+  }
 };
 
 export default function RootLayout({
