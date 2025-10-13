@@ -3,12 +3,13 @@ import { auth } from "@clerk/nextjs/server";
 import connectDB from "@/lib/config/db";
 import { User } from "@/models/user.model";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const { userId } = await auth();
-    if (!userId) {
-      console.log("not signed in");
+    const url = new URL(req.url);
+    const clerkUserId = url.searchParams.get("clerkUserId");
 
+    if (!clerkUserId) {
+      console.log("not signed in");
       return NextResponse.json(
         { success: false, message: "Not signed in" },
         { status: 401 }
@@ -17,13 +18,12 @@ export async function GET() {
 
     await connectDB();
 
-    
-    const user = await User.findOne({ clerkUserId: userId }).lean();
+    const user = await User.findOne({ clerkUserId: clerkUserId }).lean();
 
     if (!user) {
       return NextResponse.json(
         { success: false, message: "User not found in DB" },
-        { status: 404 }
+        { status: 403 }
       );
     }
 

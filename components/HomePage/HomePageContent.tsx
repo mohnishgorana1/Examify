@@ -327,7 +327,7 @@ export default function HomePageContent() {
               </Link>
             </div>
           ) : (
-            <Link href={`/dashboard/${appUser?.role || "student"}`}>
+            <Link href={`/dashboard/${appUser?.role}`}>
               <Button className="bg-indigo-600 text-white px-8 py-3 rounded-md text-lg font-semibold hover:bg-indigo-700 transition-all duration-300 hover:scale-[1.02] mb-16 shadow-lg shadow-indigo-500/40">
                 Go to Dashboard
               </Button>

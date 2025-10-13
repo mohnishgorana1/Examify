@@ -48,7 +48,7 @@ export async function POST(req: Request) {
 
       const fullName = `${first_name || ""} ${last_name || ""}`.trim();
       const email =
-        email_addresses?.[0]?.email_address || "noemail@unknown.com";
+        email_addresses?.[0]?.email_address || "";
       const phone = phone_numbers?.[0]?.phone_number;
       const dob = birthday ? new Date(birthday) : new Date();
 

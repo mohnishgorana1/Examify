@@ -40,7 +40,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     try {
-      const res = await axios.get("/api/users/me");
+      const res = await axios.get(`/api/users/me?clerkUserId=${user.id}`);
       if (res.data.success) {
         const fetchedUser: AppUser = res.data.data;
         setAppUser(fetchedUser);
