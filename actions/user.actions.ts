@@ -1,3 +1,4 @@
+// user.action.ts
 "use server";
 import connectDB from "@/lib/config/db";
 import { User } from "@/models/user.model";
@@ -51,7 +52,6 @@ export const createAccountInDatabase = async (
     if (!newUser) {
       console.error("❌ Mongoose returned null while creating user:", email);
 
-      //TODO: Delete from Clerk if user creation fails
       try {
         // await deleteClerkUser(clerkUserId);
       } catch (cleanupError) {
@@ -111,6 +111,45 @@ export const fetchUserAccountDetails = async (clerkUserId: string) => {
       success: false,
       status: 500,
       message: error?.message || "Failed to fetch user details",
+    };
+  }
+};
+
+export const deleteAccountInDatabase = async (clerkUserId: string) => {
+  await connectDB();
+
+  try {
+    if (!clerkUserId) {
+      return { success: false, status: 400, message: "Missing clerkUserId" };
+    }
+    // console.log("hand on we are delting form DB first with clrk id",clerkUserId);
+    
+    const result = await User.deleteOne({ clerkUserId });
+    if (result.deletedCount === 0) {
+      console.log(
+        "⚠️ User not found in DB for deletion (or already deleted):",
+        clerkUserId
+      );
+      return {
+        success: false,
+        status: 404,
+        message: "User not found or already deleted in DB",
+      };
+    }
+
+    // console.log("User deleted from DB:", clerkUserId);
+    return {
+      success: true,
+      status: 200,
+      message: "User successfully deleted from DB",
+    };
+
+  } catch (error: any) {
+    console.error("❌ Error deleting user from DB:", error);
+    return {
+      success: false,
+      status: 500,
+      message: error?.message || "Failed to delete user from DB",
     };
   }
 };
