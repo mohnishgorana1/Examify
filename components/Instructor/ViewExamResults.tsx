@@ -98,10 +98,10 @@ const SubmissionDetailPopover = ({
             </span>{" "}
             {submission.isAutoSubmitted ? "Yes ✅" : "No ❌"}
           </p>
-          {submission.studentId.phone && (
+          {submission.studentId?.phone && (
             <p>
               <span className="font-semibold text-neutral-300">Phone:</span>{" "}
-              {submission.studentId.phone}
+              {submission.studentId?.phone}
             </p>
           )}
         </div>
