@@ -288,10 +288,10 @@ function ViewExamSubmissions({ examId }: { examId: string }) {
                 idx === 0
                   ? "text-yellow-400"
                   : idx === 1
-                  ? "text-slate-300"
-                  : idx === 2
                   ? "text-amber-600"
-                  : "text-indigo-400";
+                  : idx === 2
+                  ? "text-indigo-300"
+                  : "text-slate-300";
               const bgColorClass =
                 idx % 2 === 0 ? "bg-neutral-800" : "bg-neutral-800/80";
 
