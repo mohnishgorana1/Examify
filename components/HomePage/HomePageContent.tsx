@@ -231,8 +231,6 @@ export default function HomePageContent() {
     },
   ];
 
-
-
   useEffect(() => {
     // Scroll-based animations for sections
     gsap.utils.toArray(".scroll-section").forEach((section: any) => {
@@ -267,10 +265,9 @@ export default function HomePageContent() {
         delay: 0.8,
       }
     );
-
   }, []);
 
-  if (isLoaded)
+  if (!isLoaded)
     return (
       <main className="w-full h-[90vh] flex items-center my-auto justify-center bg-neutral-950">
         <h1 className="text-white text-lg md:text-2xl ">
@@ -327,11 +324,18 @@ export default function HomePageContent() {
               </Link>
             </div>
           ) : (
-            <Link href={`/dashboard/${appUser?.role}`}>
-              <Button className="bg-indigo-600 text-white px-8 py-3 rounded-md text-lg font-semibold hover:bg-indigo-700 transition-all duration-300 hover:scale-[1.02] mb-16 shadow-lg shadow-indigo-500/40">
-                Go to Dashboard
-              </Button>
-            </Link>
+            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-5 mb-10 animate-fade-in delay-400">
+              <Link href={`/dashboard/${appUser?.role}`}>
+                <Button className="bg-indigo-600 text-white px-8 py-3 rounded-md text-lg font-semibold hover:bg-indigo-700 transition-all duration-300 hover:scale-[1.02] mb-16">
+                  Go to Dashboard
+                </Button>
+              </Link>
+              <Link href={`/become-instructor`}>
+                <Button className="px-8 py-3 rounded-md text-lg font-semibold bg-transparent transition-all duration-300 hover:scale-[1.02] mb-16 text-white bg-gradient-to-r from-amber-700 to-pink-500">
+                  Become Instructor
+                </Button>
+              </Link>
+            </div>
           )}
         </div>
         <style jsx>{`
@@ -731,4 +735,3 @@ export default function HomePageContent() {
     </div>
   );
 }
-

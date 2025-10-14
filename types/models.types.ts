@@ -59,3 +59,29 @@ export interface ISubmission {
   attemptNumber: number;
   timeTaken: number;
 }
+
+
+export interface IWorkExperience {
+  company: string;
+  post: string;
+  timeSpanYears: number;
+}
+
+export interface IEducationalQualification {
+  institute: string;
+  course: string;
+  yearCompleted: number; 
+  grade: string; 
+}
+
+export interface IInstructorRequest {
+  student: mongoose.Types.ObjectId;
+  email: string;
+  name: string;
+  experience: IWorkExperience[];
+  qualifications: IEducationalQualification[];
+  status: "pending" | "approved" | "rejected";
+  requestedAt?: Date;
+  processedBy?: mongoose.Types.ObjectId;
+  processedAt?: Date;
+}

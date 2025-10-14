@@ -10,41 +10,19 @@ import {
   ChevronRight,
   ChevronLeft,
 } from "lucide-react";
-import CreateExam from "./CreateExam";
-import MyExams from "./MyExams";
-import CreateQuestion from "./CreateQuestions";
-import MyQuestions from "./MyQuestions";
+import InstructorRequests from "../Admin/InstructorRequests";
 
-export default function InstructorDashboard() {
-  const [activeTab, setActiveTab] = useState("create-exam");
+export default function AdminDashboard() {
+  const [activeTab, setActiveTab] = useState("instructor-requests");
   const [collapsed, setCollapsed] = useState(false);
 
   const tabs = [
-    {
-      value: "create-exam",
-      label: "Create Exam",
-      icon: <FileText size={20} />,
-      component: <CreateExam onExamCreated={() => setActiveTab("my-exams")} />,
+   {
+      value: "instructor-requests",
+      label: "Instructor Requests",
+      icon: <BarChart3 size={20} />,
+      component: <InstructorRequests />,
     },
-    {
-      value: "my-exams",
-      label: "My Exams",
-      icon: <ClipboardList size={20} />,
-      component: <MyExams />,
-    },
-    {
-      value: "create-questions",
-      label: "Create Questions",
-      icon: <PlusCircle size={20} />,
-      component: <CreateQuestion />,
-    },
-    {
-      value: "my-questions",
-      label: "My Questions",
-      icon: <Library size={20} />,
-      component: <MyQuestions />,
-    },
-    
   ];
 
   const activeComponent = tabs.find(
@@ -65,7 +43,7 @@ export default function InstructorDashboard() {
           <div className="flex items-center md:justify-between w-full px-2 border-b pb-2 border-b-neutral-800">
             {!collapsed && (
               <h1 className="text-white font-bold  text-lg whitespace-nowrap">
-                Instructor Dashboard
+                Admin Dashboard
               </h1>
             )}
             <button

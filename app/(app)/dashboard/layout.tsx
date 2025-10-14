@@ -21,7 +21,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         if (
           (pathname.startsWith("/dashboard/student") && role === "student") ||
           (pathname.startsWith("/dashboard/instructor") &&
-            role === "instructor")
+            role === "instructor") ||
+          (pathname.startsWith("/dashboard/admin") && role === "admin")
         ) {
           setAllowed(true);
         } else {
