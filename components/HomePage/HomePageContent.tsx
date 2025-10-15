@@ -327,14 +327,17 @@ export default function HomePageContent() {
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-5 mb-10 animate-fade-in delay-400">
               <Link href={`/dashboard/${appUser?.role}`}>
                 <Button className="bg-indigo-600 text-white px-8 py-3 rounded-md text-lg font-semibold hover:bg-indigo-700 transition-all duration-300 hover:scale-[1.02] mb-16">
-                  Go to Dashboard
+                  Go to <span className="capitalize">{appUser?.role}</span>{" "}
+                  Dashboard
                 </Button>
               </Link>
-              <Link href={`/become-instructor`}>
-                <Button className="px-8 py-3 rounded-md text-lg font-semibold bg-transparent transition-all duration-300 hover:scale-[1.02] mb-16 text-white bg-gradient-to-r from-amber-700 to-pink-500">
-                  Become Instructor
-                </Button>
-              </Link>
+              {appUser && appUser.role === "student" && (
+                <Link href={`/become-instructor`}>
+                  <Button className="px-8 py-3 rounded-md text-lg font-semibold bg-transparent transition-all duration-300 hover:scale-[1.02] mb-16 text-white bg-gradient-to-r from-amber-700 to-pink-500">
+                    Become Instructor
+                  </Button>
+                </Link>
+              )}
             </div>
           )}
         </div>

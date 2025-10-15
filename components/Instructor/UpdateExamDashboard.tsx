@@ -7,7 +7,16 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Loader2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Loader2, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAppUser } from "@/contexts/UserContext";
 import { TextShimmerWave } from "../ui/text-shimmer-wave";
@@ -68,6 +77,8 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
   const [open, setOpen] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
 
+  const [isDeletingExam, setIsDeletingExam] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   // Fetch exam and instructor questions
   const fetchDetails = async () => {
     setIsFetchingExamDetails(true);
@@ -100,7 +111,9 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
         } = examRes.data.data;
 
         // new Date() automatically UTC ko local time me convert karta hai.
-        const scheduledDateObj = scheduledAt ? new Date(scheduledAt): undefined;
+        const scheduledDateObj = scheduledAt
+          ? new Date(scheduledAt)
+          : undefined;
 
         setDate(scheduledDateObj); // calendar ke liye local date
 
@@ -111,7 +124,6 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
               ).padStart(2, "0")}`
             : "10:00"
         );
-        
 
         // derive passing percentage from stored values
         const computedPassingPercentage =
@@ -252,6 +264,30 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
     }
   };
 
+  // delete exam and their submissions
+  const handleDeleteExam = async () => {
+    setIsDeletingExam(true);
+
+    try {
+      const deleteExamRes = await axios.delete(
+        `/api/exam/instructor/exams/${examId}/delete?instructorId=${appUser?._id}`
+      );
+
+      if (deleteExamRes.data.success) {
+        toast.success("Exam Deleted successfully! Redirecting...");
+        setIsDeleteDialogOpen(false);
+        router.push("/dashboard/instructor");
+      } else {
+        toast.error(deleteExamRes.data.message || "Failed to delete exam.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update exam.");
+    } finally {
+      setIsDeletingExam(false);
+    }
+  };
+
   useEffect(() => {
     fetchDetails();
   }, []);
@@ -283,9 +319,62 @@ function UpdateExamDashboard({ examId }: { examId: string }) {
       transition={{ duration: 0.4 }}
       className="min-h-[95vh] pb-14 py-10 px-4 md:px-10 bg-gradient-to-b from-neutral-900 to-neutral-950 space-y-4"
     >
-      <h1 className="text-3xl md:text-4xl font-extrabold text-indigo-500 text-center tracking-wide">
-        Update Exam
-      </h1>
+      <div className="py-2 lg:pb-8 flex items-baseline justify-between">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl lg:font-bold font-extrabold text-indigo-400 tracking-wide lg:tracking-normal">
+          Update Exam
+        </h1>
+        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+          <DialogTrigger asChild>
+            <Button
+              className="bg-red-800 hover:bg-red-700 text-white disabled:opacity-50"
+              disabled={isDeletingExam || isUpdating || isPublishing}
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Delete Exam
+            </Button>
+          </DialogTrigger>
+
+          <DialogContent className="sm:max-w-[425px] bg-neutral-900 border-red-500/50 text-white">
+            <DialogHeader>
+              <DialogTitle className="text-red-400 text-2xl font-bold">
+                Confirm Exam Deletion
+              </DialogTitle>
+              <DialogDescription className="text-neutral-300 pt-2">
+                This action cannot be undone. You are about to permanently
+                delete{" "}
+                <strong className="text-indigo-400 text-base capitalize">
+                  {formData.title}
+                </strong>{" "}
+                and
+                <strong> all associated student submissions and scores</strong>
+              </DialogDescription>
+            </DialogHeader>
+
+            <DialogFooter className="pt-4">
+              <Button
+                variant="outline"
+                onClick={() => setIsDeleteDialogOpen(false)} // Close the dialog
+                disabled={isDeletingExam}
+                className="bg-neutral-700 border-neutral-600 hover:bg-neutral-600 text-white"
+              >
+                Cancel
+              </Button>
+              <Button
+                className="bg-red-600 hover:bg-red-700 text-white disabled:opacity-70"
+                onClick={handleDeleteExam}
+                disabled={isDeletingExam}
+              >
+                {isDeletingExam ? (
+                  <Loader2 className="animate-spin w-4 h-4 mr-1" />
+                ) : (
+                  <Trash2 className="w-4 h-4 mr-1" />
+                )}
+                {isDeletingExam ? "Deleting..." : "Confirm Delete"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
 
       {/* Inputs */}
       <div className="space-y-3">

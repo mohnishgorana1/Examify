@@ -34,8 +34,8 @@ export async function GET(req: Request) {
 
     if (!exams || exams.length === 0) {
       return NextResponse.json(
-        { success: false, message: "No Exam Found" },
-        { status: 401 }
+        { success: true, message: "No Exam Found", data: [] },
+        { status: 200 }
       );
     }
 

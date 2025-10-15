@@ -465,8 +465,11 @@ const RequestTableRow: React.FC<RequestCardProps> = ({
           </Button>
         </div>
       ) : (
-        <div className="text-gray-500 italic pr-3 capitalize">
+        <div className="col-span-2 text-center text-gray-500 italic capitalize ml-2 border flex flex-col">
           {request.status}
+          {request?.processedBy?.name && (
+            <span className="text-xs">By {request?.processedBy?.name}</span>
+          )}
         </div>
       )}
     </div>
@@ -515,6 +518,14 @@ function InstructorRequests() {
       toast.error("Admin ID not found. Cannot process request.");
       return;
     }
+
+    // 1. Find the request object locally
+    const originalRequest = requests.find((req) => req._id === requestId);
+    if (!originalRequest) {
+      toast.error("Request not found locally.");
+      return;
+    }
+
     setIsProcessing(true);
     try {
       const res = await axios.post("/api/instructor-request/update-status", {
@@ -525,7 +536,28 @@ function InstructorRequests() {
 
       if (res.data.success) {
         toast.success(`Request ${newStatus} successfully!`);
-        fetchRequests();
+
+        const processedRequest: InstructorRequest = {
+          ...originalRequest,
+          status: newStatus,
+          processedBy: {
+            _id: appUser._id,
+            name: appUser.name || "Admin",
+            email: appUser.email || "",
+          },
+          processedAt: new Date().toISOString(),
+        };
+
+        setRequests((prevReq) => {
+          return prevReq.map((req) =>
+            req._id === requestId ? processedRequest : req
+          );
+        });
+
+        // 5. If the modal is open for this request, close it
+        if (selectedRequest?._id === requestId) {
+          handleCloseModal();
+        }
       } else {
         throw new Error(res.data.message || "Action failed.");
       }
