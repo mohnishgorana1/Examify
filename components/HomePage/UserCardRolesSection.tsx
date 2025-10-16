@@ -17,7 +17,8 @@ export default function UserCardRolesSection({ user }: { user: any }) {
         "from-green-600/40 to-green-800/60 border-green-500/30 hover:shadow-green-500/50",
       iconColor: "green",
       shadowColor: "shadow-green-800/60",
-      background: "",
+      styles:
+        "bg-gradient-to-br from-green-700/30 to-green-900/20 hover:bg-gradient-to-br hover:from-green-700/20 hover:to-green-900/40 duration-300 hover:shadow-md hover:shadow-green-700/40",
     },
     {
       role: "instructor",
@@ -31,7 +32,8 @@ export default function UserCardRolesSection({ user }: { user: any }) {
         "from-indigo-600/40 to-indigo-800/60 border-indigo-500/30 hover:shadow-indigo-500/50",
       iconColor: "indigo",
       shadowColor: "shadow-indigo-800/60",
-      background: "",
+      styles:
+        "bg-gradient-to-br from-indigo-700/30 to-indigo-900/20 hover:bg-gradient-to-br hover:from-indigo-700/40 hover:to-indigo-900/30 duration-300 hover:shadow-md hover:shadow-indigo-700/40",
     },
     {
       role: "admin",
@@ -45,7 +47,8 @@ export default function UserCardRolesSection({ user }: { user: any }) {
         "from-orange-700/40 to-orange-900/60 border-orange-500/30 hover:shadow-orange-500/50",
       iconColor: "orange",
       shadowColor: "shadow-orange-800/60",
-      background: "",
+      styles:
+        "bg-gradient-to-br from-orange-700/30 to-orange-950/20 hover:bg-gradient-to-br hover:from-orange-700/40 hover:to-orange-950/50 duration-300 hover:shadow-md hover:shadow-orange-700/40",
     },
     // {
     //   role: "unauthenticated",
@@ -79,18 +82,7 @@ export default function UserCardRolesSection({ user }: { user: any }) {
           return (
             <div
               key={i}
-              className={` overflow-hidden  backdrop-blur-sm transition duration-500 hover:shadow-lg  flex flex-col h-full ${
-                i === 0 &&
-                "bg-gradient-to-br from-green-700/30 to-green-900/20 "
-              }
-              ${
-                i === 1 &&
-                "bg-gradient-to-br from-indigo-700/30 to-indigo-900/20 "
-              }
-              ${
-                i === 2 &&
-                "bg-gradient-to-br from-orange-700/30 to-orange-950/20 "
-              }`}
+              className={`cursor-pointer overflow-hidden  backdrop-blur-sm transition duration-500 hover:shadow-lg  flex flex-col h-full ${info.styles}`}
             >
               <div className={`p-6 flex flex-col items-start h-full`}>
                 <div
@@ -98,7 +90,9 @@ export default function UserCardRolesSection({ user }: { user: any }) {
                     info.colorTheme.split(" ")[0]
                   }  `}
                 >
-                  <span className={`w-min border-2 border-white/25 p-1 md:p-2 rounded-xl`}>
+                  <span
+                    className={`w-min border-2 border-white/25 p-1 md:p-2 rounded-xl`}
+                  >
                     <IconComponent
                       className={`w-10 h-10 text-${info.iconColor}-400  ${
                         info.colorTheme.split(" ")[1]
