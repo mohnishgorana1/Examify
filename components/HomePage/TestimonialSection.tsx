@@ -42,7 +42,7 @@ export default function TestimonialSection() {
   return (
     <main className="testimonial-section py-24 px-6 md:px-20 bg-neutral-900/50">
       <h2 className="text-4xl font-bold text-center mb-14">
-        What Our Users Say
+        What Our Users Say <span className="text-xs ">(sample data)</span>
       </h2>
       <div className="grid gap-10 md:grid-cols-3">
         {TESTIMONIALS.map((t, i) => (

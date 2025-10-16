@@ -3,7 +3,6 @@
 import { BookOpen, GraduationCap, Shield, Users } from "lucide-react";
 import { Button } from "../ui/button";
 
-
 export default function UserCardRolesSection({ user }: { user: any }) {
   const ROLE_BASED_USER_INFO = [
     {
@@ -16,21 +15,23 @@ export default function UserCardRolesSection({ user }: { user: any }) {
       footerText: "For Students",
       colorTheme:
         "from-green-600/40 to-green-800/60 border-green-500/30 hover:shadow-green-500/50",
-      iconColor: "text-green-400",
+      iconColor: "green",
       shadowColor: "shadow-green-800/60",
+      background: "",
     },
     {
       role: "instructor",
       title: "Powerful Tools for Modern Educators",
       desc: "Create, grade, and analyze — all in one seamless workflow.",
       details:
-        "Instructors can easily design secure, customizable exams and automate grading with AI-powered analytics. From managing question banks to tracking student performance trends, Examify helps educators save time and deliver personalized learning experiences with unmatched precision.",
+        "Instructors can easily design secure, customizable exams and automate grading. From managing question banks to tracking student performance trends, Examify helps educators save time and deliver personalized learning experiences with unmatched precision.",
       icon: BookOpen,
       footerText: "For Instructors",
       colorTheme:
         "from-indigo-600/40 to-indigo-800/60 border-indigo-500/30 hover:shadow-indigo-500/50",
-      iconColor: "text-indigo-400",
+      iconColor: "indigo",
       shadowColor: "shadow-indigo-800/60",
+      background: "",
     },
     {
       role: "admin",
@@ -42,51 +43,64 @@ export default function UserCardRolesSection({ user }: { user: any }) {
       footerText: "For Administrators",
       colorTheme:
         "from-orange-700/40 to-orange-900/60 border-orange-500/30 hover:shadow-orange-500/50",
-      iconColor: "text-orange-400",
+      iconColor: "orange",
       shadowColor: "shadow-orange-800/60",
+      background: "",
     },
-    {
-      role: "unauthenticated",
-      title: "All-in-One Assessment Platform",
-      desc: "Experience the next generation of online exams and analytics.",
-      details:
-        "Not logged in? No problem. Explore Examify’s seamless experience — powerful tools for exam creation, secure test environments, and smart result tracking. Get started today and discover how institutions and learners use Examify to simplify assessments.",
-      icon: Users,
-      footerText: "For Everyone",
-      colorTheme:
-        "from-neutral-700/40 to-neutral-900/60 border-neutral-600/30 hover:shadow-neutral-500/50",
-      iconColor: "text-neutral-400",
-      shadowColor: "shadow-neutral-800/60",
-    },
+    // {
+    //   role: "unauthenticated",
+    //   title: "All-in-One Assessment Platform",
+    //   desc: "Experience the next generation of online exams and analytics.",
+    //   details:
+    //     "Not logged in? No problem. Explore Examify’s seamless experience — powerful tools for exam creation, secure test environments, and smart result tracking. Get started today and discover how institutions and learners use Examify to simplify assessments.",
+    //   icon: Users,
+    //   footerText: "For Everyone",
+    //   colorTheme:
+    //     "from-neutral-700/40 to-neutral-900/60 border-neutral-600/30 hover:shadow-neutral-500/50",
+    //   iconColor: "text-neutral-400",
+    //   shadowColor: "shadow-neutral-800/60",
+    // background: ""
+    // },
   ];
   return (
     <main
       id="roles"
-      className=" my-10 pt-20 pb-20 px-6 md:px-20 text-center bg-neutral-950"
+      className="my-10 pt-20 pb-20 px-2 lg:px-8 text-center bg-neutral-950"
     >
       <h2 className="text-4xl md:text-5xl font-bold mb-14 text-white uppercase">
         {user ? "Discover Role Experiences" : "Who Can Use Examify?"}
       </h2>
 
       {/* Increased gap and ensured equal height for all columns */}
-      <div className="grid gap-8 md:grid-cols-2 ">
+      <div className="grid md:grid-cols-3 gap-3 ">
         {ROLE_BASED_USER_INFO.map((info, i) => {
           const IconComponent = info.icon;
 
           return (
             <div
               key={i}
-              className={`rounded-2xl overflow-hidden border border-neutral-800 shadow-sm ${info.shadowColor} bg-neutral-900/80 backdrop-blur-sm transition duration-500 hover:shadow-lg hover:bg-neutral-800/90 flex flex-col h-full`}
+              className={` overflow-hidden  backdrop-blur-sm transition duration-500 hover:shadow-lg  flex flex-col h-full ${
+                i === 0 &&
+                "bg-gradient-to-br from-green-700/30 to-green-900/20 "
+              }
+              ${
+                i === 1 &&
+                "bg-gradient-to-br from-indigo-700/30 to-indigo-900/20 "
+              }
+              ${
+                i === 2 &&
+                "bg-gradient-to-br from-orange-700/30 to-orange-950/20 "
+              }`}
             >
               <div className={`p-6 flex flex-col items-start h-full`}>
                 <div
-                  className={`w-full mb-4 flex md:flex-row flex-col gap-y-3  gap-x-5 md:items-center ${
+                  className={`w-full mb-4 flex items-center gap-x-5 justify-between ${
                     info.colorTheme.split(" ")[0]
                   }  `}
                 >
-                  <span className="w-min border-2 border-neutral-700 p-1 md:p-2 rounded-xl">
+                  <span className={`w-min border-2 border-white/25 p-1 md:p-2 rounded-xl`}>
                     <IconComponent
-                      className={`w-10 h-10 ${info.iconColor}  ${
+                      className={`w-10 h-10 text-${info.iconColor}-400  ${
                         info.colorTheme.split(" ")[1]
                       }`}
                     />
