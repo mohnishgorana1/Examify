@@ -64,43 +64,43 @@ export default function HomePageContent() {
 
   return (
     <div className="relative overflow-hidden text-white bg-neutral-950">
-      <section className="scroll-section opacity-0 translate-y-8">
+      <section className="scroll-section translate-y-8">
         <HeroSection user={user} appUser={appUser} />
       </section>
 
-      <section className="scroll-section opacity-0 translate-y-8">
+      <section className="scroll-section translate-y-8">
         <InstructorDashboardInsights />
       </section>
 
-      <section className="scroll-section opacity-0 translate-y-8">
+      <section className="scroll-section translate-y-8">
         <LiveStatsSection />
       </section>
 
-      <section className="scroll-section opacity-0 translate-y-8 ">
+      <section className="scroll-section translate-y-8 ">
         <ClientCardsSection appUser={appUser} user={user} />
       </section>
 
-      <section className="scroll-section opacity-0 translate-y-8 ">
+      <section className="scroll-section translate-y-8 ">
         <DataStreamLayoutSection />
       </section>
 
-      <section className="scroll-section opacity-0 translate-y-8">
+      <section className="scroll-section translate-y-8">
         <UserCardRolesSection user={user} />
       </section>
 
-      <section className="scroll-section opacity-0 translate-y-8">
+      <section className="scroll-section translate-y-8">
         <UserFeatureSection />
       </section>
 
-      <section className="scroll-section opacity-0 translate-y-8">
+      <section className="scroll-section translate-y-8">
         <NavigatorMessageSection user={user} appUser={appUser} />
       </section>
 
-      <section className="scroll-section opacity-0 translate-y-8">
+      <section className="scroll-section translate-y-8">
         <FAQSection />
       </section>
 
-      <section className="scroll-section opacity-0 translate-y-8">
+      <section className="scroll-section translate-y-8">
         <TestimonialSection />
       </section>
     </div>
