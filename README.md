@@ -1,5 +1,4 @@
-# 🚀 Examify: Role-Based Digital Assessment Platform
-
+# 🚀 Examify
 Examify is a modern, feature-rich web platform designed for creating, managing, and taking digital exams and assessments. It provides highly tailored experiences for Students, Instructors, and Administrators, all built on a secure, aesthetic, and performance-optimized stack utilizing a **Bento Grid** design.
 
 ***
