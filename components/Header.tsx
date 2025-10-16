@@ -29,16 +29,14 @@ export default function Header() {
 
   const dashboardPath = `/dashboard/${appUser?.role || "student"}`;
   // Conditional background class
-  const headerClasses = pathname === "/" ? "text-indigo-400" : "bg-neutral-900 text-indigo-500";
+  const headerClasses =
+    pathname === "/" ? "text-indigo-400" : "bg-neutral-900 text-indigo-500";
   return (
     <header className={`w-full sticky top-0 z-50 0  ${headerClasses} `}>
       <div className="max-w-7xl md:max-w-[99%] mx-auto flex items-center justify-between px-4 py-4">
         {/* Logo */}
         <div className="">
-          <Link
-            href="/"
-            className="text-2xl font-bold  flex items-center "
-          >
+          <Link href="/" className="text-2xl font-bold  flex items-center ">
             <GraduationCap size={24} className="mt-1 mr-1" />
             Examify
           </Link>
@@ -141,13 +139,13 @@ export default function Header() {
                 ))}
                 <Link
                   href={dashboardPath}
-                  className={`text-sm font-medium transition-colors ${
+                  className={`text-lg font-medium transition-colors ${
                     pathname === dashboardPath
                       ? "text-indigo-400"
                       : "text-neutral-300 hover:text-indigo-400"
                   }`}
                 >
-                  Dashboard
+                  <span>{appUser?.role === "admin" && "Admin"}</span> Dashboard
                 </Link>
 
                 <div className="w-full pt-5 border-t border-neutral-800 flex flex-col gap-3 px-3">

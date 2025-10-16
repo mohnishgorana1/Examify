@@ -1,3 +1,5 @@
+import Footer from "@/components/Footer";
+
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-neutral-900 via-neutral-950 to-black px-6 py-16 md:px-20 text-white">
@@ -68,7 +70,6 @@ export default function AboutPage() {
         </div>
       </div>
 
-     
     </div>
   );
 }
