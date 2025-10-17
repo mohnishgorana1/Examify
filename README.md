@@ -76,7 +76,7 @@ You'll need **Node.js** and **npm** (or yarn/pnpm) installed.
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/your-username/examify.git](https://github.com/your-username/examify.git)
+    git clone [https://github.com/mohnishgorana1/examify.git](https://github.com/your-username/examify.git)
     cd examify
     ```
 
