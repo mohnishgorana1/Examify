@@ -11,7 +11,7 @@ export default function  NavigatorMessageSection ({
   user: any;
 })  {
   return (
-    <main className="py-24 px-6 md:px-20 bg-gradient-to-t from-indigo-500 via-indigo-700 to-indigo-800/50 text-center">
+    <main className="py-24 px-6 md:px-20 bg-gradient-to-b min-h-[90vh] from-gray-900 via-gray-800 to-gray-900 text-center flex items-center justify-center flex-col">
       <h2 className="text-4xl font-bold mb-6">
         {user ? "Need Help Navigating?" : "Ready to revolutionize exams?"}
       </h2>

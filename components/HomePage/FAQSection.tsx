@@ -59,7 +59,7 @@ const FAQS = [
 
 export default function FAQSection ()  {
   return (
-    <main className="py-24 px-6 md:px-20 bg-gradient-to-b from-neutral-950 via-neutral-900/50 to-neutral-800/10 border-t border-neutral-900/50">
+    <main className="py-24 px-6 md:px-20 bg-gradient-to-b from-neutral-950 via-gray-900/50 to-gray-950/10 border-t border-neutral-900/50">
       <h2 className="text-4xl md:text-5xl font-bold text-center mb-14 uppercase">
         Frequently Asked Questions
       </h2>
