@@ -64,7 +64,7 @@ export default function HomePageContent() {
 
   return (
     <div className="relative overflow-hidden text-white bg-neutral-950">
-      <section className="scroll-section translate-y-8">
+      <section className="">
         <HeroSection user={user} appUser={appUser} />
       </section>
 
